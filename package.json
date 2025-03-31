@@ -13,14 +13,14 @@
     "db:generate": "drizzle-kit generate"
   },
   "dependencies": {
-    "@ai-sdk/vue": "^1.2.2",
+    "@ai-sdk/vue": "^1.2.3",
     "@iconify-json/lucide": "^1.2.34",
     "@iconify-json/simple-icons": "^1.2.30",
     "@nuxt/ui-pro": "^3.0.2",
     "@nuxthub/core": "^0.8.22",
     "@nuxtjs/mdc": "^0.16.1",
-    "@tanstack/vue-virtual": "^3.13.5",
-    "ai": "^4.2.8",
+    "@tanstack/vue-virtual": "^3.13.6",
+    "ai": "^4.2.9",
     "date-fns": "^4.1.0",
     "drizzle-orm": "^0.41.0",
     "nuxt": "^3.16.1",
