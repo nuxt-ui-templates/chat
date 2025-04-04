@@ -78,6 +78,9 @@ onMounted(() => {
           :status="status"
           :assistant="{ actions: [{ label: 'Copy', icon: copied ? 'i-lucide-copy-check' : 'i-lucide-copy', onClick: copy }] }"
           class="lg:pt-(--ui-header-height) pb-4 sm:pb-6"
+          :ui="{
+            viewport: 'bottom-29'
+          }"
         >
           <template #content="{ message }">
             <MDC :value="message.content" :cache-key="message.id" unwrap="p" />
