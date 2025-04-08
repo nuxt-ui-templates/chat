@@ -16,7 +16,6 @@ const emit = defineEmits<{ close: [boolean] }>()
     }"
     :close="false"
     :dismissible="false"
-    @update:open="console.log('open', $event)"
   >
     <template #footer>
       <UButton label="Delete" @click="emit('close', true)" />
