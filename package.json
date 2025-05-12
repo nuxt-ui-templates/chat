@@ -24,7 +24,7 @@
     "ai": "^4.3.13",
     "date-fns": "^4.1.0",
     "drizzle-orm": "^0.43.1",
-    "nuxt": "^3.17.2",
+    "nuxt": "^3.17.3",
     "nuxt-auth-utils": "^0.5.20",
     "shiki-stream": "^0.1.2",
     "workers-ai-provider": "^0.3.0"
