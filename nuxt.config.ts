@@ -42,6 +42,18 @@ export default defineNuxtConfig({
     database: true
   },
 
+  vite: {
+    $server: {
+      build: {
+        rollupOptions: {
+          output: {
+            preserveModules: true
+          }
+        }
+      }
+    }
+  },
+
   eslint: {
     config: {
       stylistic: {
