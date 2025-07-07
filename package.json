@@ -34,7 +34,7 @@
     "drizzle-kit": "^0.31.4",
     "eslint": "^9.30.0",
     "typescript": "^5.8.3",
-    "vue-tsc": "^2.2.10",
+    "vue-tsc": "^3.0.1",
     "wrangler": "^4.22.0"
   },
   "resolutions": {
