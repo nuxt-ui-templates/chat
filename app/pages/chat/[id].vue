@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { DefineComponent } from 'vue'
-import { useChat, type Message } from '@ai-sdk/vue'
+import { useChat } from '@ai-sdk/vue'
+import type { Message } from '@ai-sdk/vue'
 import { useClipboard } from '@vueuse/core'
 import ProseStreamPre from '../../components/prose/PreStream.vue'
 
