@@ -18,7 +18,7 @@ useHead({
 })
 
 const title = 'Nuxt AI Chatbot template'
-const description = 'A full-featured, hackable Nuxt AI chatbot template made with Nuxt UI Pro.'
+const description = 'A full-featured, hackable Nuxt AI chatbot template made with Nuxt UI.'
 
 useSeoMeta({
   title,

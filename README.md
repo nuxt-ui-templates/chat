@@ -1,12 +1,12 @@
 # Nuxt AI Chatbot Template
 
-[![Nuxt UI Pro](https://img.shields.io/badge/Made%20with-Nuxt%20UI%20Pro-00DC82?logo=nuxt&labelColor=020420)](https://ui.nuxt.com/pro)
-[![Deploy to NuxtHub](https://img.shields.io/badge/Deploy%20to-NuxtHub-00DC82?logo=nuxt&labelColor=020420)](https://hub.nuxt.com/new?repo=nuxt-ui-pro/chat)
+[![Nuxt UI](https://img.shields.io/badge/Made%20with-Nuxt%20UI-00DC82?logo=nuxt&labelColor=020420)](https://ui.nuxt.com)
+[![Deploy to NuxtHub](https://img.shields.io/badge/Deploy%20to-NuxtHub-00DC82?logo=nuxt&labelColor=020420)](https://hub.nuxt.com/new?repo=nuxt-ui/chat)
 
-Full-featured AI Chatbot Nuxt application with authentication, chat history, multiple pages, collapsible sidebar, keyboard shortcuts, light & dark mode, command palette and more. Built using [Nuxt UI Pro](https://ui.nuxt.com/pro) components and integrated with [Workers AI](https://ai.cloudflare.com) for a complete chat experience.
+Full-featured AI Chatbot Nuxt application with authentication, chat history, multiple pages, collapsible sidebar, keyboard shortcuts, light & dark mode, command palette and more. Built using [Nuxt UI](https://ui.nuxt.com) components and integrated with [Workers AI](https://ai.cloudflare.com) for a complete chat experience.
 
 - [Live demo](https://chat-template.nuxt.dev/)
-- [Documentation](https://ui.nuxt.com/getting-started/installation/pro/nuxt)
+- [Documentation](https://ui.nuxt.com/getting-started/installation/nuxt)
 
 <a href="https://chat-template.nuxt.dev/" target="_blank">
   <picture>
@@ -69,9 +69,6 @@ Build the application for production:
 ```bash
 pnpm build
 ```
-
-> [!IMPORTANT]
-> Make sure to add your [Nuxt UI Pro License](https://ui.nuxt.com/getting-started/license) in order to build for production
 
 Locally preview production build:
 

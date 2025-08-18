@@ -22,7 +22,7 @@ function onSubmit() {
 
 const quickChats = [
   {
-    label: 'Why use Nuxt UI Pro?',
+    label: 'Why use Nuxt UI?',
     icon: 'i-logos-nuxt-icon'
   },
   {
