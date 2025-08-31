@@ -13,7 +13,7 @@
     "db:generate": "drizzle-kit generate"
   },
   "dependencies": {
-    "@ai-sdk/vue": "^1.2.12",
+    "@ai-sdk/vue": "^2.0.28",
     "@iconify-json/logos": "^1.2.9",
     "@iconify-json/lucide": "^1.2.63",
     "@iconify-json/simple-icons": "^1.2.48",
