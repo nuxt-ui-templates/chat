@@ -95,7 +95,7 @@ const items = computed<DropdownMenuItem[][]>(() => ([[{
   icon: 'i-lucide-layout-template',
   children: [{
     label: 'Starter',
-    to: 'https://ui-pro-starter.nuxt.dev/'
+    to: 'https://starter-template.nuxt.dev/'
   }, {
     label: 'Landing',
     to: 'https://landing-template.nuxt.dev/'
@@ -125,7 +125,7 @@ const items = computed<DropdownMenuItem[][]>(() => ([[{
 }, {
   label: 'GitHub repository',
   icon: 'i-simple-icons-github',
-  to: 'https://github.com/nuxt-ui-pro/chat',
+  to: 'https://github.com/nuxt-ui-templates/chat',
   target: '_blank'
 }], [{
   label: 'Log out',
