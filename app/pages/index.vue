@@ -2,7 +2,7 @@
 const input = ref('')
 const loading = ref(false)
 
-const { model } = useLLM()
+const { model } = useModels()
 
 async function createChat(prompt: string) {
   input.value = prompt
@@ -13,7 +13,7 @@ async function createChat(prompt: string) {
   })
 
   refreshNuxtData('chats')
-  navigateTo(`/chat/${chat.id}`)
+  navigateTo(`/chat/${chat?.id}`)
 }
 
 function onSubmit() {
@@ -22,7 +22,7 @@ function onSubmit() {
 
 const quickChats = [
   {
-    label: 'Why use Nuxt UI Pro?',
+    label: 'Why use Nuxt UI?',
     icon: 'i-logos-nuxt-icon'
   },
   {

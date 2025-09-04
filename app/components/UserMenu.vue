@@ -95,7 +95,7 @@ const items = computed<DropdownMenuItem[][]>(() => ([[{
   icon: 'i-lucide-layout-template',
   children: [{
     label: 'Starter',
-    to: 'https://ui-pro-starter.nuxt.dev/'
+    to: 'https://starter-template.nuxt.dev/'
   }, {
     label: 'Landing',
     to: 'https://landing-template.nuxt.dev/'
@@ -113,21 +113,22 @@ const items = computed<DropdownMenuItem[][]>(() => ([[{
     to: 'https://chat-template.nuxt.dev/',
     checked: true,
     type: 'checkbox'
+  }, {
+    label: 'Portfolio',
+    to: 'https://portfolio-template.nuxt.dev/'
+  }, {
+    label: 'Changelog',
+    to: 'https://changelog-template.nuxt.dev/'
   }]
 }], [{
   label: 'Documentation',
   icon: 'i-lucide-book-open',
-  to: 'https://ui.nuxt.com/getting-started/installation/pro/nuxt',
+  to: 'https://ui4.nuxt.com/docs/getting-started/installation/nuxt',
   target: '_blank'
 }, {
   label: 'GitHub repository',
   icon: 'i-simple-icons-github',
-  to: 'https://github.com/nuxt-ui-pro/chat',
-  target: '_blank'
-}, {
-  label: 'Upgrade to Pro',
-  icon: 'i-lucide-rocket',
-  to: 'https://ui.nuxt.com/pro/purchase',
+  to: 'https://github.com/nuxt-ui-templates/chat',
   target: '_blank'
 }], [{
   label: 'Log out',

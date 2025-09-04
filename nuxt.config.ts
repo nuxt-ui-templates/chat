@@ -2,9 +2,8 @@
 export default defineNuxtConfig({
   modules: [
     '@nuxt/eslint',
-    '@nuxt/ui-pro',
+    '@nuxt/ui',
     '@nuxtjs/mdc',
-    '@nuxthub/core',
     'nuxt-auth-utils'
   ],
 
@@ -31,11 +30,6 @@ export default defineNuxtConfig({
     experimental: {
       openAPI: true
     }
-  },
-
-  hub: {
-    ai: true,
-    database: true
   },
 
   vite: {

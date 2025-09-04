@@ -25,3 +25,5 @@ logs
 
 # VSC
 .history
+.vercel
+.env*.local

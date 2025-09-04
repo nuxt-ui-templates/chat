@@ -1,5 +1,5 @@
 {
-  "name": "nuxt-ui-pro-template-chat",
+  "name": "nuxt-ui-template-chat",
   "private": true,
   "type": "module",
   "scripts": {
@@ -10,40 +10,35 @@
     "postinstall": "nuxt prepare",
     "lint": "eslint .",
     "typecheck": "nuxt typecheck",
-    "db:generate": "drizzle-kit generate"
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate"
   },
   "dependencies": {
-    "@ai-sdk/vue": "^1.2.12",
+    "@ai-sdk/gateway": "^1.0.15",
+    "@ai-sdk/vue": "^2.0.30",
     "@iconify-json/logos": "^1.2.9",
-    "@iconify-json/lucide": "^1.2.63",
-    "@iconify-json/simple-icons": "^1.2.48",
-    "@nuxt/ui-pro": "^3.3.2",
-    "@nuxthub/core": "^0.9.0",
-    "@nuxtjs/mdc": "^0.17.2",
-    "ai": "^4.3.19",
+    "@iconify-json/lucide": "^1.2.66",
+    "@iconify-json/simple-icons": "^1.2.50",
+    "@nuxt/ui": "^4.0.0-alpha.1",
+    "@nuxtjs/mdc": "^0.17.3",
+    "ai": "^5.0.30",
     "date-fns": "^4.1.0",
-    "drizzle-orm": "^0.44.4",
-    "nuxt": "^4.0.3",
+    "drizzle-orm": "^0.44.5",
+    "nuxt": "^4.1.0",
     "nuxt-auth-utils": "^0.5.23",
-    "shiki-stream": "^0.1.2",
-    "workers-ai-provider": "^0.7.5"
+    "pg": "^8.16.3",
+    "shiki-stream": "^0.1.2"
   },
   "devDependencies": {
     "@nuxt/eslint": "^1.9.0",
-    "@types/node": "^22.17.2",
+    "@types/node": "^24.3.1",
     "drizzle-kit": "^0.31.4",
     "eslint": "^9.34.0",
     "typescript": "^5.9.2",
-    "vue-tsc": "^3.0.6",
-    "wrangler": "^4.32.0"
+    "vue-tsc": "^3.0.6"
   },
   "resolutions": {
     "unimport": "4.1.1"
   },
-  "pnpm": {
-    "ignoredBuiltDependencies": [
-      "workerd"
-    ]
-  },
-  "packageManager": "pnpm@10.15.0"
+  "packageManager": "pnpm@10.15.1"
 }
