@@ -94,13 +94,25 @@ onMounted(() => {
           :spacing-offset="160"
         >
           <template #content="{ message }">
-            <MDCCached
-              :value="getTextFromMessage(message)"
-              :cache-key="message.id"
-              unwrap="p"
-              :components="components"
-              :parser-options="{ highlight: false }"
-            />
+            <div class="space-y-4">
+              <template v-for="(part, index) in message.parts" :key="`${part.type}-${index}-${message.id}`">
+                <UButton
+                  v-if="part.type === 'reasoning' && part.state !== 'done'"
+                  label="Thinking..."
+                  variant="link"
+                  color="neutral"
+                  class="p-0"
+                  loading
+                />
+              </template>
+              <MDCCached
+                :value="getTextFromMessage(message)"
+                :cache-key="message.id"
+                unwrap="p"
+                :components="components"
+                :parser-options="{ highlight: false }"
+              />
+            </div>
           </template>
         </UChatMessages>
 

@@ -20,8 +20,6 @@ export default defineEventHandler(async (event) => {
     messages: z.array(z.custom<UIMessage>())
   }).parse)
 
-  console.log('model', model)
-
   const db = useDrizzle()
 
   const chat = await db.query.chats.findFirst({
@@ -46,14 +44,12 @@ export default defineEventHandler(async (event) => {
       prompt: JSON.stringify(messages[0])
     })
 
-    console.log('title', title)
-
     setHeader(event, 'X-Chat-Title', title.replace(/:/g, '').split('\n')[0])
     await db.update(tables.chats).set({ title }).where(eq(tables.chats.id, id as string))
   }
 
   const lastMessage = messages[messages.length - 1]
-  if (lastMessage.role === 'user' && messages.length > 1) {
+  if (lastMessage?.role === 'user' && messages.length > 1) {
     await db.insert(tables.messages).values({
       chatId: id as string,
       role: 'user',

@@ -8,6 +8,9 @@ export default defineEventHandler(async (event) => {
     title: '',
     userId: session.user?.id || session.id
   }).returning()
+  if (!chat) {
+    throw createError({ statusCode: 500, statusMessage: 'Failed to create chat' })
+  }
 
   await db.insert(tables.messages).values({
     chatId: chat.id,
