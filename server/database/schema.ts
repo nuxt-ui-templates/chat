@@ -58,8 +58,3 @@ export const messagesRelations = relations(messages, ({ one }) => ({
     references: [chats.id]
   })
 }))
-
-// Types
-export type User = typeof users.$inferSelect
-export type Chat = typeof chats.$inferSelect
-export type Message = typeof messages.$inferSelect
