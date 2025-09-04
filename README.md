@@ -5,7 +5,7 @@
 Full-featured AI Chatbot Nuxt application with authentication, chat history, multiple pages, collapsible sidebar, keyboard shortcuts, light & dark mode, command palette and more. Built using [Nuxt UI](https://ui.nuxt.com) components and integrated with [AI SDK v5](https://sdk.vercel.ai) for a complete chat experience.
 
 - [Live demo](https://chat-template.nuxt.dev/)
-- [Documentation](https://ui.nuxt.com/getting-started/installation/nuxt)
+- [Documentation](https://ui4.nuxt.com/docs/getting-started/installation/nuxt)
 
 <a href="https://chat-template.nuxt.dev/" target="_blank">
   <picture>

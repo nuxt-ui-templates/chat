@@ -109,18 +109,21 @@ const items = computed<DropdownMenuItem[][]>(() => ([[{
     label: 'Dashboard',
     to: 'https://dashboard-template.nuxt.dev/'
   }, {
-    label: 'Portfolio',
-    to: 'https://portfolio-template.nuxt.dev/'
-  }, {
     label: 'Chat',
     to: 'https://chat-template.nuxt.dev/',
     checked: true,
     type: 'checkbox'
+  }, {
+    label: 'Portfolio',
+    to: 'https://portfolio-template.nuxt.dev/'
+  }, {
+    label: 'Changelog',
+    to: 'https://changelog-template.nuxt.dev/'
   }]
 }], [{
   label: 'Documentation',
   icon: 'i-lucide-book-open',
-  to: 'https://ui.nuxt.com/getting-started/installation/nuxt',
+  to: 'https://ui4.nuxt.com/docs/getting-started/installation/nuxt',
   target: '_blank'
 }, {
   label: 'GitHub repository',
