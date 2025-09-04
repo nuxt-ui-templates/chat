@@ -29,6 +29,10 @@ Full-featured AI Chatbot Nuxt application with authentication, chat history, mul
 npx nuxi@latest init -t github:nuxt-ui-templates/chat
 ```
 
+## Deploy your own
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fnuxt-ui-templates%2Fchat&env=NUXT_SESSION_PASSWORD,NUXT_OAUTH_GITHUB_CLIENT_ID,NUXT_OAUTH_GITHUB_CLIENT_SECRET,DATABASE_URL&demo-url=https%3A%2F%2Fchat-template.nuxt.dev%2F)
+
 ## Setup
 
 Make sure to install the dependencies:
