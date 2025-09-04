@@ -1,5 +1,7 @@
-import { streamText } from 'ai'
-import { createWorkersAI } from 'workers-ai-provider'
+import { convertToModelMessages, createUIMessageStream, createUIMessageStreamResponse, generateText, streamText } from 'ai'
+import { gateway } from '@ai-sdk/gateway'
+import type { UIMessage } from 'ai'
+import { z } from 'zod'
 
 defineRouteMeta({
   openAPI: {
@@ -12,18 +14,15 @@ export default defineEventHandler(async (event) => {
   const session = await getUserSession(event)
 
   const { id } = getRouterParams(event)
-  // TODO: Use readValidatedBody
-  const { model, messages } = await readBody(event)
+
+  const { model, messages } = await readValidatedBody(event, z.object({
+    model: z.string(),
+    messages: z.array(z.custom<UIMessage>())
+  }).parse)
+
+  console.log('model', model)
 
   const db = useDrizzle()
-  // Enable AI Gateway if defined in environment variables
-  const gateway = process.env.CLOUDFLARE_AI_GATEWAY_ID
-    ? {
-        id: process.env.CLOUDFLARE_AI_GATEWAY_ID,
-        cacheTtl: 60 * 60 * 24 // 24 hours
-      }
-    : undefined
-  const workersAI = createWorkersAI({ binding: hubAI(), gateway })
 
   const chat = await db.query.chats.findFirst({
     where: (chat, { eq }) => and(eq(chat.id, id as string), eq(chat.userId, session.user?.id || session.id)),
@@ -36,24 +35,19 @@ export default defineEventHandler(async (event) => {
   }
 
   if (!chat.title) {
-    // @ts-expect-error - response is not typed
-    const { response: title } = await hubAI().run('@cf/meta/llama-3.1-8b-instruct-fast', {
-      stream: false,
-      messages: [{
-        role: 'system',
-        content: `You are a title generator for a chat:
-        - Generate a short title based on the first user's message
-        - The title should be less than 30 characters long
-        - The title should be a summary of the user's message
-        - Do not use quotes (' or ") or colons (:) or any other punctuation
-        - Do not use markdown, just plain text`
-      }, {
-        role: 'user',
-        content: chat.messages[0]!.content
-      }]
-    }, {
-      gateway
+    const { text: title } = await generateText({
+      model: gateway('openai/gpt-4.1-nano'),
+      system: `You are a title generator for a chat:
+          - Generate a short title based on the first user's message
+          - The title should be less than 30 characters long
+          - The title should be a summary of the user's message
+          - Do not use quotes (' or ") or colons (:) or any other punctuation
+          - Do not use markdown, just plain text`,
+      prompt: JSON.stringify(messages[0])
     })
+
+    console.log('title', title)
+
     setHeader(event, 'X-Chat-Title', title.replace(/:/g, '').split('\n')[0])
     await db.update(tables.chats).set({ title }).where(eq(tables.chats.id, id as string))
   }
@@ -63,21 +57,30 @@ export default defineEventHandler(async (event) => {
     await db.insert(tables.messages).values({
       chatId: id as string,
       role: 'user',
-      content: lastMessage.content
+      parts: lastMessage.parts
     })
   }
 
-  return streamText({
-    model: workersAI(model),
-    maxTokens: 10000,
-    system: 'You are a helpful assistant that can answer questions and help.',
-    messages,
-    async onFinish(response) {
-      await db.insert(tables.messages).values({
-        chatId: chat.id,
-        role: 'assistant',
-        content: response.text
+  const stream = createUIMessageStream({
+    execute: ({ writer }) => {
+      const result = streamText({
+        model: gateway(model),
+        system: 'You are a helpful assistant that can answer questions and help.',
+        messages: convertToModelMessages(messages)
       })
+
+      writer.merge(result.toUIMessageStream())
+    },
+    onFinish: async ({ messages }) => {
+      await db.insert(tables.messages).values(messages.map(message => ({
+        chatId: chat.id,
+        role: message.role as 'user' | 'assistant',
+        parts: message.parts
+      })))
     }
-  }).toDataStreamResponse()
+  })
+
+  return createUIMessageStreamResponse({
+    stream
+  })
 })
