@@ -26,7 +26,7 @@ Full-featured AI Chatbot Nuxt application with authentication, chat history, mul
 ## Quick Start
 
 ```bash
-npx nuxi@latest init -t github:nuxt-ui-templates/chat
+npm create nuxt@latest -- -t github:nuxt-ui-templates/chat
 ```
 
 ## Deploy your own
