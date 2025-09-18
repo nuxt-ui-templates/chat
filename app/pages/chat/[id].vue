@@ -87,6 +87,7 @@ onMounted(() => {
     <template #body>
       <UContainer class="flex-1 flex flex-col gap-4 sm:gap-6">
         <UChatMessages
+          should-auto-scroll
           :messages="chat.messages"
           :status="chat.status"
           :assistant="{ actions: [{ label: 'Copy', icon: copied ? 'i-lucide-copy-check' : 'i-lucide-copy', onClick: copy }] }"
@@ -112,6 +113,9 @@ onMounted(() => {
                 :components="components"
                 :parser-options="{ highlight: false }"
               />
+              <template v-for="(part, index) in message.parts" :key="`${part.type}-${index}-${message.id}`">
+                <ToolWeather v-if="part.type === 'tool-weather'" :key="`${part.type}-${part.state}`" :invocation="part" />
+              </template>
             </div>
           </template>
         </UChatMessages>

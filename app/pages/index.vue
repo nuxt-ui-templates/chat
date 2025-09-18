@@ -40,6 +40,10 @@ const quickChats = [
   {
     label: 'Tailwind CSS best practices',
     icon: 'i-logos-tailwindcss-icon'
+  },
+  {
+    label: 'What is the weather in London?',
+    icon: 'i-lucide-sun'
   }
 ]
 </script>
