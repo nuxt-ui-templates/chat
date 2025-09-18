@@ -67,7 +67,8 @@ export default defineEventHandler(async (event) => {
         messages: convertToModelMessages(messages),
         stopWhen: stepCountIs(5),
         tools: {
-          weather: weatherTool
+          weather: weatherTool,
+          generateImage: generateImage
         }
       })
 

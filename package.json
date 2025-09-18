@@ -21,6 +21,7 @@
     "@iconify-json/simple-icons": "^1.2.52",
     "@nuxt/ui": "^4.0.0-alpha.2",
     "@nuxtjs/mdc": "^0.17.4",
+    "@vercel/blob": "^2.0.0",
     "ai": "^5.0.45",
     "date-fns": "^4.1.0",
     "drizzle-orm": "^0.44.5",
