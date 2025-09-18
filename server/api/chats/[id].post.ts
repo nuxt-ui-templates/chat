@@ -64,7 +64,7 @@ export default defineEventHandler(async (event) => {
     execute: ({ writer }) => {
       const result = streamText({
         model: gateway(model),
-        system: `You are a helpful assistant that can answer questions and help. User name is ${username}.`,
+        system: `You are a helpful assistant that can answer questions and help. User name is ${username}. For image modification, use provided images URL as input for the generateImage tool.`,
         messages: convertToModelMessages(messages),
         stopWhen: stepCountIs(5),
         tools: {
