@@ -1,7 +1,7 @@
 export default defineEventHandler(async (event) => {
   const session = await getUserSession(event)
 
-  const { input } = await readBody(event)
+  const { message } = await readBody(event)
   const db = useDrizzle()
 
   const [chat] = await db.insert(tables.chats).values({
@@ -15,7 +15,7 @@ export default defineEventHandler(async (event) => {
   await db.insert(tables.messages).values({
     chatId: chat.id,
     role: 'user',
-    parts: [{ type: 'text', text: input }]
+    parts: message.parts
   })
 
   return chat
