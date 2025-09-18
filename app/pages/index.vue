@@ -42,7 +42,7 @@ const quickChats = [
     icon: 'i-logos-tailwindcss-icon'
   },
   {
-    label: 'What is the weather in London?',
+    label: 'What is the weather in Bordeaux?',
     icon: 'i-lucide-sun'
   }
 ]
