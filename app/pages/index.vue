@@ -44,6 +44,10 @@ const quickChats = [
   {
     label: 'What is the weather in Bordeaux?',
     icon: 'i-lucide-sun'
+  },
+  {
+    label: 'Generate an image of a cat',
+    icon: 'i-lucide-image'
   }
 ]
 </script>

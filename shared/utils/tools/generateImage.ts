@@ -5,9 +5,10 @@ import z from 'zod'
 export const generateImage = tool({
   description: 'Generate an image',
   inputSchema: z.object({
-    prompt: z.string().describe('The prompt to generate the image from')
+    prompt: z.string().describe('The prompt to generate the image from'),
+    username: z.string().describe('The username of the user')
   }),
-  execute: async ({ prompt }) => {
+  execute: async ({ prompt, username }) => {
     const result = await generateText({
       model: 'google/gemini-2.5-flash-image-preview',
       providerOptions: {
@@ -23,13 +24,12 @@ export const generateImage = tool({
 
     if (imageFiles.length > 0) {
       for (const file of imageFiles) {
-        try {
-          const filename = `image-${Date.now()}-${Math.random().toString(36).substring(2, 15)}.png`
-          const { url } = await put(filename, new Blob([file.uint8Array]), { access: 'public' })
-          filespath.push(url)
-        } catch (error) {
-          console.error(error)
-        }
+        const filename = `${username}/image-${Date.now()}.png`
+        const { url } = await put(filename, new Blob([new Uint8Array(file.uint8Array)]), {
+          access: 'public',
+          addRandomSuffix: true
+        })
+        filespath.push(url)
       }
     }
 
