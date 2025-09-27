@@ -25,8 +25,8 @@ useSeoMeta({
   description,
   ogTitle: title,
   ogDescription: description,
-  ogImage: 'https://ui4.nuxt.com/assets/templates/nuxt/chat-light.png',
-  twitterImage: 'https://ui4.nuxt.com/assets/templates/nuxt/chat-light.png',
+  ogImage: 'https://ui.nuxt.com/assets/templates/nuxt/chat-light.png',
+  twitterImage: 'https://ui.nuxt.com/assets/templates/nuxt/chat-light.png',
   twitterCard: 'summary_large_image'
 })
 </script>
