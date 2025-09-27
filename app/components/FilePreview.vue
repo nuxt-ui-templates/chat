@@ -39,10 +39,11 @@ function removeFile(index: number) {
       />
       <UButton
         icon="i-lucide-x"
-        size="2xs"
+        size="xs"
+        square
         color="neutral"
         variant="solid"
-        class="absolute -top-1 -right-1 opacity-0 group-hover:opacity-100 transition-opacity rounded-full"
+        class="absolute p-0 -top-1 -right-1 opacity-0 group-hover:opacity-100 transition-opacity rounded-full"
         @click="removeFile(index)"
       />
     </div>

@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import type { DefineComponent } from 'vue'
 import { Chat } from '@ai-sdk/vue'
+import type { UIMessage, UIMessagePart, UIDataTypes, UITools } from 'ai'
 import { DefaultChatTransport } from 'ai'
-import type { UIMessage } from 'ai'
 import { useClipboard } from '@vueuse/core'
 import { getTextFromMessage } from '@nuxt/ui/utils/ai'
 import ProseStreamPre from '../../components/prose/PreStream.vue'
@@ -136,10 +136,10 @@ onMounted(() => {
                 :parser-options="{ highlight: false }"
               />
               <template v-for="(part, index) in message.parts" :key="`${part.type}-${index}-${message.id}`">
-                <ToolWeather v-if="part.type === 'tool-weather'" :key="`${part.type}-${part.state}`" :invocation="part" />
+                <ToolWeather v-if="part.type === 'tool-weather'" :key="`${part.type}-${part.state}`" :invocation="part as WeatherUIToolInvocation" />
               </template>
-              <div v-if="message.role === 'user' && message.parts.some((part: { type: string }) => part.type === 'file')" class="flex flex-wrap gap-2">
-                <div v-for="(part, index) in message.parts.filter((part: { type: string }) => part.type === 'file')" :key="`${part.type}-${index}-${message.id}`">
+              <div v-if="message.role === 'user' && message.parts.some((part: UIMessagePart<UIDataTypes, UITools>) => part.type === 'file')" class="flex flex-wrap gap-2">
+                <div v-for="(part, index) in message.parts.filter((part: UIMessagePart<UIDataTypes, UITools>) => part.type === 'file')" :key="`${part.type}-${index}-${message.id}`">
                   <UAvatar
                     size="3xl"
                     :src="part.url"
