@@ -13,14 +13,14 @@
     "db:migrate": "drizzle-kit migrate"
   },
   "dependencies": {
-    "@ai-sdk/gateway": "^1.0.26",
-    "@ai-sdk/vue": "^2.0.49",
+    "@ai-sdk/gateway": "^1.0.30",
+    "@ai-sdk/vue": "^2.0.56",
     "@iconify-json/logos": "^1.2.9",
     "@iconify-json/lucide": "^1.2.68",
     "@iconify-json/simple-icons": "^1.2.53",
     "@nuxt/ui": "^4.0.0",
     "@nuxtjs/mdc": "^0.17.4",
-    "ai": "^5.0.49",
+    "ai": "^5.0.56",
     "date-fns": "^4.1.0",
     "drizzle-orm": "^0.44.5",
     "nuxt": "^4.1.2",
@@ -31,10 +31,10 @@
   "devDependencies": {
     "@nuxt/eslint": "^1.9.0",
     "@types/node": "^24.5.2",
-    "drizzle-kit": "^0.31.4",
+    "drizzle-kit": "^0.31.5",
     "eslint": "^9.36.0",
     "typescript": "^5.9.2",
-    "vue-tsc": "^3.0.8"
+    "vue-tsc": "^3.1.0"
   },
   "resolutions": {
     "unimport": "4.1.1"
