@@ -6,11 +6,8 @@ const { model } = useModels()
 
 const files = ref<File[]>([])
 const {
-  isDragOver,
-  handleDragEnter,
-  handleDragOver,
-  handleDragLeave,
-  handleDrop,
+  dropZoneRef,
+  isOverDropZone,
   convertFilesToDataURLs,
   clearFiles
 } = useChatFileUpload(files)
@@ -82,18 +79,14 @@ const quickChats = [
     id="home"
     class="relative"
     :ui="{ body: 'p-0 sm:p-0' }"
-    @dragenter="handleDragEnter"
-    @dragover="handleDragOver"
-    @dragleave="handleDragLeave"
-    @drop="handleDrop"
   >
     <template #header>
       <DashboardNavbar />
     </template>
 
     <template #body>
-      <DragDropOverlay :show="isDragOver" />
-      <UContainer class="flex-1 flex flex-col justify-center gap-4 sm:gap-6 py-8">
+      <DragDropOverlay :show="isOverDropZone" />
+      <UContainer ref="dropZoneRef" class="flex-1 flex flex-col justify-center gap-4 sm:gap-6 py-8">
         <h1 class="text-3xl sm:text-4xl text-highlighted font-bold">
           How can I help you today?
         </h1>

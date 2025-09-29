@@ -18,11 +18,8 @@ const { model } = useModels()
 
 const files = ref<File[]>([])
 const {
-  isDragOver,
-  handleDragEnter,
-  handleDragOver,
-  handleDragLeave,
-  handleDrop,
+  dropZoneRef,
+  isOverDropZone,
   convertFilesToDataURLs,
   clearFiles
 } = useChatFileUpload(files)
@@ -96,18 +93,14 @@ onMounted(() => {
     id="chat"
     class="relative"
     :ui="{ body: 'p-0 sm:p-0' }"
-    @dragenter="handleDragEnter"
-    @dragover="handleDragOver"
-    @dragleave="handleDragLeave"
-    @drop="handleDrop"
   >
     <template #header>
       <DashboardNavbar />
     </template>
 
     <template #body>
-      <DragDropOverlay :show="isDragOver" />
-      <UContainer class="flex-1 flex flex-col gap-4 sm:gap-6 relative">
+      <DragDropOverlay :show="isOverDropZone" />
+      <UContainer ref="dropZoneRef" class="flex-1 flex flex-col gap-4 sm:gap-6 relative">
         <UChatMessages
           should-auto-scroll
           :messages="chat.messages"
