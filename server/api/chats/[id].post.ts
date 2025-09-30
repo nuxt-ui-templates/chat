@@ -44,7 +44,6 @@ export default defineEventHandler(async (event) => {
       prompt: JSON.stringify(messages[0])
     })
 
-    setHeader(event, 'X-Chat-Title', title.replace(/:/g, '').split('\n')[0])
     await db.update(tables.chats).set({ title }).where(eq(tables.chats.id, id as string))
   }
 
@@ -64,6 +63,14 @@ export default defineEventHandler(async (event) => {
         system: 'You are a helpful assistant that can answer questions and help.',
         messages: convertToModelMessages(messages)
       })
+
+      if (!chat.title) {
+        writer.write({
+          type: 'data-chat-title',
+          data: { message: 'Generating title...' },
+          transient: true
+        })
+      }
 
       writer.merge(result.toUIMessageStream())
     },

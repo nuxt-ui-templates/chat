@@ -35,8 +35,10 @@ const chat = new Chat({
       model: model.value
     }
   }),
-  onFinish() {
-    refreshNuxtData('chats')
+  onData: (dataPart) => {
+    if (dataPart.type === 'data-chat-title') {
+      refreshNuxtData('chats')
+    }
   },
   onError(error) {
     const { message } = typeof error.message === 'string' && error.message[0] === '{' ? JSON.parse(error.message) : error
