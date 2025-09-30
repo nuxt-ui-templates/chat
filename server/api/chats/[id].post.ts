@@ -65,6 +65,14 @@ export default defineEventHandler(async (event) => {
         messages: convertToModelMessages(messages)
       })
 
+      if (!chat.title) {
+        writer.write({
+          type: 'data-chat-title',
+          data: { message: 'Generating title...' },
+          transient: true
+        })
+      }
+
       writer.merge(result.toUIMessageStream())
     },
     onFinish: async ({ messages }) => {
