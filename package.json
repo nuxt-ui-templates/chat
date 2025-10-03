@@ -18,7 +18,7 @@
     "@iconify-json/logos": "^1.2.9",
     "@iconify-json/lucide": "^1.2.68",
     "@iconify-json/simple-icons": "^1.2.53",
-    "@nuxt/ui": "^4.0.0",
+    "@nuxt/ui": "^4.0.1",
     "@nuxtjs/mdc": "^0.17.4",
     "@vercel/blob": "^2.0.0",
     "ai": "^5.0.59",

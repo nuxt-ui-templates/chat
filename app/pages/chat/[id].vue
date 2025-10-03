@@ -43,8 +43,10 @@ const chat = new Chat({
       model: model.value
     }
   }),
-  onFinish() {
-    refreshNuxtData('chats')
+  onData: (dataPart) => {
+    if (dataPart.type === 'data-chat-title') {
+      refreshNuxtData('chats')
+    }
   },
   onError(error) {
     const { message } = typeof error.message === 'string' && error.message[0] === '{' ? JSON.parse(error.message) : error
@@ -109,6 +111,15 @@ onMounted(() => {
           class="lg:pt-(--ui-header-height) pb-4 sm:pb-6"
           :spacing-offset="160"
         >
+          <template #indicator>
+            <UButton
+              loading
+              label="Thinking..."
+              variant="link"
+              color="neutral"
+              class="p-0"
+            />
+          </template>
           <template #content="{ message }">
             <div class="space-y-4">
               <template v-for="(part, index) in message.parts" :key="`${part.type}-${index}-${message.id}`">

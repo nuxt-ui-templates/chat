@@ -37,7 +37,7 @@ export default defineEventHandler(async (event) => {
 
   if (!chat.title) {
     const { text: title } = await generateText({
-      model: gateway('openai/gpt-5-nano'),
+      model: gateway('openai/gpt-4o-mini'),
       system: `You are a title generator for a chat:
           - Generate a short title based on the first user's message
           - The title should be less than 30 characters long
@@ -47,7 +47,6 @@ export default defineEventHandler(async (event) => {
       prompt: JSON.stringify(messages[0])
     })
 
-    setHeader(event, 'X-Chat-Title', title.replace(/:/g, '').split('\n')[0])
     await db.update(tables.chats).set({ title }).where(eq(tables.chats.id, id as string))
   }
 
@@ -72,6 +71,14 @@ export default defineEventHandler(async (event) => {
           generateImage: generateImage
         }
       })
+
+      if (!chat.title) {
+        writer.write({
+          type: 'data-chat-title',
+          data: { message: 'Generating title...' },
+          transient: true
+        })
+      }
 
       writer.merge(result.toUIMessageStream({
         sendReasoning: true
