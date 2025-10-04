@@ -45,7 +45,7 @@ const items = computed<DropdownMenuItem[][]>(() => ([[{
   }, {
     label: 'Neutral',
     slot: 'chip',
-    chip: appConfig.ui.colors.neutral,
+    chip: appConfig.ui.colors.neutral === 'neutral' ? 'old-neutral' : appConfig.ui.colors.neutral,
     content: {
       align: 'end',
       collisionPadding: 16
