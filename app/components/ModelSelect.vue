@@ -16,8 +16,14 @@ const items = computed(() => models.map(model => ({
     variant="ghost"
     value-key="value"
     class="hover:bg-default focus:bg-default data-[state=open]:bg-default"
+    :content="{
+      align: 'start',
+      side: 'bottom',
+      sideOffset: 4
+    }"
     :ui="{
-      trailingIcon: 'group-data-[state=open]:rotate-180 transition-transform duration-200'
+      trailingIcon: 'group-data-[state=open]:rotate-180 transition-transform duration-200',
+      content: 'w-fit'
     }"
   />
 </template>
