@@ -1,4 +1,6 @@
 <script setup lang="ts">
+const { loggedIn } = useUserSession()
+
 defineProps<{
   show: boolean
 }>()
@@ -6,7 +8,7 @@ defineProps<{
 
 <template>
   <div
-    v-if="show"
+    v-if="show && loggedIn"
     class="absolute inset-0 m-4 z-50 bg-radial from-primary/10 from-10% to-primary/20 border-2 border-primary/30 rounded-lg flex items-center justify-center backdrop-blur-lg pointer-events-none"
   >
     <div class="text-center">

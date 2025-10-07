@@ -16,13 +16,16 @@ const toast = useToast()
 const clipboard = useClipboard()
 const { model } = useModels()
 
-const files = ref<File[]>([])
-const { dropzoneRef, isDragging } = useFileUpload({
-  multiple: true,
-  onUpdate: (newFiles) => {
-    files.value = [...files.value, ...newFiles]
-  }
-})
+const {
+  dropzoneRef,
+  isDragging,
+  files,
+  isUploading,
+  uploadedFiles,
+  addFiles,
+  removeFile,
+  clearFiles
+} = useFileUploadWithStatus(route.params.id as string)
 
 const { data } = await useFetch(`/api/chats/${route.params.id}`, {
   cache: 'force-cache'
@@ -61,13 +64,13 @@ const chat = new Chat({
 
 async function handleSubmit(e: Event) {
   e.preventDefault()
-  if (input.value.trim()) {
+  if (input.value.trim() && !isUploading.value) {
     chat.sendMessage({
       text: input.value,
-      files: files.value.length > 0 ? await convertFilesToDataURLs(files.value) : undefined
+      files: uploadedFiles.value.length > 0 ? uploadedFiles.value : undefined
     })
     input.value = ''
-    clearFiles(files)
+    clearFiles()
   }
 }
 
@@ -159,23 +162,25 @@ onMounted(() => {
         <UChatPrompt
           v-model="input"
           :error="chat.error"
+          :disabled="isUploading"
           variant="subtle"
           class="sticky bottom-0 [view-transition-name:chat-prompt] rounded-b-none z-10"
           @submit="handleSubmit"
         >
           <UChatPromptSubmit
             :status="chat.status"
+            :disabled="isUploading"
             color="neutral"
             @stop="chat.stop"
             @reload="chat.regenerate"
           />
 
           <template v-if="files.length > 0" #header>
-            <FilePreview v-model="files" />
+            <FilePreview v-model="files" @remove="removeFile" />
           </template>
           <template #footer>
             <div class="flex items-center gap-2">
-              <FileUploadButton @files-selected="files.push(...$event)" />
+              <FileUploadButton @files-selected="addFiles($event)" />
               <ModelSelect v-model="model" />
             </div>
           </template>

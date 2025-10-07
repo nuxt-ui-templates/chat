@@ -1,4 +1,6 @@
 <script setup lang="ts">
+const { loggedIn } = useUserSession()
+
 const emit = defineEmits<{
   filesSelected: [files: File[]]
 }>()
@@ -18,21 +20,30 @@ function handleFileSelect(e: Event) {
 </script>
 
 <template>
-  <label :for="inputId" class="cursor-pointer">
-    <UButton
-      icon="i-lucide-paperclip"
-      variant="ghost"
-      color="neutral"
-      size="sm"
-      as="span"
-    />
-  </label>
-  <input
-    :id="inputId"
-    type="file"
-    multiple
-    accept="*"
-    class="hidden"
-    @change="handleFileSelect"
+  <UTooltip
+    :content="{
+      side: 'top'
+    }"
+    :text="!loggedIn ? 'You need to be logged in to upload files' : ''"
   >
+    <label :for="inputId" :class="{ 'cursor-not-allowed opacity-50': !loggedIn }">
+      <UButton
+        icon="i-lucide-paperclip"
+        variant="ghost"
+        color="neutral"
+        size="sm"
+        as="span"
+        :disabled="!loggedIn"
+      />
+    </label>
+    <input
+      :id="inputId"
+      type="file"
+      multiple
+      accept="image/*,application/pdf"
+      class="hidden"
+      :disabled="!loggedIn"
+      @change="handleFileSelect"
+    >
+  </UTooltip>
 </template>

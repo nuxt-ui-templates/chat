@@ -1,31 +1,35 @@
 <script setup lang="ts">
 const input = ref('')
 const loading = ref(false)
+const chatId = crypto.randomUUID()
 
 const { model } = useModels()
 
-const files = ref<File[]>([])
-const { dropzoneRef, isDragging } = useFileUpload({
-  multiple: true,
-  onUpdate: (newFiles) => {
-    files.value = [...files.value, ...newFiles]
-  }
-})
+const {
+  dropzoneRef,
+  isDragging,
+  files,
+  isUploading,
+  uploadedFiles,
+  addFiles,
+  removeFile,
+  clearFiles
+} = useFileUploadWithStatus(chatId)
 
-async function createChat(prompt: string, files?: File[]) {
+async function createChat(prompt: string) {
   input.value = prompt
   loading.value = true
 
   const parts: Array<{ type: string, text?: string, mediaType?: string, url?: string }> = [{ type: 'text', text: prompt }]
 
-  if (files && files.length > 0) {
-    const filesData = await convertFilesToDataURLs(files)
-    parts.push(...filesData)
+  if (uploadedFiles.value.length > 0) {
+    parts.push(...uploadedFiles.value)
   }
 
   const chat = await $fetch('/api/chats', {
     method: 'POST',
     body: {
+      id: chatId,
       message: {
         role: 'user',
         parts
@@ -38,8 +42,8 @@ async function createChat(prompt: string, files?: File[]) {
 }
 
 async function onSubmit() {
-  await createChat(input.value, files.value)
-  clearFiles(files)
+  await createChat(input.value)
+  clearFiles()
 }
 
 const quickChats = [
@@ -66,10 +70,6 @@ const quickChats = [
   {
     label: 'What is the weather in Bordeaux?',
     icon: 'i-lucide-sun'
-  },
-  {
-    label: 'Generate an image of a cat',
-    icon: 'i-lucide-image'
   }
 ]
 </script>
@@ -93,19 +93,20 @@ const quickChats = [
         <UChatPrompt
           v-model="input"
           :status="loading ? 'streaming' : 'ready'"
+          :disabled="isUploading"
           class="[view-transition-name:chat-prompt]"
           variant="subtle"
           @submit="onSubmit"
         >
-          <UChatPromptSubmit color="neutral" />
+          <UChatPromptSubmit color="neutral" :disabled="isUploading" />
 
           <template v-if="files.length > 0" #header>
-            <FilePreview v-model="files" />
+            <FilePreview v-model="files" @remove="removeFile" />
           </template>
 
           <template #footer>
             <div class="flex items-center gap-2">
-              <FileUploadButton @files-selected="files.push(...$event)" />
+              <FileUploadButton @files-selected="addFiles($event)" />
               <ModelSelect v-model="model" />
             </div>
           </template>

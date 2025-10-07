@@ -1,45 +1,49 @@
-/**
- * Converts a File object to an object URL for preview purposes
- */
+export interface FileWithStatus {
+  file: File
+  id: string
+  previewUrl: string
+  status: 'uploading' | 'uploaded' | 'error'
+  uploadedUrl?: string
+  error?: string
+}
+
 export function createObjectUrl(file: File): string {
   return URL.createObjectURL(file)
 }
 
-/**
- * Revokes object URLs and clears the files array
- */
-export function clearFiles(files: Ref<File[]>) {
-  files.value.forEach((file) => {
-    const url = createObjectUrl(file)
-    URL.revokeObjectURL(url)
+export function clearFiles(files: Ref<FileWithStatus[]>) {
+  files.value.forEach((fileWithStatus) => {
+    URL.revokeObjectURL(fileWithStatus.previewUrl)
   })
   files.value = []
 }
 
-/**
- * Converts an array of File objects to data URLs (base64)
- * Useful for sending files in API requests
- */
-export async function convertFilesToDataURLs(files: File[]) {
+export async function uploadFileToBlob(file: File, chatId: string): Promise<{
+  url: string
+  pathname: string
+  contentType: string
+  size: number
+}> {
+  const formData = new FormData()
+  formData.append('file', file)
+  formData.append('chatId', chatId)
+
+  return await $fetch('/api/upload', {
+    method: 'POST',
+    body: formData
+  })
+}
+
+export async function uploadFilesToBlob(files: File[], chatId: string) {
   return Promise.all(
-    files.map(
-      file =>
-        new Promise<{
-          type: 'file'
-          mediaType: string
-          url: string
-        }>((resolve, reject) => {
-          const reader = new FileReader()
-          reader.onload = () => {
-            resolve({
-              type: 'file',
-              mediaType: file.type,
-              url: reader.result as string
-            })
-          }
-          reader.onerror = reject
-          reader.readAsDataURL(file)
-        })
-    )
+    files.map(async (file) => {
+      const response = await uploadFileToBlob(file, chatId)
+
+      return {
+        type: 'file' as const,
+        mediaType: response.contentType,
+        url: response.url
+      }
+    })
   )
 }
