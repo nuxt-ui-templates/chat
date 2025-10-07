@@ -31,7 +31,7 @@ function handleFileSelect(e: Event) {
     :id="inputId"
     type="file"
     multiple
-    accept="image/*,.pdf"
+    accept="*"
     class="hidden"
     @change="handleFileSelect"
   >

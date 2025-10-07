@@ -5,12 +5,12 @@ const loading = ref(false)
 const { model } = useModels()
 
 const files = ref<File[]>([])
-const {
-  dropZoneRef,
-  isOverDropZone,
-  convertFilesToDataURLs,
-  clearFiles
-} = useChatFileUpload(files)
+const { dropzoneRef, isDragging } = useFileUpload({
+  multiple: true,
+  onUpdate: (newFiles) => {
+    files.value = [...files.value, ...newFiles]
+  }
+})
 
 async function createChat(prompt: string, files?: File[]) {
   input.value = prompt
@@ -39,7 +39,7 @@ async function createChat(prompt: string, files?: File[]) {
 
 async function onSubmit() {
   await createChat(input.value, files.value)
-  clearFiles()
+  clearFiles(files)
 }
 
 const quickChats = [
@@ -85,8 +85,8 @@ const quickChats = [
     </template>
 
     <template #body>
-      <DragDropOverlay :show="isOverDropZone" />
-      <UContainer ref="dropZoneRef" class="flex-1 flex flex-col justify-center gap-4 sm:gap-6 py-8">
+      <DragDropOverlay :show="isDragging" />
+      <UContainer ref="dropzoneRef" class="flex-1 flex flex-col justify-center gap-4 sm:gap-6 py-8">
         <h1 class="text-3xl sm:text-4xl text-highlighted font-bold">
           How can I help you today?
         </h1>

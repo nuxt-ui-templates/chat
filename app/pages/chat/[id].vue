@@ -17,12 +17,12 @@ const clipboard = useClipboard()
 const { model } = useModels()
 
 const files = ref<File[]>([])
-const {
-  dropZoneRef,
-  isOverDropZone,
-  convertFilesToDataURLs,
-  clearFiles
-} = useChatFileUpload(files)
+const { dropzoneRef, isDragging } = useFileUpload({
+  multiple: true,
+  onUpdate: (newFiles) => {
+    files.value = [...files.value, ...newFiles]
+  }
+})
 
 const { data } = await useFetch(`/api/chats/${route.params.id}`, {
   cache: 'force-cache'
@@ -67,7 +67,7 @@ async function handleSubmit(e: Event) {
       files: files.value.length > 0 ? await convertFilesToDataURLs(files.value) : undefined
     })
     input.value = ''
-    clearFiles()
+    clearFiles(files)
   }
 }
 
@@ -101,8 +101,8 @@ onMounted(() => {
     </template>
 
     <template #body>
-      <DragDropOverlay :show="isOverDropZone" />
-      <UContainer ref="dropZoneRef" class="flex-1 flex flex-col gap-4 sm:gap-6 relative">
+      <DragDropOverlay :show="isDragging" />
+      <UContainer ref="dropzoneRef" class="flex-1 flex flex-col gap-4 sm:gap-6 relative">
         <UChatMessages
           should-auto-scroll
           :messages="chat.messages"
