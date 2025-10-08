@@ -1,4 +1,4 @@
-import { convertToModelMessages, createUIMessageStream, createUIMessageStreamResponse, generateText, stepCountIs, streamText } from 'ai'
+import { convertToModelMessages, createUIMessageStream, createUIMessageStreamResponse, generateText, smoothStream, stepCountIs, streamText } from 'ai'
 import { gateway } from '@ai-sdk/gateway'
 import type { UIMessage } from 'ai'
 import { z } from 'zod'
@@ -65,7 +65,16 @@ export default defineEventHandler(async (event) => {
         model: gateway(model),
         system: `You are a helpful assistant that can answer questions and help. User name is ${username}.`,
         messages: convertToModelMessages(messages),
+        providerOptions: {
+          google: {
+            thinkingConfig: {
+              includeThoughts: true,
+              thinkingBudget: 2048
+            }
+          }
+        },
         stopWhen: stepCountIs(5),
+        experimental_transform: smoothStream({ chunking: 'word' }),
         tools: {
           weather: weatherTool
         }

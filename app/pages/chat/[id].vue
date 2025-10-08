@@ -15,6 +15,7 @@ const route = useRoute()
 const toast = useToast()
 const clipboard = useClipboard()
 const { model } = useModels()
+const { user } = useUserSession()
 
 const {
   dropzoneRef,
@@ -110,7 +111,20 @@ onMounted(() => {
           should-auto-scroll
           :messages="chat.messages"
           :status="chat.status"
-          :assistant="{ actions: [{ label: 'Copy', icon: copied ? 'i-lucide-copy-check' : 'i-lucide-copy', onClick: copy }] }"
+          :user="{
+            avatar: user ? {
+              src: user.avatar,
+              alt: user.username
+            } : {
+              icon: 'i-lucide-user'
+            }
+          }"
+          :assistant="{
+            avatar: {
+              icon: 'i-lucide-sparkles'
+            },
+            actions: [{ label: 'Copy', icon: copied ? 'i-lucide-copy-check' : 'i-lucide-copy', onClick: copy }]
+          }"
           class="lg:pt-(--ui-header-height) pb-4 sm:pb-6"
           :spacing-offset="160"
         >
@@ -120,7 +134,7 @@ onMounted(() => {
               label="Thinking..."
               variant="link"
               color="neutral"
-              class="p-0"
+              class="px-0"
             />
           </template>
           <template #content="{ message }">
@@ -131,7 +145,7 @@ onMounted(() => {
                   label="Thinking..."
                   variant="link"
                   color="neutral"
-                  class="p-0"
+                  class="px-0"
                   loading
                 />
               </template>
