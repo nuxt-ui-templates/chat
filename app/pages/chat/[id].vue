@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import type { DefineComponent } from 'vue'
 import { Chat } from '@ai-sdk/vue'
+import type { UIMessage, UIMessagePart, UIDataTypes, UITools } from 'ai'
 import { DefaultChatTransport } from 'ai'
-import type { UIMessage } from 'ai'
 import { useClipboard } from '@vueuse/core'
 import { getTextFromMessage } from '@nuxt/ui/utils/ai'
 import ProseStreamPre from '../../components/prose/PreStream.vue'
@@ -15,6 +15,18 @@ const route = useRoute()
 const toast = useToast()
 const clipboard = useClipboard()
 const { model } = useModels()
+const { user } = useUserSession()
+
+const {
+  dropzoneRef,
+  isDragging,
+  files,
+  isUploading,
+  uploadedFiles,
+  addFiles,
+  removeFile,
+  clearFiles
+} = useFileUploadWithStatus(route.params.id as string)
 
 const { data } = await useFetch(`/api/chats/${route.params.id}`, {
   cache: 'force-cache'
@@ -51,13 +63,15 @@ const chat = new Chat({
   }
 })
 
-function handleSubmit(e: Event) {
+async function handleSubmit(e: Event) {
   e.preventDefault()
-  if (input.value.trim()) {
+  if (input.value.trim() && !isUploading.value) {
     chat.sendMessage({
-      text: input.value
+      text: input.value,
+      files: uploadedFiles.value.length > 0 ? uploadedFiles.value : undefined
     })
     input.value = ''
+    clearFiles()
   }
 }
 
@@ -81,20 +95,48 @@ onMounted(() => {
 </script>
 
 <template>
-  <UDashboardPanel id="chat" class="relative" :ui="{ body: 'p-0 sm:p-0' }">
+  <UDashboardPanel
+    id="chat"
+    class="relative"
+    :ui="{ body: 'p-0 sm:p-0' }"
+  >
     <template #header>
       <DashboardNavbar />
     </template>
 
     <template #body>
-      <UContainer class="flex-1 flex flex-col gap-4 sm:gap-6">
+      <DragDropOverlay :show="isDragging" />
+      <UContainer ref="dropzoneRef" class="flex-1 flex flex-col gap-4 sm:gap-6 relative">
         <UChatMessages
+          should-auto-scroll
           :messages="chat.messages"
           :status="chat.status"
-          :assistant="{ actions: [{ label: 'Copy', icon: copied ? 'i-lucide-copy-check' : 'i-lucide-copy', onClick: copy }] }"
+          :user="{
+            avatar: user ? {
+              src: user.avatar,
+              alt: user.username
+            } : {
+              icon: 'i-lucide-user'
+            }
+          }"
+          :assistant="{
+            avatar: {
+              icon: 'i-lucide-sparkles'
+            },
+            actions: [{ label: 'Copy', icon: copied ? 'i-lucide-copy-check' : 'i-lucide-copy', onClick: copy }]
+          }"
           class="lg:pt-(--ui-header-height) pb-4 sm:pb-6"
           :spacing-offset="160"
         >
+          <template #indicator>
+            <UButton
+              loading
+              label="Thinking..."
+              variant="link"
+              color="neutral"
+              class="px-0"
+            />
+          </template>
           <template #content="{ message }">
             <div class="space-y-4">
               <template v-for="(part, index) in message.parts" :key="`${part.type}-${index}-${message.id}`">
@@ -103,7 +145,7 @@ onMounted(() => {
                   label="Thinking..."
                   variant="link"
                   color="neutral"
-                  class="p-0"
+                  class="px-0"
                   loading
                 />
               </template>
@@ -114,6 +156,19 @@ onMounted(() => {
                 :components="components"
                 :parser-options="{ highlight: false }"
               />
+              <template v-for="(part, index) in message.parts" :key="`${part.type}-${index}-${message.id}`">
+                <ToolWeather v-if="part.type === 'tool-weather'" :key="`${part.type}-${part.state}`" :invocation="part as WeatherUIToolInvocation" />
+              </template>
+              <div v-if="message.role === 'user' && message.parts.some((part: UIMessagePart<UIDataTypes, UITools>) => part.type === 'file')" class="flex flex-wrap gap-2">
+                <div v-for="(part, index) in message.parts.filter((part: UIMessagePart<UIDataTypes, UITools>) => part.type === 'file')" :key="`${part.type}-${index}-${message.id}`">
+                  <UAvatar
+                    size="3xl"
+                    :src="part.url"
+                    :icon="part.mediaType.startsWith('image/') ? 'i-lucide-image' : 'i-lucide-file'"
+                    class="border-2 border-default rounded-lg"
+                  />
+                </div>
+              </div>
             </div>
           </template>
         </UChatMessages>
@@ -121,19 +176,27 @@ onMounted(() => {
         <UChatPrompt
           v-model="input"
           :error="chat.error"
+          :disabled="isUploading"
           variant="subtle"
           class="sticky bottom-0 [view-transition-name:chat-prompt] rounded-b-none z-10"
           @submit="handleSubmit"
         >
           <UChatPromptSubmit
             :status="chat.status"
+            :disabled="isUploading"
             color="neutral"
             @stop="chat.stop"
             @reload="chat.regenerate"
           />
 
+          <template v-if="files.length > 0" #header>
+            <FilePreview v-model="files" @remove="removeFile" />
+          </template>
           <template #footer>
-            <ModelSelect v-model="model" />
+            <div class="flex items-center gap-2">
+              <FileUploadButton @files-selected="addFiles($event)" />
+              <ModelSelect v-model="model" />
+            </div>
           </template>
         </UChatPrompt>
       </UContainer>
