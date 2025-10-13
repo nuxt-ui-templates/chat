@@ -70,6 +70,10 @@ const quickChats = [
   {
     label: 'What is the weather in Bordeaux?',
     icon: 'i-lucide-sun'
+  },
+  {
+    label: 'Show me a chart of sales data',
+    icon: 'i-lucide-line-chart'
   }
 ]
 </script>

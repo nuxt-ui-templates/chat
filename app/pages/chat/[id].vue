@@ -17,6 +17,30 @@ const clipboard = useClipboard()
 const { model } = useModels()
 const { user } = useUserSession()
 
+function getFileIcon(mediaType: string): string {
+  if (mediaType.startsWith('image/')) {
+    return 'i-lucide-image'
+  }
+  if (mediaType === 'application/pdf') {
+    return 'i-lucide-file-text'
+  }
+  if (mediaType === 'text/csv') {
+    return 'i-lucide-table'
+  }
+  return 'i-lucide-file'
+}
+
+function getFileName(url: string): string {
+  try {
+    const urlObj = new URL(url)
+    const pathname = urlObj.pathname
+    const filename = pathname.split('/').pop() || 'file'
+    return decodeURIComponent(filename)
+  } catch {
+    return 'file'
+  }
+}
+
 const {
   dropzoneRef,
   isDragging,
@@ -158,16 +182,22 @@ onMounted(() => {
               />
               <template v-for="(part, index) in message.parts" :key="`${part.type}-${index}-${message.id}`">
                 <ToolWeather v-if="part.type === 'tool-weather'" :key="`${part.type}-${part.state}`" :invocation="part as WeatherUIToolInvocation" />
+                <ToolChart v-if="part.type === 'tool-chart'" :key="`${part.type}-${part.state}`" :invocation="part as ChartUIToolInvocation" />
               </template>
               <div v-if="message.role === 'user' && message.parts.some((part: UIMessagePart<UIDataTypes, UITools>) => part.type === 'file')" class="flex flex-wrap gap-2">
-                <div v-for="(part, index) in message.parts.filter((part: UIMessagePart<UIDataTypes, UITools>) => part.type === 'file')" :key="`${part.type}-${index}-${message.id}`">
+                <UTooltip
+                  v-for="(part, index) in message.parts.filter((part: UIMessagePart<UIDataTypes, UITools>) => part.type === 'file')"
+                  :key="`${part.type}-${index}-${message.id}`"
+                  :text="getFileName(part.url)"
+                  :delay-duration="0"
+                >
                   <UAvatar
                     size="3xl"
-                    :src="part.url"
-                    :icon="part.mediaType.startsWith('image/') ? 'i-lucide-image' : 'i-lucide-file'"
-                    class="border-2 border-default rounded-lg"
+                    :src="part.mediaType.startsWith('image/') ? part.url : undefined"
+                    :icon="getFileIcon(part.mediaType)"
+                    class="border border-default rounded-lg"
                   />
-                </div>
+                </UTooltip>
               </div>
             </div>
           </template>

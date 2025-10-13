@@ -63,7 +63,7 @@ export default defineEventHandler(async (event) => {
     execute: ({ writer }) => {
       const result = streamText({
         model: gateway(model),
-        system: `You are a helpful assistant that can answer questions and help. User name is ${username}.`,
+        system: `You are a helpful assistant that can answer questions and help. User name is ${username}. (if not provided, use fake data for tool calls)`,
         messages: convertToModelMessages(messages),
         providerOptions: {
           google: {
@@ -76,7 +76,8 @@ export default defineEventHandler(async (event) => {
         stopWhen: stepCountIs(5),
         experimental_transform: smoothStream({ chunking: 'word' }),
         tools: {
-          weather: weatherTool
+          weather: weatherTool,
+          chart: chartTool
         }
       })
 

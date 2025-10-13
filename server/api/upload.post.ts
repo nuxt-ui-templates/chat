@@ -1,7 +1,7 @@
 import { put } from '@vercel/blob'
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024 // 10MB
-const ALLOWED_FILE_TYPES = ['image/', 'application/pdf']
+const ALLOWED_FILE_TYPES = ['image/', 'application/pdf', 'text/csv']
 
 export default defineEventHandler(async (event) => {
   const session = await getUserSession(event)
@@ -47,7 +47,7 @@ export default defineEventHandler(async (event) => {
   if (!isAllowedType) {
     throw createError({
       statusCode: 400,
-      statusMessage: 'File type not allowed. Only images and PDFs are accepted.'
+      statusMessage: 'File type not allowed. Only images, PDFs, and CSV files are accepted.'
     })
   }
 
@@ -55,7 +55,7 @@ export default defineEventHandler(async (event) => {
 
   const blob = await put(filename, file, {
     access: 'public',
-    addRandomSuffix: true
+    allowOverwrite: true
   })
 
   return {

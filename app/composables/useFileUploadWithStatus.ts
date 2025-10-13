@@ -43,7 +43,7 @@ export function useFileUploadWithStatus(chatId: string) {
   }
 
   const { dropzoneRef, isDragging } = useFileUpload({
-    accept: 'image/*,application/pdf',
+    accept: 'image/*,application/pdf,.csv,text/csv',
     multiple: true,
     onUpdate: uploadFiles
   })

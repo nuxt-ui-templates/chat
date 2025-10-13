@@ -40,7 +40,7 @@ function handleFileSelect(e: Event) {
       :id="inputId"
       type="file"
       multiple
-      accept="image/*,application/pdf"
+      accept="image/*,application/pdf,.csv,text/csv"
       class="hidden"
       :disabled="!loggedIn"
       @change="handleFileSelect"
