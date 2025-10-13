@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { DefineComponent } from 'vue'
 import { Chat } from '@ai-sdk/vue'
-import type { UIMessage, UIMessagePart, UIDataTypes, UITools } from 'ai'
+import type { UIMessage, UIMessagePart, UIDataTypes, UITools, ReasoningUIPart } from 'ai'
 import { DefaultChatTransport } from 'ai'
 import { useClipboard } from '@vueuse/core'
 import { getTextFromMessage } from '@nuxt/ui/utils/ai'
@@ -164,13 +164,11 @@ onMounted(() => {
           <template #content="{ message }">
             <div class="space-y-4">
               <template v-for="(part, index) in message.parts" :key="`${part.type}-${index}-${message.id}`">
-                <UButton
-                  v-if="part.type === 'reasoning' && part.state !== 'done'"
-                  label="Thinking..."
-                  variant="link"
-                  color="neutral"
-                  class="px-0"
-                  loading
+                <Reasoning
+                  v-if="part.type === 'reasoning'"
+                  :key="`${part.type}-${part.state}`"
+                  :invocation="part as ReasoningUIPart"
+                  :is-streaming="chat.status === 'streaming'"
                 />
               </template>
               <MDCCached
