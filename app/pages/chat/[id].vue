@@ -147,7 +147,7 @@ onMounted(() => {
             avatar: {
               icon: 'i-lucide-sparkles'
             },
-            actions: [{ label: 'Copy', icon: copied ? 'i-lucide-copy-check' : 'i-lucide-copy', onClick: copy }]
+            actions: chat.status !== 'streaming' ? [{ label: 'Copy', icon: copied ? 'i-lucide-copy-check' : 'i-lucide-copy', onClick: copy }] : []
           }"
           class="lg:pt-(--ui-header-height) pb-4 sm:pb-6"
           :spacing-offset="160"
