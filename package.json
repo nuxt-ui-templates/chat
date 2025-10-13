@@ -19,6 +19,7 @@
     "@iconify-json/lucide": "^1.2.68",
     "@iconify-json/simple-icons": "^1.2.54",
     "@nuxt/ui": "^4.0.1",
+    "@nuxthub/core-nightly": "1.0.0-20251013-051212-5debfb7",
     "@nuxtjs/mdc": "^0.17.4",
     "ai": "^5.0.60",
     "date-fns": "^4.1.0",

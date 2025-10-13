@@ -4,7 +4,8 @@ export default defineNuxtConfig({
     '@nuxt/eslint',
     '@nuxt/ui',
     '@nuxtjs/mdc',
-    'nuxt-auth-utils'
+    'nuxt-auth-utils',
+    '@nuxthub/core-nightly'
   ],
 
   devtools: {
@@ -30,6 +31,11 @@ export default defineNuxtConfig({
     experimental: {
       openAPI: true
     }
+  },
+
+  hub: {
+    ai: 'vercel',
+    database: 'postgresql'
   },
 
   vite: {
