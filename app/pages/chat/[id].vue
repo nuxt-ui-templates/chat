@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { DefineComponent } from 'vue'
 import { Chat } from '@ai-sdk/vue'
-import type { UIMessage, UIMessagePart, UIDataTypes, UITools, ReasoningUIPart } from 'ai'
+import type { UIMessage, UIMessagePart, UIDataTypes, UITools } from 'ai'
 import { DefaultChatTransport } from 'ai'
 import { useClipboard } from '@vueuse/core'
 import { getTextFromMessage } from '@nuxt/ui/utils/ai'
