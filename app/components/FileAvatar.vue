@@ -1,0 +1,83 @@
+<script setup lang="ts">
+interface FileAvatarProps {
+  name: string
+  type: string
+  previewUrl?: string
+  status?: 'idle' | 'uploading' | 'uploaded' | 'error'
+  error?: string
+  removable?: boolean
+}
+
+const props = withDefaults(defineProps<FileAvatarProps>(), {
+  status: 'idle',
+  removable: false
+})
+
+const emit = defineEmits<{
+  remove: []
+}>()
+
+function getFileIcon(type: string): string {
+  if (type.startsWith('image/')) {
+    return 'i-lucide-image'
+  }
+  if (type === 'application/pdf') {
+    return 'i-lucide-file-text'
+  }
+  if (type === 'text/csv' || props.name.endsWith('.csv')) {
+    return 'i-lucide-table'
+  }
+  return 'i-lucide-file'
+}
+
+function removeRandomSuffix(name: string): string {
+  // remove random suffix after date and before extension
+  return name.replace(
+    /^(.*\d{4}-\d{2}-\d{2})-[^.]+(\.[^.]+)$/,
+    '$1$2'
+  )
+}
+</script>
+
+<template>
+  <UTooltip :text="removeRandomSuffix(name)" :delay-duration="0">
+    <div class="relative group">
+      <UAvatar
+        size="3xl"
+        :src="type.startsWith('image/') ? previewUrl : undefined"
+        :icon="getFileIcon(type)"
+        class="border border-default rounded-lg"
+        :class="{
+          'opacity-50': status === 'uploading',
+          'border-error': status === 'error'
+        }"
+      />
+
+      <div
+        v-if="status === 'uploading'"
+        class="absolute inset-0 flex items-center justify-center bg-black/50 rounded-lg"
+      >
+        <UIcon name="i-lucide-loader-2" class="size-8 animate-spin text-white" />
+      </div>
+
+      <div
+        v-if="status === 'error'"
+        class="absolute inset-0 flex items-center justify-center bg-error/50 rounded-lg"
+        :title="error"
+      >
+        <UIcon name="i-lucide-alert-circle" class="size-8 text-white" />
+      </div>
+
+      <UButton
+        v-if="removable && status !== 'uploading'"
+        icon="i-lucide-x"
+        size="xs"
+        square
+        color="neutral"
+        variant="solid"
+        class="absolute p-0 -top-1 -right-1 opacity-0 group-hover:opacity-100 transition-opacity rounded-full"
+        @click="emit('remove')"
+      />
+    </div>
+  </UTooltip>
+</template>

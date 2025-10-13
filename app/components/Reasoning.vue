@@ -1,8 +1,6 @@
 <script setup lang="ts">
-import type { ReasoningUIPart } from 'ai'
-
-const { invocation, isStreaming } = defineProps<{
-  invocation: ReasoningUIPart
+const { isStreaming } = defineProps<{
+  text: string
   isStreaming: boolean
 }>()
 
@@ -11,6 +9,14 @@ const open = ref(false)
 watch(() => isStreaming, () => {
   open.value = isStreaming
 }, { immediate: true })
+
+function cleanMarkdown(text: string): string {
+  return text
+    .replace(/\*\*(.+?)\*\*/g, '$1') // Remove bold
+    .replace(/\*(.+?)\*/g, '$1') // Remove italic
+    .replace(/`(.+?)`/g, '$1') // Remove inline code
+    .replace(/^#+\s+/gm, '') // Remove headers
+}
 </script>
 
 <template>
@@ -19,6 +25,7 @@ watch(() => isStreaming, () => {
       class="px-0 group"
       color="neutral"
       variant="link"
+      size="sm"
       :loading="isStreaming"
       trailing-icon="i-lucide-chevron-down"
       :ui="{
@@ -29,9 +36,9 @@ watch(() => isStreaming, () => {
 
     <template #content>
       <div class="border-l-2 border-default pl-4 text-sm text-muted mt-2 space-y-2">
-        <span v-for="(value, index) in invocation.text.split('\n')" :key="index">
-          {{ value }}
-        </span>
+        <div v-for="(value, index) in cleanMarkdown(text).split('\n')" :key="index">
+          <span class="whitespace-pre-wrap text-xs">{{ value }}</span>
+        </div>
       </div>
     </template>
   </UCollapsible>

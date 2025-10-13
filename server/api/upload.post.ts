@@ -55,6 +55,7 @@ export default defineEventHandler(async (event) => {
 
   const blob = await put(filename, file, {
     access: 'public',
+    addRandomSuffix: true,
     allowOverwrite: true
   })
 

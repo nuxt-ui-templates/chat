@@ -17,19 +17,6 @@ const clipboard = useClipboard()
 const { model } = useModels()
 const { user } = useUserSession()
 
-function getFileIcon(mediaType: string): string {
-  if (mediaType.startsWith('image/')) {
-    return 'i-lucide-image'
-  }
-  if (mediaType === 'application/pdf') {
-    return 'i-lucide-file-text'
-  }
-  if (mediaType === 'text/csv') {
-    return 'i-lucide-table'
-  }
-  return 'i-lucide-file'
-}
-
 function getFileName(url: string): string {
   try {
     const urlObj = new URL(url)
@@ -137,15 +124,18 @@ onMounted(() => {
           :status="chat.status"
           :user="{
             avatar: user ? {
+              size: 'sm',
               src: user.avatar,
               alt: user.username
             } : {
-              icon: 'i-lucide-user'
+              icon: 'i-lucide-user',
+              size: 'sm'
             }
           }"
           :assistant="{
             avatar: {
-              icon: 'i-lucide-sparkles'
+              icon: 'i-lucide-sparkles',
+              size: 'sm'
             },
             actions: chat.status !== 'streaming' ? [{ label: 'Copy', icon: copied ? 'i-lucide-copy-check' : 'i-lucide-copy', onClick: copy }] : []
           }"
@@ -158,6 +148,7 @@ onMounted(() => {
               label="Thinking..."
               variant="link"
               color="neutral"
+              size="sm"
               class="px-0"
             />
           </template>
@@ -166,9 +157,9 @@ onMounted(() => {
               <template v-for="(part, index) in message.parts" :key="`${part.type}-${index}-${message.id}`">
                 <Reasoning
                   v-if="part.type === 'reasoning'"
-                  :key="`${part.type}-${part.state}`"
-                  :invocation="part as ReasoningUIPart"
-                  :is-streaming="chat.status === 'streaming'"
+                  :key="`${part.type}-${message.id}`"
+                  :text="part.text"
+                  :is-streaming="part.state !== 'done'"
                 />
               </template>
               <MDCCached
@@ -183,19 +174,13 @@ onMounted(() => {
                 <ToolChart v-if="part.type === 'tool-chart'" :key="`${part.type}-${part.state}`" :invocation="part as ChartUIToolInvocation" />
               </template>
               <div v-if="message.role === 'user' && message.parts.some((part: UIMessagePart<UIDataTypes, UITools>) => part.type === 'file')" class="flex flex-wrap gap-2">
-                <UTooltip
+                <FileAvatar
                   v-for="(part, index) in message.parts.filter((part: UIMessagePart<UIDataTypes, UITools>) => part.type === 'file')"
                   :key="`${part.type}-${index}-${message.id}`"
-                  :text="getFileName(part.url)"
-                  :delay-duration="0"
-                >
-                  <UAvatar
-                    size="3xl"
-                    :src="part.mediaType.startsWith('image/') ? part.url : undefined"
-                    :icon="getFileIcon(part.mediaType)"
-                    class="border border-default rounded-lg"
-                  />
-                </UTooltip>
+                  :name="getFileName(part.url)"
+                  :type="part.mediaType"
+                  :preview-url="part.url"
+                />
               </div>
             </div>
           </template>

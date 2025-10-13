@@ -67,6 +67,15 @@ export function useFileUploadWithStatus(chatId: string) {
     if (file) {
       URL.revokeObjectURL(file.previewUrl)
       files.value = files.value.filter(f => f.id !== id)
+
+      if (file.status === 'uploaded' && file.uploadedUrl) {
+        $fetch('/api/upload', {
+          method: 'DELETE',
+          body: { url: file.uploadedUrl }
+        }).catch((error) => {
+          console.error('Failed to delete file from blob:', error)
+        })
+      }
     }
   }
 

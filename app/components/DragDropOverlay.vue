@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Motion } from 'motion-v'
+
 const { loggedIn } = useUserSession()
 
 defineProps<{
@@ -9,16 +11,94 @@ defineProps<{
 <template>
   <div
     v-if="show && loggedIn"
-    class="absolute inset-0 m-4 z-50 bg-radial from-primary/10 from-10% to-primary/20 border-2 border-primary/30 rounded-lg flex items-center justify-center backdrop-blur-lg pointer-events-none"
+    class="absolute inset-0 m-4 z-50 flex items-center justify-center backdrop-blur-lg pointer-events-none"
   >
-    <div class="text-center">
-      <UIcon name="i-lucide-upload" class="size-12 mb-4" />
-      <p class="text-lg font-medium">
-        Drop your files here
-      </p>
-      <p class="text-sm text-muted">
-        Supported formats: Images and PDFs
-      </p>
+    <div class="absolute text-center">
+      <div class="flex items-center justify-center gap-2">
+        <Motion
+          :initial="{
+            rotate: 0,
+            scale: 0.5,
+            opacity: 0
+          }"
+          :animate="show ? {
+            rotate: -15,
+            scale: 1,
+            opacity: 1
+          } : {}"
+          :transition="{
+            type: 'spring',
+            stiffness: 400,
+            damping: 18,
+            delay: 0
+          }"
+        >
+          <UIcon name="i-lucide-file-text" class="size-12" />
+        </Motion>
+        <Motion
+          :initial="{
+            scale: 0.5,
+            opacity: 0,
+            y: 0
+          }"
+          :animate="show ? {
+            scale: 1,
+            opacity: 1,
+            y: 0
+          } : {}"
+          :transition="{
+            type: 'spring',
+            stiffness: 500,
+            damping: 15,
+            delay: 0.03
+          }"
+        >
+          <UIcon name="i-lucide-file" class="size-14" />
+        </Motion>
+
+        <Motion
+          :initial="{
+            rotate: 0,
+            scale: 0.5,
+            opacity: 0
+          }"
+          :animate="show ? {
+            rotate: 15,
+            scale: 1,
+            opacity: 1
+          } : {}"
+          :transition="{
+            type: 'spring',
+            stiffness: 400,
+            damping: 18,
+            delay: 0.06
+          }"
+        >
+          <UIcon name="i-lucide-table" class="size-12" />
+        </Motion>
+      </div>
+
+      <Motion
+        :initial="{
+          opacity: 0,
+          y: 10
+        }"
+        :animate="show ? {
+          opacity: 1,
+          y: 0
+        } : {}"
+        :transition="{
+          delay: 0.08,
+          duration: 0.2
+        }"
+      >
+        <p class="text-lg/7 font-medium mt-4">
+          Drop your files here
+        </p>
+        <p class="text-sm/6 text-muted">
+          Supported formats: Images and PDFs
+        </p>
+      </Motion>
     </div>
   </div>
 </template>
