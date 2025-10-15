@@ -79,11 +79,7 @@ const quickChats = [
 </script>
 
 <template>
-  <UDashboardPanel
-    id="home"
-    class="relative"
-    :ui="{ body: 'p-0 sm:p-0' }"
-  >
+  <UDashboardPanel id="home" :ui="{ body: 'p-0 sm:p-0' }">
     <template #header>
       <DashboardNavbar />
     </template>
@@ -105,7 +101,7 @@ const quickChats = [
           <UChatPromptSubmit color="neutral" :disabled="isUploading" />
 
           <template v-if="files.length > 0" #header>
-            <FilePreview v-model="files" @remove="removeFile" />
+            <FilesPreview v-model="files" @remove="removeFile" />
           </template>
 
           <template #footer>

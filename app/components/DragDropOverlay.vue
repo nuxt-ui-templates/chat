@@ -11,7 +11,7 @@ defineProps<{
 <template>
   <div
     v-if="show && loggedIn"
-    class="absolute inset-0 m-4 z-50 flex items-center justify-center backdrop-blur-lg pointer-events-none"
+    class="absolute inset-0 z-50 flex items-center justify-center backdrop-blur-lg pointer-events-none"
   >
     <div class="absolute text-center">
       <div class="flex items-center justify-center gap-2">
@@ -74,7 +74,7 @@ defineProps<{
             delay: 0.06
           }"
         >
-          <UIcon name="i-lucide-table" class="size-12" />
+          <UIcon name="i-lucide-file-spreadsheet" class="size-12" />
         </Motion>
       </div>
 
@@ -96,7 +96,7 @@ defineProps<{
           Drop your files here
         </p>
         <p class="text-sm/6 text-muted">
-          Supported formats: Images and PDFs
+          Supported formats: Images, PDFs, CSV files
         </p>
       </Motion>
     </div>

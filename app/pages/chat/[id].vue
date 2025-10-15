@@ -110,18 +110,14 @@ onMounted(() => {
 </script>
 
 <template>
-  <UDashboardPanel
-    id="chat"
-    class="relative"
-    :ui="{ body: 'p-0 sm:p-0' }"
-  >
+  <UDashboardPanel id="chat" :ui="{ body: 'p-0 sm:p-0' }">
     <template #header>
       <DashboardNavbar />
     </template>
 
     <template #body>
       <DragDropOverlay :show="isDragging" />
-      <UContainer ref="dropzoneRef" class="flex-1 flex flex-col gap-4 sm:gap-6 relative">
+      <UContainer ref="dropzoneRef" class="flex-1 flex flex-col gap-4 sm:gap-6">
         <UChatMessages
           should-auto-scroll
           :messages="chat.messages"
@@ -216,7 +212,7 @@ onMounted(() => {
           />
 
           <template v-if="files.length > 0" #header>
-            <FilePreview v-model="files" @remove="removeFile" />
+            <FilesPreview v-model="files" @remove="removeFile" />
           </template>
           <template #footer>
             <div class="flex items-center gap-2">
