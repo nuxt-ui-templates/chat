@@ -49,6 +49,10 @@ if (!data.value) {
 
 const input = ref('')
 
+// workaround to show loader when status changes from submitted to streaming https://github.com/vercel/ai/issues/7586
+const lastMessage: ComputedRef<UIMessage | undefined> = computed(() => chat.messages.at(-1))
+const showLoader = computed(() => chat.status === 'streaming' && lastMessage.value?.role === 'assistant' && lastMessage.value?.parts?.length === 0)
+
 const chat = new Chat({
   id: data.value.id,
   messages: data.value.messages,
@@ -154,6 +158,15 @@ onMounted(() => {
           </template>
           <template #content="{ message }">
             <div class="space-y-4">
+              <UButton
+                v-if="showLoader && message.role === 'assistant'"
+                loading
+                label="Thinking..."
+                variant="link"
+                color="neutral"
+                size="sm"
+                class="px-0"
+              />
               <template v-for="(part, index) in message.parts" :key="`${part.type}-${index}-${message.id}`">
                 <Reasoning
                   v-if="part.type === 'reasoning'"
