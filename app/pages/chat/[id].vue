@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { DefineComponent } from 'vue'
 import { Chat } from '@ai-sdk/vue'
-import type { UIMessage, UIMessagePart, UIDataTypes, UITools } from 'ai'
+import type { UIMessage } from 'ai'
 import { DefaultChatTransport } from 'ai'
 import { useClipboard } from '@vueuse/core'
 import { getTextFromMessage } from '@nuxt/ui/utils/ai'
@@ -170,27 +170,29 @@ onMounted(() => {
                   :text="part.text"
                   :is-streaming="part.state !== 'done'"
                 />
-              </template>
-              <MDCCached
-                :value="getTextFromMessage(message)"
-                :cache-key="message.id"
-                unwrap="p"
-                :components="components"
-                :parser-options="{ highlight: false }"
-              />
-              <template v-for="(part, index) in message.parts" :key="`${part.type}-${index}-${message.id}`">
-                <ToolWeather v-if="part.type === 'tool-weather'" :key="`${part.type}-${part.state}`" :invocation="part as WeatherUIToolInvocation" />
-                <ToolChart v-if="part.type === 'tool-chart'" :key="`${part.type}-${part.state}`" :invocation="part as ChartUIToolInvocation" />
-              </template>
-              <div v-if="message.role === 'user' && message.parts.some((part: UIMessagePart<UIDataTypes, UITools>) => part.type === 'file')" class="flex flex-wrap gap-2">
+                <MDCCached
+                  v-else-if="part.type === 'text'"
+                  :value="part.text"
+                  :cache-key="`${message.id}-${index}`"
+                  unwrap="p"
+                  :components="components"
+                  :parser-options="{ highlight: false }"
+                />
+                <ToolWeather
+                  v-else-if="part.type === 'tool-weather'"
+                  :invocation="part as WeatherUIToolInvocation"
+                />
+                <ToolChart
+                  v-else-if="part.type === 'tool-chart'"
+                  :invocation="part as ChartUIToolInvocation"
+                />
                 <FileAvatar
-                  v-for="(part, index) in message.parts.filter((part: UIMessagePart<UIDataTypes, UITools>) => part.type === 'file')"
-                  :key="`${part.type}-${index}-${message.id}`"
+                  v-else-if="part.type === 'file'"
                   :name="getFileName(part.url)"
                   :type="part.mediaType"
                   :preview-url="part.url"
                 />
-              </div>
+              </template>
             </div>
           </template>
         </UChatMessages>

@@ -66,6 +66,10 @@ export default defineEventHandler(async (event) => {
         system: `You are a helpful assistant that can answer questions and help. User name is ${username}. (if not provided, use fake data for tool calls)`,
         messages: convertToModelMessages(messages),
         providerOptions: {
+          openai: {
+            reasoningEffort: 'low',
+            reasoningSummary: 'detailed'
+          },
           google: {
             thinkingConfig: {
               includeThoughts: true,
