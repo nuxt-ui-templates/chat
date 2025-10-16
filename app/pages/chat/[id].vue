@@ -115,7 +115,7 @@ onMounted(() => {
         >
           <template #content="{ message }">
             <div class="space-y-4">
-              <template v-for="(part, index) in message.parts" :key="`${part.type}-${index}-${message.id}-${part.state ?? ''}`">
+              <template v-for="(part, index) in message.parts" :key="`${part.type}-${index}-${message.id}-${'state' in part ? part.state : ''}`">
                 <UButton
                   v-if="part.type === 'reasoning'"
                   :label="part.state === 'done' ? 'Done' : 'Thinking...'"

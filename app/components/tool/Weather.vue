@@ -5,7 +5,7 @@ defineProps<{
 </script>
 
 <template>
-  <div v-if="invocation.state === 'output-available'" class="w-[480px] bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl px-5 py-4 text-highlighted shadow dark:shadow-lg">
+  <div v-if="invocation.state === 'output-available'" class="w-full max-w-[480px] bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl px-5 py-4 text-highlighted shadow dark:shadow-lg">
     <div class="flex items-start justify-between mb-3">
       <div class="flex items-baseline gap-1">
         <span class="text-4xl font-light">{{ invocation.output.temperature }}°</span>
@@ -75,7 +75,7 @@ defineProps<{
     </div>
   </div>
 
-  <div v-else-if="invocation.state === 'input-available'" class="w-[480px] bg-gradient-to-br from-gray-400 to-gray-600 rounded-xl px-5 py-4 text-highlighted shadow dark:shadow-lg">
+  <div v-else-if="invocation.state === 'input-available'" class="w-full max-w-[480px] bg-gradient-to-br from-gray-400 to-gray-600 rounded-xl px-5 py-4 text-highlighted shadow dark:shadow-lg">
     <div class="flex items-center justify-center py-6">
       <div class="text-center">
         <UIcon
@@ -89,7 +89,7 @@ defineProps<{
     </div>
   </div>
 
-  <div v-else-if="invocation.state === 'output-error'" class="w-[480px] bg-gradient-to-br from-red-500 to-red-700 rounded-xl px-5 py-4 text-highlighted shadow dark:shadow-lg">
+  <div v-else-if="invocation.state === 'output-error'" class="w-full max-w-[480px] bg-gradient-to-br from-red-500 to-red-700 rounded-xl px-5 py-4 text-highlighted shadow dark:shadow-lg">
     <div class="flex items-center justify-center py-6">
       <div class="text-center">
         <UIcon
@@ -103,7 +103,7 @@ defineProps<{
     </div>
   </div>
 
-  <div v-else class="w-[480px] bg-gradient-to-br from-gray-400 to-gray-600 rounded-xl px-5 py-4 text-highlighted shadow dark:shadow-lg">
+  <div v-else class="w-full max-w-[480px] bg-gradient-to-br from-gray-400 to-gray-600 rounded-xl px-5 py-4 text-highlighted shadow dark:shadow-lg">
     <div class="flex items-center justify-center py-6">
       <div class="text-center">
         <UIcon

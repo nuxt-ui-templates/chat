@@ -36,8 +36,8 @@ const formatValue = (value: string | number | undefined): string => {
 </script>
 
 <template>
-  <div v-if="invocation.state === 'output-available'" class="w-full md:min-w-[600px] max-w-3xl">
-    <div v-if="invocation.output.title" class="flex items-center gap-2">
+  <div v-if="invocation.state === 'output-available'">
+    <div v-if="invocation.output.title" class="flex items-center gap-2 mb-2">
       <UIcon name="i-lucide-line-chart" class="size-5 text-primary shrink-0" />
       <div class="min-w-0">
         <h3 class="text-lg font-semibold truncate">
@@ -93,7 +93,7 @@ const formatValue = (value: string | number | undefined): string => {
     </div>
   </div>
 
-  <div v-else-if="invocation.state === 'output-error'" class="w-full md:min-w-[600px] max-w-3xl bg-muted border border-default rounded-xl px-5 py-4 shadow">
+  <div v-else-if="invocation.state === 'output-error'" class="bg-muted border border-default rounded-xl px-5 py-4 shadow">
     <div class="flex items-center justify-center py-6">
       <div class="text-center">
         <UIcon
@@ -107,17 +107,17 @@ const formatValue = (value: string | number | undefined): string => {
     </div>
   </div>
 
-  <div v-else class="w-full min-w-[600px] max-w-3xl border border-default rounded-xl p-4 shadow max-h-[300px] flex flex-col gap-2">
-    <USkeleton class="w-[120px] h-4" />
+  <div v-else class="border border-default rounded-xl p-4 shadow max-h-[300px] flex flex-col gap-2">
+    <USkeleton class="w-1/3 h-4" />
     <div class="flex justify-end gap-2">
-      <USkeleton class="w-[60px] h-3" />
+      <USkeleton class="w-1/5 h-3" />
     </div>
     <div class="relative flex gap-2">
-      <USkeleton class="w-[20px] h-32" />
+      <USkeleton class="w-8 h-32" />
       <USkeleton class="flex-1 h-32" />
       <span class="absolute inset-0 flex items-center justify-center text-xs text-muted italic gap-1">
         <UIcon name="i-lucide-loader-2" class="size-4 animate-spin" />
-        <span class="hidden md:block">Generating chart...</span>
+        Generating chart...
       </span>
     </div>
     <USkeleton class="w-full h-4" />
