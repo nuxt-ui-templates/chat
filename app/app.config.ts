@@ -6,7 +6,7 @@ export default defineAppConfig({
     },
     chatMessage: {
       slots: {
-        content: 'w-full'
+        content: 'group-data-[role=assistant]/message:w-full'
       }
     }
   }
