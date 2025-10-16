@@ -15,6 +15,7 @@ const route = useRoute()
 const toast = useToast()
 const clipboard = useClipboard()
 const { model } = useModels()
+const { user } = useUserSession()
 
 const { data } = await useFetch(`/api/chats/${route.params.id}`, {
   cache: 'force-cache'
@@ -89,31 +90,57 @@ onMounted(() => {
     <template #body>
       <UContainer class="flex-1 flex flex-col gap-4 sm:gap-6">
         <UChatMessages
+          should-auto-scroll
           :messages="chat.messages"
           :status="chat.status"
-          :assistant="chat.status !== 'streaming' ? { actions: [{ label: 'Copy', icon: copied ? 'i-lucide-copy-check' : 'i-lucide-copy', onClick: copy }] } : { actions: [] }"
+          :user="{
+            avatar: user ? {
+              size: 'sm',
+              src: user.avatar,
+              alt: user.username
+            } : {
+              icon: 'i-lucide-user',
+              size: 'sm'
+            }
+          }"
+          :assistant="{
+            avatar: {
+              icon: 'i-lucide-sparkles',
+              size: 'sm'
+            },
+            actions: chat.status !== 'streaming' ? [{ label: 'Copy', icon: copied ? 'i-lucide-copy-check' : 'i-lucide-copy', onClick: copy }] : []
+          }"
           class="lg:pt-(--ui-header-height) pb-4 sm:pb-6"
           :spacing-offset="160"
         >
           <template #content="{ message }">
             <div class="space-y-4">
-              <template v-for="(part, index) in message.parts" :key="`${part.type}-${index}-${message.id}`">
+              <template v-for="(part, index) in message.parts" :key="`${part.type}-${index}-${message.id}-${part.state ?? ''}`">
                 <UButton
-                  v-if="part.type === 'reasoning' && part.state !== 'done'"
-                  label="Thinking..."
+                  v-if="part.type === 'reasoning'"
+                  :label="part.state === 'done' ? 'Done' : 'Thinking...'"
+                  :loading="part.state !== 'done'"
                   variant="link"
                   color="neutral"
-                  class="p-0"
-                  loading
+                  class="px-0"
+                />
+                <MDCCached
+                  v-else-if="part.type === 'text'"
+                  :value="part.text"
+                  :cache-key="`${message.id}-${index}`"
+                  unwrap="p"
+                  :components="components"
+                  :parser-options="{ highlight: false }"
+                />
+                <ToolWeather
+                  v-else-if="part.type === 'tool-weather'"
+                  :invocation="part as WeatherUIToolInvocation"
+                />
+                <ToolChart
+                  v-else-if="part.type === 'tool-chart'"
+                  :invocation="part as ChartUIToolInvocation"
                 />
               </template>
-              <MDCCached
-                :value="getTextFromMessage(message)"
-                :cache-key="message.id"
-                unwrap="p"
-                :components="components"
-                :parser-options="{ highlight: false }"
-              />
             </div>
           </template>
         </UChatMessages>
