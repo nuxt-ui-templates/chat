@@ -1,4 +1,4 @@
-import { convertToModelMessages, createUIMessageStream, createUIMessageStreamResponse, generateText, streamText } from 'ai'
+import { convertToModelMessages, createUIMessageStream, createUIMessageStreamResponse, generateText, smoothStream, stepCountIs, streamText } from 'ai'
 import { gateway } from '@ai-sdk/gateway'
 import type { UIMessage } from 'ai'
 import { z } from 'zod'
@@ -13,7 +13,9 @@ defineRouteMeta({
 export default defineEventHandler(async (event) => {
   const session = await getUserSession(event)
 
-  const { id } = getRouterParams(event)
+  const { id } = await getValidatedRouterParams(event, z.object({
+    id: z.string()
+  }).parse)
 
   const { model, messages } = await readValidatedBody(event, z.object({
     model: z.string(),
@@ -60,8 +62,26 @@ export default defineEventHandler(async (event) => {
     execute: ({ writer }) => {
       const result = streamText({
         model: gateway(model),
-        system: 'You are a helpful assistant that can answer questions and help.',
-        messages: convertToModelMessages(messages)
+        system: `You are a helpful assistant that can answer questions and help. ${session.user?.username ? `User name is ${session.user?.username}.` : ''} (if not provided, use fake data for tool calls)`,
+        messages: convertToModelMessages(messages),
+        providerOptions: {
+          openai: {
+            reasoningEffort: 'low',
+            reasoningSummary: 'detailed'
+          },
+          google: {
+            thinkingConfig: {
+              includeThoughts: true,
+              thinkingBudget: 2048
+            }
+          }
+        },
+        stopWhen: stepCountIs(5),
+        experimental_transform: smoothStream({ chunking: 'word' }),
+        tools: {
+          weather: weatherTool,
+          chart: chartTool
+        }
       })
 
       if (!chat.title) {
@@ -72,7 +92,9 @@ export default defineEventHandler(async (event) => {
         })
       }
 
-      writer.merge(result.toUIMessageStream())
+      writer.merge(result.toUIMessageStream({
+        sendReasoning: true
+      }))
     },
     onFinish: async ({ messages }) => {
       await db.insert(tables.messages).values(messages.map(message => ({
