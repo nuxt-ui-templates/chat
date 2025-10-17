@@ -20,7 +20,7 @@
     "@iconify-json/simple-icons": "^1.2.54",
     "@libsql/client": "^0.15.15",
     "@nuxt/ui": "^4.0.1",
-    "@nuxthub/core": "npm:@nuxthub/core-nightly@1.0.0-20251017-170828-f0385d0",
+    "@nuxthub/core": "npm:@nuxthub/core-nightly@1.0.0-20251017-172254-46a60d8",
     "better-sqlite3": "^12.4.1",
     "@nuxtjs/mdc": "^0.18.0",
     "ai": "^5.0.68",
