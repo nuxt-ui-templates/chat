@@ -5,7 +5,7 @@ export default defineNuxtConfig({
     '@nuxt/ui',
     '@nuxtjs/mdc',
     'nuxt-auth-utils',
-    '@nuxthub/core-nightly'
+    '@nuxthub/core'
   ],
 
   devtools: {
@@ -35,7 +35,7 @@ export default defineNuxtConfig({
 
   hub: {
     ai: 'vercel',
-    database: 'postgresql'
+    database: 'sqlite'
   },
 
   vite: {

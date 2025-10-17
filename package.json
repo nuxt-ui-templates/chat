@@ -18,15 +18,16 @@
     "@iconify-json/logos": "^1.2.9",
     "@iconify-json/lucide": "^1.2.68",
     "@iconify-json/simple-icons": "^1.2.54",
+    "@libsql/client": "^0.15.15",
     "@nuxt/ui": "^4.0.1",
-    "@nuxthub/core-nightly": "1.0.0-20251013-051212-5debfb7",
+    "@nuxthub/core": "npm:@nuxthub/core-nightly@1.0.0-20251017-151859-a29e297",
     "@nuxtjs/mdc": "^0.17.4",
     "ai": "^5.0.60",
+    "better-sqlite3": "^12.4.1",
     "date-fns": "^4.1.0",
     "drizzle-orm": "^0.44.6",
     "nuxt": "^4.1.2",
     "nuxt-auth-utils": "^0.5.25",
-    "pg": "^8.16.3",
     "shiki-stream": "^0.1.2"
   },
   "devDependencies": {
