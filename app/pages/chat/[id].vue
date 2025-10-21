@@ -113,6 +113,16 @@ onMounted(() => {
           class="lg:pt-(--ui-header-height) pb-4 sm:pb-6"
           :spacing-offset="160"
         >
+          <template #indicator>
+            <UButton
+              loading
+              label="Thinking..."
+              variant="link"
+              color="neutral"
+              size="sm"
+              class="px-0"
+            />
+          </template>
           <template #content="{ message }">
             <div class="space-y-4">
               <template v-for="(part, index) in message.parts" :key="`${part.type}-${index}-${message.id}-${'state' in part ? part.state : ''}`">

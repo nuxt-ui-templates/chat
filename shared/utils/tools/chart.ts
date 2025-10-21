@@ -1,37 +1,34 @@
-import type { UIToolInvocation } from 'ai'
 import { tool } from 'ai'
 import { z } from 'zod'
+import type { UIToolInvocation } from 'ai'
 
-const getWeatherData = (k: string) => ({
-  'sunny': { text: 'Sunny', icon: 'i-lucide-sun' },
-  'partly-cloudy': { text: 'Partly Cloudy', icon: 'i-lucide-cloud-sun' },
-  'cloudy': { text: 'Cloudy', icon: 'i-lucide-cloud' },
-  'rainy': { text: 'Rainy', icon: 'i-lucide-cloud-rain' },
-  'foggy': { text: 'Foggy', icon: 'i-lucide-cloud-fog' }
-}[k] || { text: 'Sunny', icon: 'i-lucide-sun' })
+export type ChartUIToolInvocation = UIToolInvocation<typeof chartTool>
 
-export const weatherTool = tool({
-  description: 'Get weather info with 5-day forecast',
-  inputSchema: z.object({ location: z.string().describe('Location for weather') }),
-  execute: async ({ location }) => {
-    const temp = Math.floor(Math.random() * 35) + 5
-    const conds = ['sunny', 'partly-cloudy', 'cloudy', 'rainy', 'foggy'] as const
+export const chartTool = tool({
+  description: 'Create a line chart visualization with one or multiple data series. Use this tool to display time-series data, trends, or comparisons between different metrics over time.',
+  inputSchema: z.object({
+    title: z.string().optional().describe('Title of the chart'),
+    data: z.array(z.record(z.string(), z.union([z.string(), z.number()]))).min(1).describe('REQUIRED: Array of data points (minimum 1 point). Each object must contain the xKey property and all series keys'),
+    xKey: z.string().describe('The property name in data objects to use for x-axis values (e.g., "month", "date")'),
+    series: z.array(z.object({
+      key: z.string().describe('The property name in data objects for this series (must exist in all data points)'),
+      name: z.string().describe('Display name for this series in the legend'),
+      color: z.string().describe('Hex color code for this line (e.g., "#3b82f6" for blue, "#10b981" for green)')
+    })).min(1).describe('Array of series configurations (minimum 1 series). Each series represents one line on the chart'),
+    xLabel: z.string().optional().describe('Optional label for x-axis'),
+    yLabel: z.string().optional().describe('Optional label for y-axis')
+  }),
+  execute: async ({ title, data, xKey, series, xLabel, yLabel }) => {
+    // Create a delay to simulate the input-available state
+    await new Promise(resolve => setTimeout(resolve, 2000))
+
     return {
-      location,
-      temperature: Math.round(temp),
-      temperatureHigh: Math.round(temp + Math.random() * 5 + 2),
-      temperatureLow: Math.round(temp - Math.random() * 5 - 2),
-      condition: getWeatherData(conds[Math.floor(Math.random() * conds.length)]!),
-      humidity: Math.floor(Math.random() * 60) + 20,
-      windSpeed: Math.floor(Math.random() * 25) + 5,
-      dailyForecast: ['Today', 'Tomorrow', 'Thu', 'Fri', 'Sat'].map((day, i) => ({
-        day,
-        high: Math.round(temp + Math.random() * 8 - 2),
-        low: Math.round(temp - Math.random() * 8 - 3),
-        condition: getWeatherData(conds[(Math.floor(Math.random() * conds.length) + i) % conds.length]!)
-      }))
+      title,
+      data,
+      xKey,
+      series,
+      xLabel,
+      yLabel
     }
   }
 })
-
-export type WeatherUIToolInvocation = UIToolInvocation<typeof weatherTool>

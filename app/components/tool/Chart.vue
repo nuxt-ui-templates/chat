@@ -12,7 +12,7 @@ const xFormatter = (invocation: ChartUIToolInvocation) => {
 
 const categories = (invocation: ChartUIToolInvocation): Record<string, BulletLegendItemInterface> => {
   if (!invocation.output?.series) return {}
-  return invocation.output.series.reduce((acc, serie) => {
+  return invocation.output.series.reduce((acc: Record<string, BulletLegendItemInterface>, serie: { key: string, name: string, color: string }) => {
     acc[serie.key] = {
       name: serie.name,
       color: serie.color
