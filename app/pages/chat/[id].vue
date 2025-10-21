@@ -101,7 +101,6 @@ onMounted(() => {
               <template v-for="(part, index) in message.parts" :key="`${message.id}-${part.type}-${index}${'state' in part ? `-${part.state}` : ''}`">
                 <Reasoning
                   v-if="part.type === 'reasoning'"
-                  :key="`${part.type}-${message.id}`"
                   :text="part.text"
                   :is-streaming="part.state !== 'done'"
                 />
