@@ -98,14 +98,13 @@ onMounted(() => {
         >
           <template #content="{ message }">
             <div class="space-y-4">
-              <template v-for="(part, index) in message.parts" :key="`${part.type}-${index}-${message.id}-${'state' in part ? part.state : ''}`">
+              <template v-for="(part, index) in message.parts" :key="`${message.id}-${part.type}-${index}${'state' in part ? `-${part.state}` : ''}`">
                 <UButton
                   v-if="part.type === 'reasoning'"
-                  :label="part.state === 'done' ? 'Done' : 'Thinking...'"
-                  :loading="part.state !== 'done'"
+                  :label="part.state === 'done' ? 'Thought about it' : 'Thinking...'"
                   variant="link"
                   color="neutral"
-                  class="px-0"
+                  class="px-0 flex font-normal"
                 />
                 <MDCCached
                   v-else-if="part.type === 'text'"

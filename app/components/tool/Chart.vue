@@ -1,7 +1,28 @@
 <script setup lang="ts">
-defineProps<{
+const props = defineProps<{
   invocation: ChartUIToolInvocation
 }>()
+
+const color = computed(() => {
+  return ({
+    'output-available': 'bg-gradient-to-br from-sky-400 via-blue-500 to-indigo-600 dark:from-sky-500 dark:via-blue-600 dark:to-indigo-700',
+    'output-error': 'bg-muted text-error'
+  })[props.invocation.state as string] || 'bg-muted text-white'
+})
+
+const icon = computed(() => {
+  return ({
+    'input-available': 'i-lucide-line-chart',
+    'output-error': 'i-lucide-triangle-alert'
+  })[props.invocation.state as string] || 'i-lucide-loader-circle'
+})
+
+const message = computed(() => {
+  return ({
+    'input-available': 'Generating chart...',
+    'output-error': 'Can\'t generate chart, please try again'
+  })[props.invocation.state as string] || 'Loading chart data...'
+})
 
 const xFormatter = (invocation: ChartUIToolInvocation) => {
   return (tick: number, _i?: number, _ticks?: number[]): string => {
@@ -46,7 +67,7 @@ const formatValue = (value: string | number | undefined): string => {
       </div>
     </div>
 
-    <div class="relative rounded-xl overflow-hidden">
+    <div class="relative overflow-hidden">
       <div class="dot-pattern h-full -top-5 left-0 right-0" />
 
       <LineChart
@@ -93,34 +114,19 @@ const formatValue = (value: string | number | undefined): string => {
     </div>
   </div>
 
-  <div v-else-if="invocation.state === 'output-error'" class="bg-muted border border-default rounded-xl px-5 py-4 shadow">
-    <div class="flex items-center justify-center py-6">
+  <div v-else class="rounded-xl px-5 py-4" :class="color">
+    <div class="flex items-center justify-center h-44">
       <div class="text-center">
         <UIcon
-          name="i-lucide-alert-triangle"
-          class="size-8 text-error mx-auto mb-2"
+          :name="icon"
+          class="size-8 mx-auto mb-2"
+          :class="[invocation.state === 'input-streaming' && 'animate-spin']"
         />
-        <div class="text-sm text-muted">
-          Can't generate chart, please try again
+        <div class="text-sm">
+          {{ message }}
         </div>
       </div>
     </div>
-  </div>
-
-  <div v-else class="border border-default rounded-xl p-4 shadow max-h-[300px] flex flex-col gap-2">
-    <USkeleton class="w-1/3 h-4" />
-    <div class="flex justify-end gap-2">
-      <USkeleton class="w-1/5 h-3" />
-    </div>
-    <div class="relative flex gap-2">
-      <USkeleton class="w-8 h-32" />
-      <USkeleton class="flex-1 h-32" />
-      <span class="absolute inset-0 flex items-center justify-center text-xs text-muted italic gap-1">
-        <UIcon name="i-lucide-loader-2" class="size-4 animate-spin" />
-        Generating chart...
-      </span>
-    </div>
-    <USkeleton class="w-full h-4" />
   </div>
 </template>
 

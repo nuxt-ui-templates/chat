@@ -16,6 +16,9 @@ export const weatherTool = tool({
   description: 'Get weather info with 5-day forecast',
   inputSchema: z.object({ location: z.string().describe('Location for weather') }),
   execute: async ({ location }) => {
+    // Create a delay to simulate the input-available state
+    await new Promise(resolve => setTimeout(resolve, 1500))
+
     const temp = Math.floor(Math.random() * 35) + 5
     const conds = ['sunny', 'partly-cloudy', 'cloudy', 'rainy', 'foggy'] as const
     return {
