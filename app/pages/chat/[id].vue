@@ -93,24 +93,22 @@ onMounted(() => {
           :messages="chat.messages"
           :status="chat.status"
           :assistant="chat.status !== 'streaming' ? { actions: [{ label: 'Copy', icon: copied ? 'i-lucide-copy-check' : 'i-lucide-copy', onClick: copy }] } : { actions: [] }"
-          class="lg:pt-(--ui-header-height) pb-4 sm:pb-6"
           :spacing-offset="160"
+          class="lg:pt-(--ui-header-height) pb-4 sm:pb-6"
         >
           <template #content="{ message }">
-            <div class="space-y-5">
+            <div class="*:first:!mt-0 *:last:!mb-0 space-y-5">
               <template v-for="(part, index) in message.parts" :key="`${message.id}-${part.type}-${index}${'state' in part ? `-${part.state}` : ''}`">
-                <UButton
+                <Reasoning
                   v-if="part.type === 'reasoning'"
-                  :label="part.state === 'done' ? 'Done' : 'Thinking...'"
-                  variant="link"
-                  color="neutral"
-                  class="px-0"
+                  :text="part.text"
+                  :is-streaming="part.state !== 'done'"
                 />
                 <MDCCached
                   v-else-if="part.type === 'text'"
                   :value="part.text"
                   :cache-key="`${message.id}-${index}`"
-                  unwrap="p"
+                  :unwrap="message.role === 'user' ? 'p' : undefined"
                   :components="components"
                   :parser-options="{ highlight: false }"
                 />

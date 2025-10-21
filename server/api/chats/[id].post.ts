@@ -62,7 +62,22 @@ export default defineEventHandler(async (event) => {
     execute: ({ writer }) => {
       const result = streamText({
         model: gateway(model),
-        system: `You are a helpful assistant that can answer questions and help. ${session.user?.username ? `User name is ${session.user?.username}.` : ''} (if not provided, use fake data for tool calls)`,
+        system: `You are a knowledgeable and helpful AI assistant. ${session.user?.username ? `The user's name is ${session.user.username}.` : ''} Your goal is to provide clear, accurate, and well-structured responses.
+
+**FORMATTING RULES (CRITICAL):**
+- ABSOLUTELY NO MARKDOWN HEADINGS: Never use #, ##, ###, ####, #####, or ######
+- NO underline-style headings with === or ---
+- Use **bold text** for emphasis and section labels instead
+- Examples:
+  * Instead of "## Usage", write "**Usage:**" or just "Here's how to use it:"
+  * Instead of "# Complete Guide", write "**Complete Guide**" or start directly with content
+- Start all responses with content, never with a heading
+
+**RESPONSE QUALITY:**
+- Be concise yet comprehensive
+- Use examples when helpful
+- Break down complex topics into digestible parts
+- Maintain a friendly, professional tone`,
         messages: convertToModelMessages(messages),
         providerOptions: {
           openai: {

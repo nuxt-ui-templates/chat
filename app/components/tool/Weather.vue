@@ -5,7 +5,7 @@ const props = defineProps<{
 
 const color = computed(() => {
   return ({
-    'output-available': 'bg-gradient-to-br from-sky-400 via-blue-500 to-indigo-600 dark:from-sky-500 dark:via-blue-600 dark:to-indigo-700',
+    'output-available': 'bg-gradient-to-br from-sky-400 via-blue-500 to-indigo-600 dark:from-sky-500 dark:via-blue-600 dark:to-indigo-700 text-white',
     'output-error': 'bg-muted text-error'
   })[props.invocation.state as string] || 'bg-muted text-white'
 })
@@ -29,9 +29,9 @@ const message = computed(() => {
   <div class="rounded-xl px-5 py-4" :class="color">
     <template v-if="invocation.state === 'output-available'">
       <div class="flex items-start justify-between mb-3">
-        <div class="flex items-baseline gap-1">
-          <span class="text-4xl font-light">{{ invocation.output.temperature }}°</span>
-          <span class="text-base text-white/80 mt-1">C</span>
+        <div class="flex items-baseline">
+          <span class="text-4xl font-bold">{{ invocation.output.temperature }}°</span>
+          <span class="text-base text-white/80">C</span>
         </div>
         <div class="text-right">
           <div class="text-base font-medium mb-1">
