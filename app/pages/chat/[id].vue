@@ -15,7 +15,6 @@ const route = useRoute()
 const toast = useToast()
 const clipboard = useClipboard()
 const { model } = useModels()
-const { user } = useUserSession()
 
 const { data } = await useFetch(`/api/chats/${route.params.id}`, {
   cache: 'force-cache'
@@ -93,36 +92,10 @@ onMounted(() => {
           should-auto-scroll
           :messages="chat.messages"
           :status="chat.status"
-          :user="{
-            avatar: user ? {
-              size: 'sm',
-              src: user.avatar,
-              alt: user.username
-            } : {
-              icon: 'i-lucide-user',
-              size: 'sm'
-            }
-          }"
-          :assistant="{
-            avatar: {
-              icon: 'i-lucide-sparkles',
-              size: 'sm'
-            },
-            actions: chat.status !== 'streaming' ? [{ label: 'Copy', icon: copied ? 'i-lucide-copy-check' : 'i-lucide-copy', onClick: copy }] : []
-          }"
+          :assistant="chat.status !== 'streaming' ? { actions: [{ label: 'Copy', icon: copied ? 'i-lucide-copy-check' : 'i-lucide-copy', onClick: copy }] } : { actions: [] }"
           class="lg:pt-(--ui-header-height) pb-4 sm:pb-6"
           :spacing-offset="160"
         >
-          <template #indicator>
-            <UButton
-              loading
-              label="Thinking..."
-              variant="link"
-              color="neutral"
-              size="sm"
-              class="px-0"
-            />
-          </template>
           <template #content="{ message }">
             <div class="space-y-4">
               <template v-for="(part, index) in message.parts" :key="`${part.type}-${index}-${message.id}-${'state' in part ? part.state : ''}`">
@@ -144,11 +117,11 @@ onMounted(() => {
                 />
                 <ToolWeather
                   v-else-if="part.type === 'tool-weather'"
-                  :invocation="part as WeatherUIToolInvocation"
+                  :invocation="(part as WeatherUIToolInvocation)"
                 />
                 <ToolChart
                   v-else-if="part.type === 'tool-chart'"
-                  :invocation="part as ChartUIToolInvocation"
+                  :invocation="(part as ChartUIToolInvocation)"
                 />
               </template>
             </div>
@@ -162,15 +135,15 @@ onMounted(() => {
           class="sticky bottom-0 [view-transition-name:chat-prompt] rounded-b-none z-10"
           @submit="handleSubmit"
         >
-          <UChatPromptSubmit
-            :status="chat.status"
-            color="neutral"
-            @stop="chat.stop"
-            @reload="chat.regenerate"
-          />
-
           <template #footer>
             <ModelSelect v-model="model" />
+
+            <UChatPromptSubmit
+              :status="chat.status"
+              color="neutral"
+              @stop="chat.stop"
+              @reload="chat.regenerate"
+            />
           </template>
         </UChatPrompt>
       </UContainer>
