@@ -65,12 +65,10 @@ export default defineEventHandler(async (event) => {
         system: `You are a helpful assistant that can answer questions and help. ${session.user?.username ? `User name is ${session.user?.username}.` : ''} (if not provided, use fake data for tool calls)`,
         messages: convertToModelMessages(messages),
         providerOptions: {
-          openai: model === 'openai/gpt-5'
-            ? {
-                reasoningEffort: 'low',
-                reasoningSummary: 'detailed'
-              }
-            : {},
+          openai: {
+            reasoningEffort: 'low',
+            reasoningSummary: 'detailed'
+          },
           google: {
             thinkingConfig: {
               includeThoughts: true,

@@ -20,7 +20,7 @@ export const chartTool = tool({
   }),
   execute: async ({ title, data, xKey, series, xLabel, yLabel }) => {
     // Create a delay to simulate the input-available state
-    await new Promise(resolve => setTimeout(resolve, 2000))
+    await new Promise(resolve => setTimeout(resolve, 1500))
 
     return {
       title,

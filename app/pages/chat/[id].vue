@@ -100,17 +100,8 @@ onMounted(() => {
           :spacing-offset="160"
         >
           <template #content="{ message }">
-            <div class="space-y-4">
-              <UButton
-                v-if="showLoader && message.role === 'assistant'"
-                loading
-                label="Thinking..."
-                variant="link"
-                color="neutral"
-                size="sm"
-                class="px-0"
-              />
-              <template v-for="(part, index) in message.parts" :key="`${part.type}-${index}-${message.id}-${'state' in part ? part.state : ''}`">
+            <div class="space-y-5">
+              <template v-for="(part, index) in message.parts" :key="`${message.id}-${part.type}-${index}${'state' in part ? `-${part.state}` : ''}`">
                 <Reasoning
                   v-if="part.type === 'reasoning'"
                   :key="`${part.type}-${message.id}`"
