@@ -25,9 +25,6 @@ if (!data.value) {
 }
 
 const input = ref('')
-// workaround to show loader when status changes from submitted to streaming https://github.com/vercel/ai/issues/7586
-const lastMessage: ComputedRef<UIMessage | undefined> = computed(() => chat.messages.at(-1))
-const showLoader = computed(() => chat.status === 'streaming' && lastMessage.value?.role === 'assistant' && lastMessage.value?.parts?.length === 0)
 
 const chat = new Chat({
   id: data.value.id,
@@ -96,11 +93,11 @@ onMounted(() => {
           :messages="chat.messages"
           :status="chat.status"
           :assistant="chat.status !== 'streaming' ? { actions: [{ label: 'Copy', icon: copied ? 'i-lucide-copy-check' : 'i-lucide-copy', onClick: copy }] } : { actions: [] }"
-          class="lg:pt-(--ui-header-height) pb-4 sm:pb-6"
           :spacing-offset="160"
+          class="lg:pt-(--ui-header-height) pb-4 sm:pb-6"
         >
           <template #content="{ message }">
-            <div class="space-y-5">
+            <div class="*:first:!mt-0 *:last:!mb-0 space-y-5">
               <template v-for="(part, index) in message.parts" :key="`${message.id}-${part.type}-${index}${'state' in part ? `-${part.state}` : ''}`">
                 <Reasoning
                   v-if="part.type === 'reasoning'"
@@ -112,7 +109,7 @@ onMounted(() => {
                   v-else-if="part.type === 'text'"
                   :value="part.text"
                   :cache-key="`${message.id}-${index}`"
-                  unwrap="p"
+                  :unwrap="message.role === 'user' ? 'p' : undefined"
                   :components="components"
                   :parser-options="{ highlight: false }"
                 />

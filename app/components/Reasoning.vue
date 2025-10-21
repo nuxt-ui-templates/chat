@@ -1,7 +1,7 @@
 <script setup lang="ts">
-const { isStreaming } = defineProps<{
+const { isStreaming = false } = defineProps<{
   text: string
-  isStreaming: boolean
+  isStreaming?: boolean
 }>()
 
 const open = ref(false)
@@ -20,13 +20,11 @@ function cleanMarkdown(text: string): string {
 </script>
 
 <template>
-  <UCollapsible v-model:open="open" unmount-on-hide>
+  <UCollapsible v-model:open="open" class="flex flex-col gap-1">
     <UButton
-      class="px-0 group"
+      class="p-0 group"
       color="neutral"
       variant="link"
-      size="sm"
-      :loading="isStreaming"
       trailing-icon="i-lucide-chevron-down"
       :ui="{
         trailingIcon: text.length > 0 ? 'group-data-[state=open]:rotate-180 transition-transform duration-200' : 'hidden'
@@ -35,10 +33,8 @@ function cleanMarkdown(text: string): string {
     />
 
     <template #content>
-      <div class="border-l-2 border-default pl-4 text-sm text-muted mt-2 space-y-2">
-        <div v-for="(value, index) in cleanMarkdown(text).split('\n')" :key="index">
-          <span class="whitespace-pre-wrap text-xs">{{ value }}</span>
-        </div>
+      <div v-for="(value, index) in cleanMarkdown(text).split('\n').filter(Boolean)" :key="index">
+        <span class="whitespace-pre-wrap text-sm text-muted font-normal">{{ value }}</span>
       </div>
     </template>
   </UCollapsible>

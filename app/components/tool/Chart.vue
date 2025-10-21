@@ -5,7 +5,6 @@ const props = defineProps<{
 
 const color = computed(() => {
   return ({
-    'output-available': 'bg-gradient-to-br from-sky-400 via-blue-500 to-indigo-600 dark:from-sky-500 dark:via-blue-600 dark:to-indigo-700',
     'output-error': 'bg-muted text-error'
   })[props.invocation.state as string] || 'bg-muted text-white'
 })
@@ -67,103 +66,63 @@ const formatValue = (value: string | number | undefined): string => {
       </div>
     </div>
 
-    <<<<<<< HEAD
-    <div class="relative rounded-xl overflow-hidden">
-      =======
-      <div class="relative overflow-hidden">
-        >>>>>>> main
-        <div class="dot-pattern h-full -top-5 left-0 right-0" />
+    <div class="relative overflow-hidden">
+      <div class="dot-pattern h-full -top-5 left-0 right-0" />
 
-        <LineChart
-          :height="300"
-          :data="invocation.output.data"
-          :categories="categories(invocation)"
-          :x-formatter="xFormatter(invocation)"
-          :x-label="invocation.output.xLabel"
-          :y-label="invocation.output.yLabel"
-          :y-grid-line="true"
-          :curve-type="CurveType.MonotoneX"
-          :legend-position="LegendPosition.Top"
-          :hide-legend="false"
-          :x-num-ticks="Math.min(6, invocation.output.data.length)"
-          :y-num-ticks="5"
-          :show-tooltip="true"
-        >
-          <template #tooltip="{ values }">
-            <div class="bg-muted/50 rounded-sm px-2 py-1 shadow-lg backdrop-blur-sm max-w-xs ring ring-offset-2 ring-offset-(--ui-bg) ring-default border border-default">
-              <div v-if="values && values[invocation.output.xKey]" class="text-sm font-semibold text-highlighted mb-2">
-                {{ values[invocation.output.xKey] }}
-              </div>
-              <div class="space-y-1.5">
-                <div
-                  v-for="serie in invocation.output.series"
-                  :key="serie.key"
-                  class="flex items-center justify-between gap-3"
-                >
-                  <div class="flex items-center gap-2 min-w-0">
-                    <div
-                      class="size-2.5 rounded-full shrink-0"
-                      :style="{ backgroundColor: serie.color }"
-                    />
-                    <span class="text-sm text-muted truncate">{{ serie.name }}</span>
-                  </div>
-                  <span class="text-sm font-semibold text-highlighted shrink-0">
-                    {{ formatValue(values?.[serie.key]) }}
-                  </span>
-                </div>
-              </div>
+      <LineChart
+        :height="300"
+        :data="invocation.output.data"
+        :categories="categories(invocation)"
+        :x-formatter="xFormatter(invocation)"
+        :x-label="invocation.output.xLabel"
+        :y-label="invocation.output.yLabel"
+        :y-grid-line="true"
+        :curve-type="CurveType.MonotoneX"
+        :legend-position="LegendPosition.Top"
+        :hide-legend="false"
+        :x-num-ticks="Math.min(6, invocation.output.data.length)"
+        :y-num-ticks="5"
+        :show-tooltip="true"
+      >
+        <template #tooltip="{ values }">
+          <div class="bg-muted/50 rounded-sm px-2 py-1 shadow-lg backdrop-blur-sm max-w-xs ring ring-offset-2 ring-offset-(--ui-bg) ring-default border border-default">
+            <div v-if="values && values[invocation.output.xKey]" class="text-sm font-semibold text-highlighted mb-2">
+              {{ values[invocation.output.xKey] }}
             </div>
-          </template>
-        </LineChart>
-      </div>
-    </div>
-
-    <<<<<<< HEAD
-    <div v-else-if="invocation.state === 'output-error'" class="bg-muted border border-default rounded-xl px-5 py-4 shadow">
-      <div class="flex items-center justify-center py-6">
-        <div class="text-center">
-          <UIcon
-            name="i-lucide-alert-triangle"
-            class="size-8 text-error mx-auto mb-2"
-          />
-          <div class="text-sm text-muted">
-            Can't generate chart, please try again
-            =======
-            <div v-else class="rounded-xl px-5 py-4" :class="color">
-              <div class="flex items-center justify-center h-44">
-                <div class="text-center">
-                  <UIcon
-                    :name="icon"
-                    class="size-8 mx-auto mb-2"
-                    :class="[invocation.state === 'input-streaming' && 'animate-spin']"
+            <div class="space-y-1.5">
+              <div
+                v-for="serie in invocation.output.series"
+                :key="serie.key"
+                class="flex items-center justify-between gap-3"
+              >
+                <div class="flex items-center gap-2 min-w-0">
+                  <div
+                    class="size-2.5 rounded-full shrink-0"
+                    :style="{ backgroundColor: serie.color }"
                   />
-                  <div class="text-sm">
-                    {{ message }}
-                    >>>>>>> main
-                  </div>
+                  <span class="text-sm text-muted truncate">{{ serie.name }}</span>
                 </div>
-              </div>
-            </div>
-            <<<<<<< HEAD
-
-            <div v-else class="border border-default rounded-xl p-4 shadow max-h-[300px] flex flex-col gap-2">
-              <USkeleton class="w-1/3 h-4" />
-              <div class="flex justify-end gap-2">
-                <USkeleton class="w-1/5 h-3" />
-              </div>
-              <div class="relative flex gap-2">
-                <USkeleton class="w-8 h-32" />
-                <USkeleton class="flex-1 h-32" />
-                <span class="absolute inset-0 flex items-center justify-center text-xs text-muted italic gap-1">
-                  <UIcon name="i-lucide-loader-2" class="size-4 animate-spin" />
-                  Generating chart...
+                <span class="text-sm font-semibold text-highlighted shrink-0">
+                  {{ formatValue(values?.[serie.key]) }}
                 </span>
               </div>
-              <USkeleton class="w-full h-4" />
             </div>
-            =======
-            >>>>>>> main
           </div>
+        </template>
+      </LineChart>
+    </div>
+  </div>
+
+  <div v-else class="rounded-xl px-5 py-4" :class="color">
+    <div class="flex items-center justify-center h-44">
+      <div class="text-center">
+        <UIcon
+          :name="icon"
+          class="size-8 mx-auto mb-2"
+          :class="[invocation.state === 'input-streaming' && 'animate-spin']"
+        />
+        <div class="text-sm">
+          {{ message }}
         </div>
       </div>
     </div>
