@@ -26,6 +26,9 @@ if (!data.value) {
 }
 
 const input = ref('')
+// workaround to show loader when status changes from submitted to streaming https://github.com/vercel/ai/issues/7586
+const lastMessage: ComputedRef<UIMessage | undefined> = computed(() => chat.messages.at(-1))
+const showLoader = computed(() => chat.status === 'streaming' && lastMessage.value?.role === 'assistant' && lastMessage.value?.parts?.length === 0)
 
 const chat = new Chat({
   id: data.value.id,
@@ -113,16 +116,33 @@ onMounted(() => {
           class="lg:pt-(--ui-header-height) pb-4 sm:pb-6"
           :spacing-offset="160"
         >
+          <template #indicator>
+            <UButton
+              loading
+              label="Thinking..."
+              variant="link"
+              color="neutral"
+              size="sm"
+              class="px-0"
+            />
+          </template>
           <template #content="{ message }">
             <div class="space-y-4">
+              <UButton
+                v-if="showLoader && message.role === 'assistant'"
+                loading
+                label="Thinking..."
+                variant="link"
+                color="neutral"
+                size="sm"
+                class="px-0"
+              />
               <template v-for="(part, index) in message.parts" :key="`${part.type}-${index}-${message.id}-${'state' in part ? part.state : ''}`">
-                <UButton
+                <Reasoning
                   v-if="part.type === 'reasoning'"
-                  :label="part.state === 'done' ? 'Done' : 'Thinking...'"
-                  :loading="part.state !== 'done'"
-                  variant="link"
-                  color="neutral"
-                  class="px-0"
+                  :key="`${part.type}-${message.id}`"
+                  :text="part.text"
+                  :is-streaming="part.state !== 'done'"
                 />
                 <MDCCached
                   v-else-if="part.type === 'text'"
