@@ -89,31 +89,38 @@ onMounted(() => {
     <template #body>
       <UContainer class="flex-1 flex flex-col gap-4 sm:gap-6">
         <UChatMessages
+          should-auto-scroll
           :messages="chat.messages"
           :status="chat.status"
           :assistant="chat.status !== 'streaming' ? { actions: [{ label: 'Copy', icon: copied ? 'i-lucide-copy-check' : 'i-lucide-copy', onClick: copy }] } : { actions: [] }"
-          class="lg:pt-(--ui-header-height) pb-4 sm:pb-6"
           :spacing-offset="160"
+          class="lg:pt-(--ui-header-height) pb-4 sm:pb-6"
         >
           <template #content="{ message }">
-            <div class="space-y-4">
-              <template v-for="(part, index) in message.parts" :key="`${part.type}-${index}-${message.id}`">
-                <UButton
-                  v-if="part.type === 'reasoning' && part.state !== 'done'"
-                  label="Thinking..."
-                  variant="link"
-                  color="neutral"
-                  class="p-0"
-                  loading
+            <div class="*:first:!mt-0 *:last:!mb-0 space-y-5">
+              <template v-for="(part, index) in message.parts" :key="`${message.id}-${part.type}-${index}${'state' in part ? `-${part.state}` : ''}`">
+                <Reasoning
+                  v-if="part.type === 'reasoning'"
+                  :text="part.text"
+                  :is-streaming="part.state !== 'done'"
+                />
+                <MDCCached
+                  v-else-if="part.type === 'text'"
+                  :value="part.text"
+                  :cache-key="`${message.id}-${index}`"
+                  :unwrap="message.role === 'user' ? 'p' : undefined"
+                  :components="components"
+                  :parser-options="{ highlight: false }"
+                />
+                <ToolWeather
+                  v-else-if="part.type === 'tool-weather'"
+                  :invocation="(part as WeatherUIToolInvocation)"
+                />
+                <ToolChart
+                  v-else-if="part.type === 'tool-chart'"
+                  :invocation="(part as ChartUIToolInvocation)"
                 />
               </template>
-              <MDCCached
-                :value="getTextFromMessage(message)"
-                :cache-key="message.id"
-                unwrap="p"
-                :components="components"
-                :parser-options="{ highlight: false }"
-              />
             </div>
           </template>
         </UChatMessages>
@@ -125,15 +132,15 @@ onMounted(() => {
           class="sticky bottom-0 [view-transition-name:chat-prompt] rounded-b-none z-10"
           @submit="handleSubmit"
         >
-          <UChatPromptSubmit
-            :status="chat.status"
-            color="neutral"
-            @stop="chat.stop"
-            @reload="chat.regenerate"
-          />
-
           <template #footer>
             <ModelSelect v-model="model" />
+
+            <UChatPromptSubmit
+              :status="chat.status"
+              color="neutral"
+              @stop="chat.stop"
+              @reload="chat.regenerate"
+            />
           </template>
         </UChatPrompt>
       </UContainer>

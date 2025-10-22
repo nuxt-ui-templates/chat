@@ -4,8 +4,9 @@ export default defineNuxtConfig({
     '@nuxt/eslint',
     '@nuxt/ui',
     '@nuxtjs/mdc',
+    '@nuxthub/core',
     'nuxt-auth-utils',
-    '@nuxthub/core'
+    'nuxt-charts'
   ],
 
   devtools: {
@@ -15,6 +16,9 @@ export default defineNuxtConfig({
   css: ['~/assets/css/main.css'],
 
   mdc: {
+    headings: {
+      anchorLinks: false
+    },
     highlight: {
       // noApiRoute: true
       shikiEngine: 'javascript'
