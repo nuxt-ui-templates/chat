@@ -56,7 +56,7 @@ const formatValue = (value: string | number | undefined): string => {
 </script>
 
 <template>
-  <div v-if="invocation.state === 'output-available'">
+  <div v-if="invocation.state === 'output-available'" class="my-5">
     <div v-if="invocation.output.title" class="flex items-center gap-2 mb-2">
       <UIcon name="i-lucide-line-chart" class="size-5 text-primary shrink-0" />
       <div class="min-w-0">
@@ -113,7 +113,7 @@ const formatValue = (value: string | number | undefined): string => {
     </div>
   </div>
 
-  <div v-else class="rounded-xl px-5 py-4" :class="color">
+  <div v-else class="rounded-xl px-5 py-4 my-5" :class="color">
     <div class="flex items-center justify-center h-44">
       <div class="text-center">
         <UIcon

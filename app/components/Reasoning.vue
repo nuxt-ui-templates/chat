@@ -20,7 +20,7 @@ function cleanMarkdown(text: string): string {
 </script>
 
 <template>
-  <UCollapsible v-model:open="open" class="flex flex-col gap-1">
+  <UCollapsible v-model:open="open" class="flex flex-col gap-1 my-5">
     <UButton
       class="p-0 group"
       color="neutral"
