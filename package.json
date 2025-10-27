@@ -13,13 +13,13 @@
     "db:migrate": "drizzle-kit migrate"
   },
   "dependencies": {
-    "@ai-sdk/gateway": "^2.0.2",
     "@ai-sdk/vue": "^2.0.80",
     "@iconify-json/logos": "^1.2.9",
     "@iconify-json/lucide": "^1.2.71",
     "@iconify-json/simple-icons": "^1.2.55",
     "@nuxt/ui": "^4.1.0",
     "@nuxtjs/mdc": "^0.18.0",
+    "@vercel/blob": "^2.0.0",
     "ai": "^5.0.80",
     "date-fns": "^4.1.0",
     "drizzle-orm": "^0.44.7",

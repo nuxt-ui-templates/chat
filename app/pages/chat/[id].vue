@@ -16,6 +16,28 @@ const toast = useToast()
 const clipboard = useClipboard()
 const { model } = useModels()
 
+function getFileName(url: string): string {
+  try {
+    const urlObj = new URL(url)
+    const pathname = urlObj.pathname
+    const filename = pathname.split('/').pop() || 'file'
+    return decodeURIComponent(filename)
+  } catch {
+    return 'file'
+  }
+}
+
+const {
+  dropzoneRef,
+  isDragging,
+  files,
+  isUploading,
+  uploadedFiles,
+  addFiles,
+  removeFile,
+  clearFiles
+} = useFileUploadWithStatus(route.params.id as string)
+
 const { data } = await useFetch(`/api/chats/${route.params.id}`, {
   cache: 'force-cache'
 })
@@ -51,13 +73,15 @@ const chat = new Chat({
   }
 })
 
-function handleSubmit(e: Event) {
+async function handleSubmit(e: Event) {
   e.preventDefault()
-  if (input.value.trim()) {
+  if (input.value.trim() && !isUploading.value) {
     chat.sendMessage({
-      text: input.value
+      text: input.value,
+      files: uploadedFiles.value.length > 0 ? uploadedFiles.value : undefined
     })
     input.value = ''
+    clearFiles()
   }
 }
 
@@ -87,7 +111,8 @@ onMounted(() => {
     </template>
 
     <template #body>
-      <UContainer class="flex-1 flex flex-col gap-4 sm:gap-6">
+      <DragDropOverlay :show="isDragging" />
+      <UContainer ref="dropzoneRef" class="flex-1 flex flex-col gap-4 sm:gap-6">
         <UChatMessages
           should-auto-scroll
           :messages="chat.messages"
@@ -120,6 +145,12 @@ onMounted(() => {
                   v-else-if="part.type === 'tool-chart'"
                   :invocation="(part as ChartUIToolInvocation)"
                 />
+                <FileAvatar
+                  v-else-if="part.type === 'file'"
+                  :name="getFileName(part.url)"
+                  :type="part.mediaType"
+                  :preview-url="part.url"
+                />
               </template>
             </div>
           </template>
@@ -128,15 +159,35 @@ onMounted(() => {
         <UChatPrompt
           v-model="input"
           :error="chat.error"
+          :disabled="isUploading"
           variant="subtle"
           class="sticky bottom-0 [view-transition-name:chat-prompt] rounded-b-none z-10"
           @submit="handleSubmit"
         >
+          <template v-if="files.length > 0" #header>
+            <div class="flex flex-wrap gap-2">
+              <FileAvatar
+                v-for="fileWithStatus in files"
+                :key="fileWithStatus.id"
+                :name="fileWithStatus.file.name"
+                :type="fileWithStatus.file.type"
+                :preview-url="fileWithStatus.previewUrl"
+                :status="fileWithStatus.status"
+                :error="fileWithStatus.error"
+                removable
+                @remove="removeFile(fileWithStatus.id)"
+              />
+            </div>
+          </template>
           <template #footer>
-            <ModelSelect v-model="model" />
+            <div class="flex items-center gap-2">
+              <FileUploadButton @files-selected="addFiles($event)" />
+              <ModelSelect v-model="model" />
+            </div>
 
             <UChatPromptSubmit
               :status="chat.status"
+              :disabled="isUploading"
               color="neutral"
               @stop="chat.stop"
               @reload="chat.regenerate"
