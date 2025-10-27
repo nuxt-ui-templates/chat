@@ -1,5 +1,4 @@
 import { convertToModelMessages, createUIMessageStream, createUIMessageStreamResponse, generateText, smoothStream, stepCountIs, streamText } from 'ai'
-import { gateway } from '@ai-sdk/gateway'
 import type { UIMessage } from 'ai'
 import { z } from 'zod'
 

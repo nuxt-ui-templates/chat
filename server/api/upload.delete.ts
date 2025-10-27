@@ -14,7 +14,7 @@ export default defineEventHandler(async (event) => {
   const username = session.user.username
 
   const { url } = await readValidatedBody(event, z.object({
-    url: z.string().url()
+    url: z.url()
   }).parse)
 
   if (!url.includes(`/${username}/`)) {
