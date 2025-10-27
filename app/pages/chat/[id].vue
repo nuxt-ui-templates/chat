@@ -122,37 +122,35 @@ onMounted(() => {
           class="lg:pt-(--ui-header-height) pb-4 sm:pb-6"
         >
           <template #content="{ message }">
-            <div class="*:first:mt-0 *:last:mb-0">
-              <template v-for="(part, index) in message.parts" :key="`${message.id}-${part.type}-${index}${'state' in part ? `-${part.state}` : ''}`">
-                <Reasoning
-                  v-if="part.type === 'reasoning'"
-                  :text="part.text"
-                  :is-streaming="part.state !== 'done'"
-                />
-                <MDCCached
-                  v-else-if="part.type === 'text'"
-                  :value="part.text"
-                  :cache-key="`${message.id}-${index}`"
-                  :components="components"
-                  :parser-options="{ highlight: false }"
-                  class="*:first:mt-0 *:last:mb-0"
-                />
-                <ToolWeather
-                  v-else-if="part.type === 'tool-weather'"
-                  :invocation="(part as WeatherUIToolInvocation)"
-                />
-                <ToolChart
-                  v-else-if="part.type === 'tool-chart'"
-                  :invocation="(part as ChartUIToolInvocation)"
-                />
-                <FileAvatar
-                  v-else-if="part.type === 'file'"
-                  :name="getFileName(part.url)"
-                  :type="part.mediaType"
-                  :preview-url="part.url"
-                />
-              </template>
-            </div>
+            <template v-for="(part, index) in message.parts" :key="`${message.id}-${part.type}-${index}${'state' in part ? `-${part.state}` : ''}`">
+              <Reasoning
+                v-if="part.type === 'reasoning'"
+                :text="part.text"
+                :is-streaming="part.state !== 'done'"
+              />
+              <MDCCached
+                v-else-if="part.type === 'text'"
+                :value="part.text"
+                :cache-key="`${message.id}-${index}`"
+                :components="components"
+                :parser-options="{ highlight: false }"
+                class="*:first:mt-0 *:last:mb-0"
+              />
+              <ToolWeather
+                v-else-if="part.type === 'tool-weather'"
+                :invocation="(part as WeatherUIToolInvocation)"
+              />
+              <ToolChart
+                v-else-if="part.type === 'tool-chart'"
+                :invocation="(part as ChartUIToolInvocation)"
+              />
+              <FileAvatar
+                v-else-if="part.type === 'file'"
+                :name="getFileName(part.url)"
+                :type="part.mediaType"
+                :preview-url="part.url"
+              />
+            </template>
           </template>
         </UChatMessages>
 
