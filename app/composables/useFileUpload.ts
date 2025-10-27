@@ -33,31 +33,28 @@ export function useFileUploadWithStatus(chatId: string) {
     files.value = [...files.value, ...filesWithStatus]
 
     const uploadPromises = filesWithStatus.map(async (fileWithStatus) => {
+      const index = files.value.findIndex(f => f.id === fileWithStatus.id)
+      if (index === -1) return
+
       try {
         const response = await uploadFileToBlob(fileWithStatus.file, chatId)
-
-        const index = files.value.findIndex(f => f.id === fileWithStatus.id)
-        if (index !== -1) {
-          files.value[index] = {
-            ...files.value[index]!,
-            status: 'uploaded',
-            uploadedUrl: response.url
-          }
+        files.value[index] = {
+          ...files.value[index]!,
+          status: 'uploaded',
+          uploadedUrl: response.url
         }
       } catch (error) {
-        const index = files.value.findIndex(f => f.id === fileWithStatus.id)
+        const errorMessage = (error as { statusMessage?: string }).statusMessage || 'Upload failed'
         toast.add({
           title: 'Upload failed',
-          description: (error as { statusMessage?: string }).statusMessage || 'Upload failed',
+          description: errorMessage,
           icon: 'i-lucide-alert-circle',
           color: 'error'
         })
-        if (index !== -1) {
-          files.value[index] = {
-            ...files.value[index]!,
-            status: 'error',
-            error: (error as { statusMessage?: string }).statusMessage || 'Upload failed'
-          }
+        files.value[index] = {
+          ...files.value[index]!,
+          status: 'error',
+          error: errorMessage
         }
       }
     })
@@ -87,25 +84,24 @@ export function useFileUploadWithStatus(chatId: string) {
 
   function removeFile(id: string) {
     const file = files.value.find(f => f.id === id)
-    if (file) {
-      URL.revokeObjectURL(file.previewUrl)
-      files.value = files.value.filter(f => f.id !== id)
+    if (!file) return
 
-      if (file.status === 'uploaded' && file.uploadedUrl) {
-        $fetch('/api/upload', {
-          method: 'DELETE',
-          body: { url: file.uploadedUrl }
-        }).catch((error) => {
-          console.error('Failed to delete file from blob:', error)
-        })
-      }
+    URL.revokeObjectURL(file.previewUrl)
+    files.value = files.value.filter(f => f.id !== id)
+
+    if (file.status === 'uploaded' && file.uploadedUrl) {
+      $fetch('/api/upload', {
+        method: 'DELETE',
+        body: { url: file.uploadedUrl }
+      }).catch((error) => {
+        console.error('Failed to delete file from blob:', error)
+      })
     }
   }
 
   function clearFiles() {
-    files.value.forEach((fileWithStatus) => {
-      URL.revokeObjectURL(fileWithStatus.previewUrl)
-    })
+    if (files.value.length === 0) return
+    files.value.forEach(fileWithStatus => URL.revokeObjectURL(fileWithStatus.previewUrl))
     files.value = []
   }
 

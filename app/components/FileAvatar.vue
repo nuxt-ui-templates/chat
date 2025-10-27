@@ -40,10 +40,7 @@ const emit = defineEmits<{
       <UIcon name="i-lucide-loader-2" class="size-8 animate-spin text-white" />
     </div>
 
-    <UTooltip
-      v-if="status === 'error'"
-      :text="error"
-    >
+    <UTooltip v-if="status === 'error'" :text="error">
       <div class="absolute inset-0 flex items-center justify-center bg-error/50 rounded-lg">
         <UIcon name="i-lucide-alert-circle" class="size-8 text-white" />
       </div>

@@ -7,12 +7,6 @@ export interface FileWithStatus {
   error?: string
 }
 
-export interface UploadedFile {
-  type: 'file'
-  mediaType: string
-  url: string
-}
-
 export interface UploadResponse {
   url: string
   pathname: string
@@ -23,8 +17,7 @@ export interface UploadResponse {
 export const FILE_UPLOAD_CONFIG = {
   maxFileSize: 10 * 1024 * 1024, // 10MB
   allowedMimeTypes: ['image/', 'application/pdf', 'text/csv'],
-  acceptPattern: 'image/*,application/pdf,.csv,text/csv',
-  maxFilesPerUpload: 10
+  acceptPattern: 'image/*,application/pdf,.csv,text/csv'
 } as const
 
 export function isValidFileType(mimeType: string): boolean {
