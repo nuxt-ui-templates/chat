@@ -1,3 +1,4 @@
+import { drizzle } from 'hub:database'
 import * as schema from '../database/schema'
 
 export { sql, eq, and, or, desc } from 'drizzle-orm'
