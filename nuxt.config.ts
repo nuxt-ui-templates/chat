@@ -42,18 +42,6 @@ export default defineNuxtConfig({
     database: 'sqlite'
   },
 
-  vite: {
-    $server: {
-      build: {
-        rollupOptions: {
-          output: {
-            preserveModules: true
-          }
-        }
-      }
-    }
-  },
-
   eslint: {
     config: {
       stylistic: {

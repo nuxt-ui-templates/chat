@@ -26,7 +26,7 @@ const message = computed(() => {
 </script>
 
 <template>
-  <div class="rounded-xl px-5 py-4" :class="color">
+  <div class="rounded-xl px-5 py-4 my-5" :class="color">
     <template v-if="invocation.state === 'output-available'">
       <div class="flex items-start justify-between mb-3">
         <div class="flex items-baseline">
