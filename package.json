@@ -28,7 +28,8 @@
     "nuxt": "^4.2.0",
     "nuxt-auth-utils": "^0.5.25",
     "nuxt-charts": "0.2.4",
-    "shiki-stream": "^0.1.2"
+    "shiki-stream": "^0.1.2",
+    "workers-ai-provider": "^2.0.0"
   },
   "devDependencies": {
     "@nuxt/eslint": "^1.9.0",
