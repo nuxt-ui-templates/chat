@@ -1,8 +1,8 @@
 <script setup lang="ts">
-const { model, models } = useModels()
+const { model, models, formatModelName } = useModels()
 
 const items = computed(() => models.map(model => ({
-  label: model,
+  label: formatModelName(model),
   value: model,
   icon: `i-simple-icons-${model.split('/')[0]}`
 })))
@@ -12,6 +12,7 @@ const items = computed(() => models.map(model => ({
   <USelectMenu
     v-model="model"
     :items="items"
+    size="sm"
     :icon="`i-simple-icons-${model.split('/')[0]}`"
     variant="ghost"
     value-key="value"
