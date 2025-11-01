@@ -13,14 +13,14 @@
     "db:migrate": "drizzle-kit migrate"
   },
   "dependencies": {
-    "@ai-sdk/gateway": "^2.0.2",
-    "@ai-sdk/vue": "^2.0.80",
-    "@iconify-json/logos": "^1.2.9",
+    "@ai-sdk/gateway": "^2.0.5",
+    "@ai-sdk/vue": "^2.0.86",
+    "@iconify-json/logos": "^1.2.10",
     "@iconify-json/lucide": "^1.2.71",
-    "@iconify-json/simple-icons": "^1.2.55",
+    "@iconify-json/simple-icons": "^1.2.56",
     "@nuxt/ui": "^4.1.0",
     "@nuxtjs/mdc": "^0.18.0",
-    "ai": "^5.0.80",
+    "ai": "^5.0.86",
     "date-fns": "^4.1.0",
     "drizzle-orm": "^0.44.7",
     "nuxt": "^4.2.0",
@@ -30,12 +30,12 @@
     "shiki-stream": "^0.1.2"
   },
   "devDependencies": {
-    "@nuxt/eslint": "^1.9.0",
-    "@types/node": "^24.9.1",
-    "drizzle-kit": "^0.31.5",
-    "eslint": "^9.38.0",
+    "@nuxt/eslint": "^1.10.0",
+    "@types/node": "^24.9.2",
+    "drizzle-kit": "^0.31.6",
+    "eslint": "^9.39.0",
     "typescript": "^5.9.3",
     "vue-tsc": "^3.1.2"
   },
-  "packageManager": "pnpm@10.19.0"
+  "packageManager": "pnpm@10.20.0"
 }
