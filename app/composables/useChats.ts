@@ -1,12 +1,5 @@
 import { isToday, isYesterday, subMonths } from 'date-fns'
 
-interface Chat {
-  id: string
-  label: string
-  icon: string
-  createdAt: string
-}
-
 export function useChats(chats: Ref<Chat[] | undefined>) {
   const groups = computed(() => {
     // Group chats by date
