@@ -23,7 +23,10 @@ export default defineEventHandler(async (event) => {
   }).parse)
 
   const chat = await db.query.chats.findFirst({
-    where: (chat, { eq }) => and(eq(chat.id, id as string), eq(chat.userId, session.user?.id || session.id)),
+    where: () => and(
+      eq(schema.chats.id, id as string),
+      eq(schema.chats.userId, session.user?.id || session.id)
+    ),
     with: {
       messages: true
     }

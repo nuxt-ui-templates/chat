@@ -21,7 +21,7 @@
     "@iconify-json/simple-icons": "^1.2.55",
     "@libsql/client": "^0.15.15",
     "@nuxt/ui": "^4.1.0",
-    "@nuxthub/core": "npm:@nuxthub/core-nightly@1.0.0-20251101-232620-31e6b29",
+    "@nuxthub/core": "npm:@nuxthub/core-nightly@1.0.0-20251102-095244-e559184",
     "@nuxtjs/mdc": "^0.18.0",
     "ai": "^5.0.80",
     "date-fns": "^4.1.0",
@@ -29,7 +29,7 @@
     "nuxt": "4.1.0",
     "nuxt-auth-utils": "^0.5.25",
     "nuxt-charts": "0.2.4",
-    "pg": "^8.16.3",
+    "postgres": "^3.4.7",
     "shiki-stream": "^0.1.2",
     "workers-ai-provider": "^2.0.0"
   },

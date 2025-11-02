@@ -1,13 +1,17 @@
+import { and, eq } from 'drizzle-orm'
+
 export default defineOAuthGitHubEventHandler({
   async onSuccess(event, { user: ghUser }) {
-    const db = useDrizzle()
     const session = await getUserSession(event)
 
     let user = await db.query.users.findFirst({
-      where: (user, { eq }) => and(eq(user.provider, 'github'), eq(user.providerId, ghUser.id.toString()))
+      where: () => and(
+        eq(schema.users.provider, 'github'),
+        eq(schema.users.providerId, ghUser.id.toString())
+      )
     })
     if (!user) {
-      [user] = await db.insert(tables.users).values({
+      [user] = await db.insert(schema.users).values({
         id: session.id,
         name: ghUser.name || '',
         email: ghUser.email || '',
@@ -18,9 +22,9 @@ export default defineOAuthGitHubEventHandler({
       }).returning()
     } else {
       // Assign anonymous chats with session id to user
-      await db.update(tables.chats).set({
+      await db.update(schema.chats).set({
         userId: user.id
-      }).where(eq(tables.chats.userId, session.id))
+      }).where(eq(schema.chats.userId, session.id))
     }
 
     await setUserSession(event, { user })

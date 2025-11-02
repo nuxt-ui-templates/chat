@@ -1,4 +1,4 @@
-import { schema } from 'hub:database'
+import type { chats, messages } from 'hub:database:schema'
 
-export type Chat = typeof schema.chats.$inferSelect
-export type Message = typeof schema.messages.$inferSelect
+export type Chat = typeof chats.$inferSelect
+export type Message = typeof messages.$inferSelect
