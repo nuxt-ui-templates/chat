@@ -21,7 +21,7 @@
     "@iconify-json/simple-icons": "^1.2.55",
     "@libsql/client": "^0.15.15",
     "@nuxt/ui": "^4.1.0",
-    "@nuxthub/core": "npm:@nuxthub/core-nightly@1.0.0-20251102-095244-e559184",
+    "@nuxthub/core": "npm:@nuxthub/core-nightly@1.0.0-20251104-224431-b52a71f",
     "@nuxtjs/mdc": "^0.18.0",
     "ai": "^5.0.80",
     "date-fns": "^4.1.0",
