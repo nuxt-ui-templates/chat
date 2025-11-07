@@ -23,7 +23,7 @@
     "ai": "^5.0.80",
     "date-fns": "^4.1.0",
     "drizzle-orm": "^0.44.7",
-    "nuxt": "^4.2.0",
+    "nuxt": "^4.2.1",
     "nuxt-auth-utils": "^0.5.25",
     "nuxt-charts": "0.2.4",
     "pg": "^8.16.3",
