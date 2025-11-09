@@ -4,6 +4,3 @@ ignoredBuiltDependencies:
   - esbuild
   - unrs-resolver
   - vue-demi
-
-patchedDependencies:
-  '@nuxt/vite-builder': patches/@nuxt__vite-builder.patch
