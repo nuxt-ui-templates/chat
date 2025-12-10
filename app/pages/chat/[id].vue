@@ -16,12 +16,11 @@ const toast = useToast()
 const clipboard = useClipboard()
 const { model } = useModels()
 
-const { data, error } = await useFetch(`/api/chats/${route.params.id}`, {
+const { data } = await useFetch(`/api/chats/${route.params.id}`, {
   cache: 'force-cache'
 })
-
-if (error.value) {
-  throw createError(error.value)
+if (!data.value) {
+  throw createError({ statusCode: 404, statusMessage: 'Chat not found' })
 }
 
 const input = ref('')

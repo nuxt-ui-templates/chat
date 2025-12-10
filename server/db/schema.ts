@@ -42,7 +42,7 @@ export const chatsRelations = relations(chats, ({ one, many }) => ({
 export const messages = sqliteTable('messages', {
   id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
   chatId: text('chat_id').notNull().references(() => chats.id, { onDelete: 'cascade' }),
-  role: text('role').notNull(), // 'user' | 'assistant'
+  role: text('role', { enum: ['user', 'assistant', 'system'] }).notNull(),
   parts: text('parts', { mode: 'json' }),
   ...timestamps
 }, table => [

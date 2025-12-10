@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { LazyModalConfirm } from '#components'
-import type { UIChat } from '../composables/useChats'
 
 const route = useRoute()
 const toast = useToast()
@@ -18,7 +17,7 @@ const deleteModal = overlay.create(LazyModalConfirm, {
 
 const { data: chats, refresh: refreshChats } = await useFetch('/api/chats', {
   key: 'chats',
-  transform: (data: Chat[]) => data.map(chat => ({
+  transform: data => data.map(chat => ({
     id: chat.id,
     label: chat.title || 'Untitled',
     to: `/chat/${chat.id}`,
@@ -41,7 +40,7 @@ watch(loggedIn, () => {
   open.value = false
 })
 
-const { groups } = useChats(chats as unknown as Ref<UIChat[]>)
+const { groups } = useChats(chats)
 
 const items = computed(() => groups.value?.flatMap((group) => {
   return [{
