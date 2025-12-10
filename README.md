@@ -102,10 +102,8 @@ Or connect your repository to Vercel for automatic deployments:
 1. Push your code to GitHub
 2. Connect your repository to [Vercel](https://vercel.com)
 3. Configure your environment variables in the Vercel dashboard
-4. Deploy automatically on every push
-
-> [!NOTE]
-> Make sure to configure your PostgreSQL database connection and run migrations in your production environment.
+4. Create a Turso database and connect it to your Vercel project
+5. Deploy automatically on every push
 
 The application is configured to use [Vercel AI Gateway](https://vercel.com/docs/ai-gateway) which provides:
 

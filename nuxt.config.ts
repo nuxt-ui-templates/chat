@@ -38,8 +38,7 @@ export default defineNuxtConfig({
   },
 
   hub: {
-    ai: 'vercel',
-    database: 'sqlite'
+    db: 'sqlite'
   },
 
   eslint: {
