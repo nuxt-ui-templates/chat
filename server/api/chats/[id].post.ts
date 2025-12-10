@@ -1,7 +1,8 @@
 import { convertToModelMessages, createUIMessageStream, createUIMessageStreamResponse, generateText, smoothStream, stepCountIs, streamText } from 'ai'
-import { gateway } from '@ai-sdk/gateway'
-import type { UIMessage } from 'ai'
 import { z } from 'zod'
+import { db, schema } from 'hub:db'
+import { and, eq } from 'drizzle-orm'
+import type { UIMessage } from 'ai'
 
 defineRouteMeta({
   openAPI: {
@@ -22,10 +23,11 @@ export default defineEventHandler(async (event) => {
     messages: z.array(z.custom<UIMessage>())
   }).parse)
 
-  const db = useDrizzle()
-
   const chat = await db.query.chats.findFirst({
-    where: (chat, { eq }) => and(eq(chat.id, id as string), eq(chat.userId, session.user?.id || session.id)),
+    where: () => and(
+      eq(schema.chats.id, id as string),
+      eq(schema.chats.userId, session.user?.id || session.id)
+    ),
     with: {
       messages: true
     }
@@ -36,7 +38,7 @@ export default defineEventHandler(async (event) => {
 
   if (!chat.title) {
     const { text: title } = await generateText({
-      model: gateway('openai/gpt-4o-mini'),
+      model: 'openai/gpt-4o-mini',
       system: `You are a title generator for a chat:
           - Generate a short title based on the first user's message
           - The title should be less than 30 characters long
@@ -46,12 +48,12 @@ export default defineEventHandler(async (event) => {
       prompt: JSON.stringify(messages[0])
     })
 
-    await db.update(tables.chats).set({ title }).where(eq(tables.chats.id, id as string))
+    await db.update(schema.chats).set({ title }).where(eq(schema.chats.id, id as string))
   }
 
   const lastMessage = messages[messages.length - 1]
   if (lastMessage?.role === 'user' && messages.length > 1) {
-    await db.insert(tables.messages).values({
+    await db.insert(schema.messages).values({
       chatId: id as string,
       role: 'user',
       parts: lastMessage.parts
@@ -61,7 +63,7 @@ export default defineEventHandler(async (event) => {
   const stream = createUIMessageStream({
     execute: ({ writer }) => {
       const result = streamText({
-        model: gateway(model),
+        model,
         system: `You are a knowledgeable and helpful AI assistant. ${session.user?.username ? `The user's name is ${session.user.username}.` : ''} Your goal is to provide clear, accurate, and well-structured responses.
 
 **FORMATTING RULES (CRITICAL):**
@@ -112,7 +114,7 @@ export default defineEventHandler(async (event) => {
       }))
     },
     onFinish: async ({ messages }) => {
-      await db.insert(tables.messages).values(messages.map(message => ({
+      await db.insert(schema.messages).values(messages.map(message => ({
         chatId: chat.id,
         role: message.role as 'user' | 'assistant',
         parts: message.parts

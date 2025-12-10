@@ -9,8 +9,8 @@
     "postinstall": "nuxt prepare",
     "lint": "eslint .",
     "typecheck": "nuxt typecheck",
-    "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate"
+    "db:generate": "nuxt db generate",
+    "db:migrate": "nuxt db migrate"
   },
   "dependencies": {
     "@ai-sdk/gateway": "^2.0.15",
@@ -18,7 +18,9 @@
     "@iconify-json/logos": "^1.2.10",
     "@iconify-json/lucide": "^1.2.74",
     "@iconify-json/simple-icons": "^1.2.59",
+    "@libsql/client": "^0.15.15",
     "@nuxt/ui": "^4.2.1",
+    "@nuxthub/core": "^0.10.0",
     "@nuxtjs/mdc": "^0.18.4",
     "ai": "^5.0.101",
     "date-fns": "^4.1.0",
@@ -32,7 +34,7 @@
   "devDependencies": {
     "@nuxt/eslint": "^1.10.0",
     "@types/node": "^24.10.1",
-    "drizzle-kit": "^0.31.7",
+    "drizzle-kit": "^0.31.8",
     "eslint": "^9.39.1",
     "typescript": "^5.9.3",
     "vue-tsc": "^3.1.5"

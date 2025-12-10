@@ -4,6 +4,7 @@ export default defineNuxtConfig({
     '@nuxt/eslint',
     '@nuxt/ui',
     '@nuxtjs/mdc',
+    '@nuxthub/core',
     'nuxt-auth-utils',
     'nuxt-charts'
   ],
@@ -34,6 +35,10 @@ export default defineNuxtConfig({
     experimental: {
       openAPI: true
     }
+  },
+
+  hub: {
+    db: 'sqlite'
   },
 
   eslint: {
