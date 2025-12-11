@@ -2,10 +2,10 @@ import { db, schema } from 'hub:db'
 
 export default defineEventHandler(async (event) => {
   const session = await getUserSession(event)
-  const { message } = await readBody(event)
-  console.log(message)
+  const { id, message } = await readBody(event)
 
   const [chat] = await db.insert(schema.chats).values({
+    id,
     title: '',
     userId: session.user?.id || session.id
   }).returning()

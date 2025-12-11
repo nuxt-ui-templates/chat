@@ -1,22 +1,31 @@
+interface BlobResult {
+  pathname: string
+  url?: string
+  contentType?: string
+  size: number
+}
+
 function createObjectUrl(file: File): string {
   return URL.createObjectURL(file)
 }
 
-async function uploadFileToBlob(file: File, chatId: string): Promise<UploadResponse> {
-  const formData = new FormData()
-  formData.append('file', file)
-  formData.append('chatId', chatId)
+function fileToInput(file: File): HTMLInputElement {
+  const dataTransfer = new DataTransfer()
+  dataTransfer.items.add(file)
 
-  return await $fetch('/api/upload', {
-    method: 'POST',
-    body: formData
-  })
+  const input = document.createElement('input')
+  input.type = 'file'
+  input.files = dataTransfer.files
+
+  return input
 }
 
 export function useFileUploadWithStatus(chatId: string) {
   const files = ref<FileWithStatus[]>([])
   const toast = useToast()
   const { loggedIn } = useUserSession()
+
+  const upload = useUpload(`/api/upload/${chatId}`, { method: 'PUT' })
 
   async function uploadFiles(newFiles: File[]) {
     if (!loggedIn.value) {
@@ -37,14 +46,29 @@ export function useFileUploadWithStatus(chatId: string) {
       if (index === -1) return
 
       try {
-        const response = await uploadFileToBlob(fileWithStatus.file, chatId)
+        const input = fileToInput(fileWithStatus.file)
+        const response = await upload(input) as BlobResult | BlobResult[] | undefined
+
+        if (!response) {
+          throw new Error('Upload failed')
+        }
+
+        const result = Array.isArray(response) ? response[0] : response
+
+        if (!result) {
+          throw new Error('Upload failed')
+        }
+
         files.value[index] = {
           ...files.value[index]!,
           status: 'uploaded',
-          uploadedUrl: response.url
+          uploadedUrl: result.url,
+          uploadedPathname: result.pathname
         }
       } catch (error) {
-        const errorMessage = (error as { statusMessage?: string }).statusMessage || 'Upload failed'
+        const errorMessage = (error as { data?: { message?: string } }).data?.message
+          || (error as Error).message
+          || 'Upload failed'
         toast.add({
           title: 'Upload failed',
           description: errorMessage,
@@ -89,10 +113,9 @@ export function useFileUploadWithStatus(chatId: string) {
     URL.revokeObjectURL(file.previewUrl)
     files.value = files.value.filter(f => f.id !== id)
 
-    if (file.status === 'uploaded' && file.uploadedUrl) {
-      $fetch('/api/upload', {
-        method: 'DELETE',
-        body: { url: file.uploadedUrl }
+    if (file.status === 'uploaded' && file.uploadedPathname) {
+      fetch(`/api/upload/${file.uploadedPathname}`, {
+        method: 'DELETE'
       }).catch((error) => {
         console.error('Failed to delete file from blob:', error)
       })

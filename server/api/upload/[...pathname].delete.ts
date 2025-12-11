@@ -1,4 +1,4 @@
-import { del } from '@vercel/blob'
+import { blob } from 'hub:blob'
 import { z } from 'zod'
 
 export default defineEventHandler(async (event) => {
@@ -13,24 +13,18 @@ export default defineEventHandler(async (event) => {
 
   const username = session.user.username
 
-  const { url } = await readValidatedBody(event, z.object({
-    url: z.url()
+  const { pathname } = await getValidatedRouterParams(event, z.object({
+    pathname: z.string().min(1)
   }).parse)
 
-  if (!url.includes(`/${username}/`)) {
+  if (!pathname.startsWith(`${username}/`)) {
     throw createError({
       statusCode: 403,
       statusMessage: 'You do not have permission to delete this file'
     })
   }
 
-  try {
-    await del(url)
-    return { success: true }
-  } catch (error) {
-    throw createError({
-      statusCode: 500,
-      statusMessage: error instanceof Error ? error.message : 'Failed to delete file'
-    })
-  }
+  await blob.del(pathname)
+
+  return sendNoContent(event)
 })
