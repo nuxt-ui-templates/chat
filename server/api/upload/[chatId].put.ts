@@ -4,20 +4,13 @@ import { eq } from 'drizzle-orm'
 import { z } from 'zod'
 
 export default defineEventHandler(async (event) => {
-  const session = await getUserSession(event)
-
-  if (!session.user) {
-    throw createError({
-      statusCode: 401,
-      statusMessage: 'Authentication required to upload files'
-    })
-  }
+  const { user } = await requireUserSession(event)
 
   const { chatId } = await getValidatedRouterParams(event, z.object({
     chatId: z.string()
   }).parse)
 
-  const userId = session.user.id || session.id
+  const userId = user.id
 
   const chat = await db.query.chats.findFirst({
     where: () => eq(schema.chats.id, chatId)
@@ -30,7 +23,7 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  const username = session.user.username
+  const username = user.username
 
   return blob.handleUpload(event, {
     formKey: 'files',
