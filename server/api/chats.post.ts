@@ -1,25 +1,20 @@
-import type { UIMessage } from 'ai'
-import { z } from 'zod'
+import { db, schema } from 'hub:db'
 
 export default defineEventHandler(async (event) => {
   const session = await getUserSession(event)
+  const { message } = await readBody(event)
+  console.log(message)
 
-  const { id, message } = await readValidatedBody(event, z.object({
-    id: z.string(),
-    message: z.custom<UIMessage>()
-  }).parse)
-  const db = useDrizzle()
-
-  const [chat] = await db.insert(tables.chats).values({
-    id,
+  const [chat] = await db.insert(schema.chats).values({
     title: '',
     userId: session.user?.id || session.id
   }).returning()
+
   if (!chat) {
     throw createError({ statusCode: 500, statusMessage: 'Failed to create chat' })
   }
 
-  await db.insert(tables.messages).values({
+  await db.insert(schema.messages).values({
     chatId: chat.id,
     role: 'user',
     parts: message.parts

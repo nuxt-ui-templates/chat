@@ -1,20 +1,20 @@
 import { isToday, isYesterday, subMonths } from 'date-fns'
 
-interface Chat {
+export interface UIChat {
   id: string
   label: string
   icon: string
   createdAt: string
 }
 
-export function useChats(chats: Ref<Chat[] | undefined>) {
+export function useChats(chats: Ref<UIChat[] | undefined>) {
   const groups = computed(() => {
     // Group chats by date
-    const today: Chat[] = []
-    const yesterday: Chat[] = []
-    const lastWeek: Chat[] = []
-    const lastMonth: Chat[] = []
-    const older: Record<string, Chat[]> = {}
+    const today: UIChat[] = []
+    const yesterday: UIChat[] = []
+    const lastWeek: UIChat[] = []
+    const lastMonth: UIChat[] = []
+    const older: Record<string, UIChat[]> = {}
 
     const oneWeekAgo = subMonths(new Date(), 0.25) // ~7 days ago
     const oneMonthAgo = subMonths(new Date(), 1)
@@ -56,7 +56,7 @@ export function useChats(chats: Ref<Chat[] | undefined>) {
     const formattedGroups = [] as Array<{
       id: string
       label: string
-      items: Array<Chat>
+      items: Array<UIChat>
     }>
 
     // Add groups that have chats
