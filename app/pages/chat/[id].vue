@@ -159,6 +159,7 @@ onMounted(() => {
           :disabled="isUploading"
           variant="subtle"
           class="sticky bottom-0 [view-transition-name:chat-prompt] rounded-b-none z-10"
+          :ui="{ base: 'px-1.5' }"
           @submit="handleSubmit"
         >
           <template v-if="files.length > 0" #header>
@@ -176,8 +177,9 @@ onMounted(() => {
               />
             </div>
           </template>
+
           <template #footer>
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-1">
               <FileUploadButton @files-selected="addFiles($event)" />
               <ModelSelect v-model="model" />
             </div>
@@ -186,6 +188,7 @@ onMounted(() => {
               :status="chat.status"
               :disabled="isUploading"
               color="neutral"
+              size="sm"
               @stop="chat.stop()"
               @reload="chat.regenerate()"
             />

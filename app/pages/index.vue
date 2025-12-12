@@ -97,6 +97,7 @@ const quickChats = [
           :disabled="isUploading"
           class="[view-transition-name:chat-prompt]"
           variant="subtle"
+          :ui="{ base: 'px-1.5' }"
           @submit="onSubmit"
         >
           <template v-if="files.length > 0" #header>
@@ -121,7 +122,7 @@ const quickChats = [
               <ModelSelect v-model="model" />
             </div>
 
-            <UChatPromptSubmit color="neutral" :disabled="isUploading" />
+            <UChatPromptSubmit color="neutral" size="sm" :disabled="isUploading" />
           </template>
         </UChatPrompt>
 
