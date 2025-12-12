@@ -23,6 +23,7 @@
     "@nuxthub/core": "^0.10.0",
     "@nuxtjs/mdc": "^0.18.4",
     "ai": "^5.0.101",
+    "@vercel/blob": "^2.0.0",
     "date-fns": "^4.1.0",
     "drizzle-orm": "^0.44.7",
     "nuxt": "^4.2.2",

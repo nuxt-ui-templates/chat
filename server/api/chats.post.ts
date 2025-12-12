@@ -1,10 +1,16 @@
+import type { UIMessage } from 'ai'
 import { db, schema } from 'hub:db'
+import { z } from 'zod'
 
 export default defineEventHandler(async (event) => {
   const session = await getUserSession(event)
-  const { input } = await readBody(event)
+  const { id, message } = await readValidatedBody(event, z.object({
+    id: z.string(),
+    message: z.custom<UIMessage>()
+  }).parse)
 
   const [chat] = await db.insert(schema.chats).values({
+    id,
     title: '',
     userId: session.user?.id || session.id
   }).returning()
@@ -16,7 +22,7 @@ export default defineEventHandler(async (event) => {
   await db.insert(schema.messages).values({
     chatId: chat.id,
     role: 'user',
-    parts: [{ type: 'text', text: input }]
+    parts: message.parts
   })
 
   return chat
