@@ -26,6 +26,7 @@ export const weatherTool = tool({
       temperature: Math.round(temp),
       temperatureHigh: Math.round(temp + Math.random() * 5 + 2),
       temperatureLow: Math.round(temp - Math.random() * 5 - 2),
+      temperatureUnit: 'C',
       condition: getWeatherData(conds[Math.floor(Math.random() * conds.length)]!),
       humidity: Math.floor(Math.random() * 60) + 20,
       windSpeed: Math.floor(Math.random() * 25) + 5,
