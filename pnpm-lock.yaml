@@ -2561,13 +2561,13 @@ packages:
   '@unovis/graphlibrary@2.2.0-2':
     resolution: {integrity: sha512-HeEzpd/vDyWiIJt0rnh+2ICXUIuF2N0+Z9OJJiKg0DB+eFUcD+bk+9QPhYHwkFwfxdjDA9fHi1DZ/O/bbV58Nw==}
 
-  '@unovis/ts@1.6.1':
-    resolution: {integrity: sha512-h6p9HFmgztlqy+6hn+eAXqjk598QCQ3OAWSYIb3Ii3ljVnzj6vrhunhUuktFRyS0sXC4SK57b/Yf3y+8hCukYg==}
+  '@unovis/ts@1.6.2':
+    resolution: {integrity: sha512-kSOWRiZsU4Kk1yuJSSaJs+zJCKNg3+2A0/6/7/y1Cu5uHggwGPeE3CzKaNOal/Hpc46bnZw2VLI23mY+gDFbeQ==}
 
-  '@unovis/vue@1.6.1':
-    resolution: {integrity: sha512-HT5JXAmscEK6GaxLYU8lY/LarvmkLDdt0uZz49b/Pun/K/+y02073Lr+WhLAUTGBC+tDbvNN2EcwgAvIgwBzrw==}
+  '@unovis/vue@1.6.2':
+    resolution: {integrity: sha512-vFglLeiTnNk8VaCEjctAMQXi8Vi+dc217JLkbiIkOLNLXzOClv1ZLv7QjKplRHG+eq/DKC17WSBKINsjXuYbtQ==}
     peerDependencies:
-      '@unovis/ts': 1.6.1
+      '@unovis/ts': 1.6.2
       vue: ^3
 
   '@unrs/resolver-binding-android-arm-eabi@1.11.1':
@@ -6784,8 +6784,8 @@ packages:
   vue-bundle-renderer@2.2.0:
     resolution: {integrity: sha512-sz/0WEdYH1KfaOm0XaBmRZOWgYTEvUDt6yPYaUzl4E52qzgWLlknaPPTTZmp6benaPTlQAI/hN1x3tAzZygycg==}
 
-  vue-chrts@0.2.4:
-    resolution: {integrity: sha512-rEShiyRTUaxGMli9wzv0mPmnwuZ5Wc0gF/fGGG/0Xk9oYjpOv3ZdaIMXFfUxVHOzeL42TSO3AibQ77ojxo3INA==}
+  vue-chrts@0.2.5:
+    resolution: {integrity: sha512-KVhSkDXiDAbg/TuLTKEsisMCEyNmYMq8NapWkRfM5jz1a8z7ba5tmNZPfRh3qyVDyS4w4E0k8V/3pWF043oeGg==}
     peerDependencies:
       vue: ^3.5.13
 
@@ -9705,7 +9705,7 @@ snapshots:
     dependencies:
       lodash-es: 4.17.21
 
-  '@unovis/ts@1.6.1':
+  '@unovis/ts@1.6.2':
     dependencies:
       '@emotion/css': 11.13.5
       '@juggle/resize-observer': 3.4.0
@@ -9742,9 +9742,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@unovis/vue@1.6.1(@unovis/ts@1.6.1)(vue@3.5.25(typescript@5.9.3))':
+  '@unovis/vue@1.6.2(@unovis/ts@1.6.2)(vue@3.5.25(typescript@5.9.3))':
     dependencies:
-      '@unovis/ts': 1.6.1
+      '@unovis/ts': 1.6.2
       vue: 3.5.25(typescript@5.9.3)
 
   '@unrs/resolver-binding-android-arm-eabi@1.11.1':
@@ -12720,9 +12720,9 @@ snapshots:
   nuxt-charts@0.2.4(magicast@0.5.1)(vue@3.5.25(typescript@5.9.3)):
     dependencies:
       '@nuxt/kit': 3.19.2(magicast@0.5.1)
-      '@unovis/ts': 1.6.1
-      '@unovis/vue': 1.6.1(@unovis/ts@1.6.1)(vue@3.5.25(typescript@5.9.3))
-      vue-chrts: 0.2.4(vue@3.5.25(typescript@5.9.3))
+      '@unovis/ts': 1.6.2
+      '@unovis/vue': 1.6.2(@unovis/ts@1.6.2)(vue@3.5.25(typescript@5.9.3))
+      vue-chrts: 0.2.5(vue@3.5.25(typescript@5.9.3))
     transitivePeerDependencies:
       - magicast
       - supports-color
@@ -14636,7 +14636,7 @@ snapshots:
     dependencies:
       ufo: 1.6.1
 
-  vue-chrts@0.2.4(vue@3.5.25(typescript@5.9.3)):
+  vue-chrts@0.2.5(vue@3.5.25(typescript@5.9.3)):
     dependencies:
       vue: 3.5.25(typescript@5.9.3)
 
