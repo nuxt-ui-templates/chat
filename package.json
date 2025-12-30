@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@ai-sdk/gateway": "^2.0.23",
-    "@ai-sdk/vue": "^2.0.116",
+    "@ai-sdk/vue": "^3.0.5",
     "@iconify-json/logos": "^1.2.10",
     "@iconify-json/lucide": "^1.2.82",
     "@iconify-json/simple-icons": "^1.2.63",
