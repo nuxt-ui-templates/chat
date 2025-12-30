@@ -13,7 +13,7 @@
     "db:migrate": "nuxt db migrate"
   },
   "dependencies": {
-    "@ai-sdk/gateway": "^2.0.23",
+    "@ai-sdk/gateway": "^3.0.4",
     "@ai-sdk/vue": "^2.0.116",
     "@iconify-json/logos": "^1.2.10",
     "@iconify-json/lucide": "^1.2.82",
