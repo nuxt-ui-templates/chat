@@ -13,8 +13,8 @@
     "db:migrate": "nuxt db migrate"
   },
   "dependencies": {
-    "@ai-sdk/gateway": "^2.0.23",
-    "@ai-sdk/vue": "^2.0.116",
+    "@ai-sdk/gateway": "^3.0.4",
+    "@ai-sdk/vue": "^3.0.5",
     "@iconify-json/logos": "^1.2.10",
     "@iconify-json/lucide": "^1.2.82",
     "@iconify-json/simple-icons": "^1.2.63",
@@ -22,7 +22,7 @@
     "@nuxt/ui": "^4.3.0",
     "@nuxthub/core": "^0.10.3",
     "@nuxtjs/mdc": "^0.19.1",
-    "ai": "^5.0.116",
+    "ai": "^6.0.5",
     "@vercel/blob": "^2.0.0",
     "date-fns": "^4.1.0",
     "drizzle-orm": "^0.45.1",
