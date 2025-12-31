@@ -28,7 +28,7 @@
     "drizzle-orm": "^0.45.1",
     "nuxt": "^4.2.2",
     "nuxt-auth-utils": "^0.5.26",
-    "nuxt-charts": "0.2.4",
+    "nuxt-charts": "2.0.0",
     "pg": "^8.16.3",
     "shiki-stream": "^0.1.3"
   },

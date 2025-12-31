@@ -54,8 +54,8 @@ importers:
         specifier: ^0.5.26
         version: 0.5.26(magicast@0.5.1)
       nuxt-charts:
-        specifier: 0.2.4
-        version: 0.2.4(magicast@0.5.1)(vue@3.5.25(typescript@5.9.3))
+        specifier: 2.0.0
+        version: 2.0.0(vue@3.5.25(typescript@5.9.3))
       pg:
         specifier: ^8.16.3
         version: 8.16.3
@@ -5181,8 +5181,8 @@ packages:
       '@simplewebauthn/server':
         optional: true
 
-  nuxt-charts@0.2.4:
-    resolution: {integrity: sha512-CCSK8mhbLcmsEt+nzBMiH/JAQ/L+e0Cmg87lOwLehjlJ23rMyBcajF2Fn9fqwx6nQv2PT1MFDlTVHoAsAMYnWA==}
+  nuxt-charts@2.0.0:
+    resolution: {integrity: sha512-KoyJ36bYbyEDI/vx++CDMfCrsh/xcKCblw8zE0N6l3M/rSECARMpNUaOs9QS8xC+LgPACkEa8LEbBGv1i+NfsA==}
 
   nuxt@4.2.2:
     resolution: {integrity: sha512-n6oYFikgLEb70J4+K19jAzfx4exZcRSRX7yZn09P5qlf2Z59VNOBqNmaZO5ObzvyGUZ308SZfL629/Q2v2FVjw==}
@@ -6778,8 +6778,8 @@ packages:
   vue-bundle-renderer@2.2.0:
     resolution: {integrity: sha512-sz/0WEdYH1KfaOm0XaBmRZOWgYTEvUDt6yPYaUzl4E52qzgWLlknaPPTTZmp6benaPTlQAI/hN1x3tAzZygycg==}
 
-  vue-chrts@0.2.5:
-    resolution: {integrity: sha512-KVhSkDXiDAbg/TuLTKEsisMCEyNmYMq8NapWkRfM5jz1a8z7ba5tmNZPfRh3qyVDyS4w4E0k8V/3pWF043oeGg==}
+  vue-chrts@2.0.0:
+    resolution: {integrity: sha512-TwjTlULMT4DQfw7XRH1scTNZSqIy/jCKf1+vSZ9+hm61KHrKLhK8+7+UeuK/tP2i4sCaOsRfvd+8ZQvluXyWAg==}
     peerDependencies:
       vue: ^3.5.13
 
@@ -12711,14 +12711,12 @@ snapshots:
       - bcrypt
       - magicast
 
-  nuxt-charts@0.2.4(magicast@0.5.1)(vue@3.5.25(typescript@5.9.3)):
+  nuxt-charts@2.0.0(vue@3.5.25(typescript@5.9.3)):
     dependencies:
-      '@nuxt/kit': 3.19.2(magicast@0.5.1)
       '@unovis/ts': 1.6.2
       '@unovis/vue': 1.6.2(@unovis/ts@1.6.2)(vue@3.5.25(typescript@5.9.3))
-      vue-chrts: 0.2.5(vue@3.5.25(typescript@5.9.3))
+      vue-chrts: 2.0.0(vue@3.5.25(typescript@5.9.3))
     transitivePeerDependencies:
-      - magicast
       - supports-color
       - vue
 
@@ -14630,7 +14628,7 @@ snapshots:
     dependencies:
       ufo: 1.6.1
 
-  vue-chrts@0.2.5(vue@3.5.25(typescript@5.9.3)):
+  vue-chrts@2.0.0(vue@3.5.25(typescript@5.9.3)):
     dependencies:
       vue: 3.5.25(typescript@5.9.3)
 
