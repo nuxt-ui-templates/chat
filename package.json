@@ -13,16 +13,16 @@
     "db:migrate": "nuxt db migrate"
   },
   "dependencies": {
-    "@ai-sdk/gateway": "^3.0.4",
-    "@ai-sdk/vue": "^3.0.5",
+    "@ai-sdk/gateway": "^3.0.5",
+    "@ai-sdk/vue": "^3.0.6",
     "@iconify-json/logos": "^1.2.10",
     "@iconify-json/lucide": "^1.2.82",
-    "@iconify-json/simple-icons": "^1.2.63",
+    "@iconify-json/simple-icons": "^1.2.64",
     "@libsql/client": "^0.15.15",
     "@nuxt/ui": "^4.3.0",
-    "@nuxthub/core": "^0.10.3",
-    "@nuxtjs/mdc": "^0.19.1",
-    "ai": "^6.0.5",
+    "@nuxthub/core": "^0.10.4",
+    "@nuxtjs/mdc": "^0.19.2",
+    "ai": "^6.0.6",
     "@vercel/blob": "^2.0.0",
     "date-fns": "^4.1.0",
     "drizzle-orm": "^0.45.1",
@@ -40,5 +40,5 @@
     "typescript": "^5.9.3",
     "vue-tsc": "^3.2.1"
   },
-  "packageManager": "pnpm@10.26.1"
+  "packageManager": "pnpm@10.27.0"
 }
