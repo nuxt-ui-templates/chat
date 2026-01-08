@@ -41,35 +41,66 @@ Make sure to install the dependencies:
 pnpm install
 ```
 
-Set up your environment variables by creating a `.env` file:
-
-```env
-# Database
-DATABASE_URL=<your-postgresql-database-url>
-
-# GitHub OAuth (optional, for authentication)
-NUXT_OAUTH_GITHUB_CLIENT_ID=<your-github-oauth-app-client-id>
-NUXT_OAUTH_GITHUB_CLIENT_SECRET=<your-github-oauth-app-client-secret>
-
-# AI Configuration via Vercel AI Gateway (unified API for all providers)
-AI_GATEWAY_API_KEY=<your-vercel-ai-gateway-api-key>
-
-# Password for nuxt-auth-utils (minimum 32 characters)
-NUXT_SESSION_PASSWORD=<your-password>
-```
-
-> [!TIP]
-> With [Vercel AI Gateway](https://vercel.com/docs/ai-gateway), you don't need individual API keys for OpenAI, Anthropic, etc. The AI Gateway provides a unified API to access hundreds of models through a single endpoint with automatic load balancing, fallbacks, and spend monitoring.
-
-To add authentication with GitHub, you need to [create a GitHub OAuth application](https://github.com/settings/applications/new).
-
 Run database migrations:
 
 ```bash
 pnpm db:migrate
 ```
 
-## Development
+### AI Integration
+
+This template uses the [Vercel AI SDK](https://ai-sdk.dev/) for streaming AI responses with support for multiple providers through [Vercel AI Gateway](https://vercel.com/docs/ai-gateway).
+
+Set your AI provider configuration in `.env`:
+
+```bash
+# AI Configuration via Vercel AI Gateway (unified API for all providers)
+AI_GATEWAY_API_KEY=<your-vercel-ai-gateway-api-key>
+```
+
+> [!TIP]
+> With Vercel AI Gateway, you don't need individual API keys for OpenAI, Anthropic, etc. The AI Gateway provides a unified API to access hundreds of models through a single endpoint with automatic load balancing, fallbacks, and spend monitoring.
+
+### Authentication (Optional)
+
+This template uses [nuxt-auth-utils](https://github.com/atinux/nuxt-auth-utils) for authentication with GitHub OAuth.
+
+To enable authentication, [create a GitHub OAuth application](https://github.com/settings/applications/new) and set:
+
+```bash
+NUXT_OAUTH_GITHUB_CLIENT_ID=<your-github-oauth-app-client-id>
+NUXT_OAUTH_GITHUB_CLIENT_SECRET=<your-github-oauth-app-client-secret>
+NUXT_SESSION_PASSWORD=<your-password-minimum-32-characters>
+```
+
+### Blob Storage (Optional)
+
+This template uses [NuxtHub Blob](https://hub.nuxt.com/docs/features/blob) for file uploads, which supports multiple storage providers:
+
+- **Local filesystem** (default for development)
+- **Vercel Blob** (auto-configured when deployed to Vercel)
+- **Cloudflare R2** (auto-configured when deployed to Cloudflare)
+- **Amazon S3** (with manual configuration)
+
+For **[Vercel Blob](https://vercel.com/docs/storage/vercel-blob)**, assign a Blob Store to your project from the Vercel dashboard (Project → Storage), then set the token for local development:
+
+```bash
+BLOB_READ_WRITE_TOKEN=<your-vercel-blob-token>
+```
+
+For **S3-compatible storage**, set:
+
+```bash
+S3_ACCESS_KEY_ID=<your-access-key-id>
+S3_SECRET_ACCESS_KEY=<your-secret-access-key>
+S3_BUCKET=<your-bucket-name>
+S3_REGION=<your-region>
+```
+
+> [!NOTE]
+> Without configuration, files are stored locally in `.data/hub/blob` during development.
+
+## Development Server
 
 Start the development server on `http://localhost:3000`:
 
@@ -91,37 +122,7 @@ Locally preview production build:
 pnpm preview
 ```
 
-Deploy to Vercel:
-
-```bash
-npx vercel
-```
-
-Or connect your repository to Vercel for automatic deployments:
-
-1. Push your code to GitHub
-2. Connect your repository to [Vercel](https://vercel.com)
-3. Configure your environment variables in the Vercel dashboard
-4. Create a Turso database and connect it to your Vercel project
-5. Deploy automatically on every push
-
-The application is configured to use [Vercel AI Gateway](https://vercel.com/docs/ai-gateway) which provides:
-
-- **Unified API**: Access hundreds of AI models through a single endpoint
-- **High Reliability**: Automatic retries and fallbacks between providers
-- **Spend Monitoring**: Track usage and set budgets across all providers
-- **Load Balancing**: Distribute requests for optimal performance
-
-Simply configure your `AI_GATEWAY_API_KEY` in your Vercel environment variables for production use.
-
-## AI Gateway Setup
-
-1. Create a Vercel account at [vercel.com](https://vercel.com)
-2. Navigate to your [AI Gateway settings](https://vercel.com/dashboard/ai-gateway)
-3. Generate an API key for your project
-4. Add the key to your environment variables as `AI_GATEWAY_API_KEY`
-
-The AI Gateway automatically handles authentication with all supported AI providers including OpenAI, Anthropic, Google, xAI, and many others.
+Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
 
 ## Renovate integration
 
