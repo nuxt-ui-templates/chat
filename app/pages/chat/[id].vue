@@ -127,14 +127,19 @@ onMounted(() => {
                 :text="part.text"
                 :is-streaming="part.state !== 'done'"
               />
+              <!-- Only render markdown for assistant messages to prevent XSS from user input -->
               <MDCCached
-                v-else-if="part.type === 'text'"
+                v-else-if="part.type === 'text' && message.role === 'assistant'"
                 :value="part.text"
                 :cache-key="`${message.id}-${index}`"
                 :components="components"
                 :parser-options="{ highlight: false }"
                 class="*:first:mt-0 *:last:mb-0"
               />
+              <!-- User messages are rendered as plain text (safely escaped by Vue) -->
+              <p v-else-if="part.type === 'text' && message.role === 'user'" class="whitespace-pre-wrap">
+                {{ part.text }}
+              </p>
               <ToolWeather
                 v-else-if="part.type === 'tool-weather'"
                 :invocation="(part as WeatherUIToolInvocation)"
