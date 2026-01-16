@@ -2,7 +2,7 @@
 
 [![Nuxt UI](https://img.shields.io/badge/Made%20with-Nuxt%20UI-00DC82?logo=nuxt&labelColor=020420)](https://ui.nuxt.com)
 
-Full-featured AI Chatbot Nuxt application with authentication, chat history, multiple pages, collapsible sidebar, keyboard shortcuts, light & dark mode, command palette and more. Built using [Nuxt UI](https://ui.nuxt.com) components and integrated with [AI SDK v5](https://sdk.vercel.ai) for a complete chat experience.
+Full-featured AI Chatbot Nuxt application with authentication, chat history, multiple pages, collapsible sidebar, keyboard shortcuts, light & dark mode, command palette and more. Built using [Nuxt UI](https://ui.nuxt.com) components and integrated with [AI SDK](https://ai-sdk.dev) for a complete chat experience.
 
 - [Live demo](https://chat-template.nuxt.dev/)
 - [Documentation](https://ui.nuxt.com/docs/getting-started/installation/nuxt)
@@ -17,7 +17,7 @@ Full-featured AI Chatbot Nuxt application with authentication, chat history, mul
 
 ## Features
 
-- ⚡️ **Streaming AI messages** powered by the [AI SDK v5](https://sdk.vercel.ai)
+- ⚡️ **Streaming AI messages** powered by the [AI SDK](https://ai-sdk.dev)
 - 🤖 **Multiple model support** via various AI providers with built-in AI Gateway support
 - 🔐 **Authentication** via [nuxt-auth-utils](https://github.com/atinux/nuxt-auth-utils)
 - 💾 **Chat history persistence** using SQLite database (Turso in production) and [Drizzle ORM](https://orm.drizzle.team)
