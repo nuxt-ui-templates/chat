@@ -10,10 +10,10 @@ importers:
     dependencies:
       '@ai-sdk/gateway':
         specifier: ^3.0.4
-        version: 3.0.4(zod@4.2.1)
+        version: 3.0.4(zod@4.3.5)
       '@ai-sdk/vue':
         specifier: ^3.0.5
-        version: 3.0.5(vue@3.5.25(typescript@5.9.3))(zod@4.2.1)
+        version: 3.0.5(vue@3.5.25(typescript@5.9.3))(zod@4.3.5)
       '@iconify-json/logos':
         specifier: ^1.2.10
         version: 1.2.10
@@ -28,7 +28,7 @@ importers:
         version: 0.15.15
       '@nuxt/ui':
         specifier: ^4.3.0
-        version: 4.3.0(744956920b484be256970c0e817e570d)
+        version: 4.3.0(43b40d45b162fb2d7628707ab1c98612)
       '@nuxthub/core':
         specifier: ^0.10.3
         version: 0.10.3(@vercel/blob@2.0.0)(aws4fetch@1.0.20)(db0@0.3.4(@electric-sql/pglite@0.3.11)(@libsql/client@0.15.15)(better-sqlite3@12.4.1)(drizzle-orm@0.45.1(@cloudflare/workers-types@4.20251221.0)(@electric-sql/pglite@0.3.11)(@libsql/client@0.15.15)(@opentelemetry/api@1.9.0)(better-sqlite3@12.4.1)(pg@8.16.3)(postgres@3.4.7)))(ioredis@5.8.2)(magicast@0.5.1)(typescript@5.9.3)(vue-tsc@3.2.1(typescript@5.9.3))
@@ -43,7 +43,7 @@ importers:
         version: 14.1.0(vue@3.5.25(typescript@5.9.3))
       ai:
         specifier: ^6.0.5
-        version: 6.0.5(zod@4.2.1)
+        version: 6.0.5(zod@4.3.5)
       date-fns:
         specifier: ^4.1.0
         version: 4.1.0
@@ -74,6 +74,9 @@ importers:
       tailwindcss:
         specifier: ^4.1.18
         version: 4.1.18
+      zod:
+        specifier: ^4.3.5
+        version: 4.3.5
     devDependencies:
       '@nuxt/eslint':
         specifier: ^1.12.1
@@ -6985,8 +6988,8 @@ packages:
     resolution: {integrity: sha512-zK7YHHz4ZXpW89AHXUPbQVGKI7uvkd3hzusTdotCg1UxyaVtg0zFJSTfW/Dq5f7OBBVnq6cZIaC8Ti4hb6dtCA==}
     engines: {node: '>= 14'}
 
-  zod@4.2.1:
-    resolution: {integrity: sha512-0wZ1IRqGGhMP76gLqz8EyfBXKk0J2qo2+H3fi4mcUP/KtTocoX08nmIAHl1Z2kJIZbZee8KOpBCSNPRgauucjw==}
+  zod@4.3.5:
+    resolution: {integrity: sha512-k7Nwx6vuWx1IJ9Bjuf4Zt1PEllcwe7cls3VNzm4CQ1/hgtFUK2bRNG3rvnpPUhFjmqJKAKtjV576KnUkHocg/g==}
 
   zwitch@2.0.4:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
@@ -6998,28 +7001,28 @@ snapshots:
       '@phc/format': 1.0.0
       '@poppinss/utils': 6.10.1
 
-  '@ai-sdk/gateway@3.0.4(zod@4.2.1)':
+  '@ai-sdk/gateway@3.0.4(zod@4.3.5)':
     dependencies:
       '@ai-sdk/provider': 3.0.1
-      '@ai-sdk/provider-utils': 4.0.2(zod@4.2.1)
+      '@ai-sdk/provider-utils': 4.0.2(zod@4.3.5)
       '@vercel/oidc': 3.0.5
-      zod: 4.2.1
+      zod: 4.3.5
 
-  '@ai-sdk/provider-utils@4.0.2(zod@4.2.1)':
+  '@ai-sdk/provider-utils@4.0.2(zod@4.3.5)':
     dependencies:
       '@ai-sdk/provider': 3.0.1
       '@standard-schema/spec': 1.1.0
       eventsource-parser: 3.0.6
-      zod: 4.2.1
+      zod: 4.3.5
 
   '@ai-sdk/provider@3.0.1':
     dependencies:
       json-schema: 0.4.0
 
-  '@ai-sdk/vue@3.0.5(vue@3.5.25(typescript@5.9.3))(zod@4.2.1)':
+  '@ai-sdk/vue@3.0.5(vue@3.5.25(typescript@5.9.3))(zod@4.3.5)':
     dependencies:
-      '@ai-sdk/provider-utils': 4.0.2(zod@4.2.1)
-      ai: 6.0.5(zod@4.2.1)
+      '@ai-sdk/provider-utils': 4.0.2(zod@4.3.5)
+      ai: 6.0.5(zod@4.3.5)
       swrv: 1.1.0(vue@3.5.25(typescript@5.9.3))
       vue: 3.5.25(typescript@5.9.3)
     transitivePeerDependencies:
@@ -8267,7 +8270,7 @@ snapshots:
     transitivePeerDependencies:
       - magicast
 
-  '@nuxt/ui@4.3.0(744956920b484be256970c0e817e570d)':
+  '@nuxt/ui@4.3.0(43b40d45b162fb2d7628707ab1c98612)':
     dependencies:
       '@iconify/vue': 5.0.0(vue@3.5.25(typescript@5.9.3))
       '@internationalized/date': 3.10.1
@@ -8330,7 +8333,7 @@ snapshots:
       vue-component-type-helpers: 3.1.8
     optionalDependencies:
       vue-router: 4.6.3(vue@3.5.25(typescript@5.9.3))
-      zod: 4.2.1
+      zod: 4.3.5
     transitivePeerDependencies:
       - '@azure/app-configuration'
       - '@azure/cosmos'
@@ -8462,7 +8465,7 @@ snapshots:
       ufo: 1.6.1
       uncrypto: 0.1.3
       unstorage: 1.17.3(@vercel/blob@2.0.0)(aws4fetch@1.0.20)(db0@0.3.4(@electric-sql/pglite@0.3.11)(@libsql/client@0.15.15)(better-sqlite3@12.4.1)(drizzle-orm@0.45.1(@cloudflare/workers-types@4.20251221.0)(@electric-sql/pglite@0.3.11)(@libsql/client@0.15.15)(@opentelemetry/api@1.9.0)(better-sqlite3@12.4.1)(pg@8.16.3)(postgres@3.4.7)))(ioredis@5.8.2)
-      zod: 4.2.1
+      zod: 4.3.5
     transitivePeerDependencies:
       - '@arethetypeswrong/core'
       - '@azure/app-configuration'
@@ -10112,13 +10115,13 @@ snapshots:
 
   agent-base@7.1.4: {}
 
-  ai@6.0.5(zod@4.2.1):
+  ai@6.0.5(zod@4.3.5):
     dependencies:
-      '@ai-sdk/gateway': 3.0.4(zod@4.2.1)
+      '@ai-sdk/gateway': 3.0.4(zod@4.3.5)
       '@ai-sdk/provider': 3.0.1
-      '@ai-sdk/provider-utils': 4.0.2(zod@4.2.1)
+      '@ai-sdk/provider-utils': 4.0.2(zod@4.3.5)
       '@opentelemetry/api': 1.9.0
-      zod: 4.2.1
+      zod: 4.3.5
 
   ajv@6.12.6:
     dependencies:
@@ -14831,6 +14834,6 @@ snapshots:
       compress-commons: 6.0.2
       readable-stream: 4.7.0
 
-  zod@4.2.1: {}
+  zod@4.3.5: {}
 
   zwitch@2.0.4: {}
