@@ -61,7 +61,7 @@ export default defineEventHandler(async (event) => {
   }
 
   const stream = createUIMessageStream({
-    execute: ({ writer }) => {
+    execute: async ({ writer }) => {
       const result = streamText({
         model,
         system: `You are a knowledgeable and helpful AI assistant. ${session.user?.username ? `The user's name is ${session.user.username}.` : ''} Your goal is to provide clear, accurate, and well-structured responses.
@@ -80,7 +80,7 @@ export default defineEventHandler(async (event) => {
 - Use examples when helpful
 - Break down complex topics into digestible parts
 - Maintain a friendly, professional tone`,
-        messages: convertToModelMessages(messages),
+        messages: await convertToModelMessages(messages),
         providerOptions: {
           openai: {
             reasoningEffort: 'low',
