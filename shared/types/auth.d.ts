@@ -7,7 +7,7 @@ declare module '#auth-utils' {
     avatar: string
     username: string
     provider: 'github'
-    providerId: number
+    providerId: string
   }
 }
 
