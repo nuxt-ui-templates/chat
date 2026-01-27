@@ -28,7 +28,7 @@
     "date-fns": "^4.1.0",
     "drizzle-orm": "^0.45.1",
     "motion-v": "^1.10.2",
-    "nuxt": "^4.2.2",
+    "nuxt": "^4.3.0",
     "nuxt-auth-utils": "^0.5.28",
     "nuxt-charts": "0.2.4",
     "pg": "^8.17.2",
