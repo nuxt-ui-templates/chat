@@ -20,7 +20,7 @@ const deleteModal = overlay.create(LazyModalConfirm, {
 
 const { data: chats, refresh: refreshChats } = await useFetch('/api/chats', {
   key: 'chats',
-  transform: (data: Chat[]) => data.map(chat => ({
+  transform: (data: Chat[]) => (data || []).map(chat => ({
     id: chat.id,
     label: chat.title || 'Untitled',
     to: `/chat/${chat.id}`,
@@ -30,9 +30,15 @@ const { data: chats, refresh: refreshChats } = await useFetch('/api/chats', {
 })
 
 onNuxtReady(async () => {
-  const first10 = (chats.value || []).slice(0, 10)
-  for (const chat of first10) {
-    await $fetch(`/api/chats/${chat.id}`)
+  if (chats.value && chats.value.length > 0) {
+    const first10 = (chats.value || []).slice(0, 10)
+    for (const chat of first10) {
+      try {
+        await $fetch(`/api/chats/${chat.id}`)
+      } catch (e) {
+        console.error(`Failed to prefetch chat ${chat.id}`, e)
+      }
+    }
   }
 })
 
