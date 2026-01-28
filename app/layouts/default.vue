@@ -83,14 +83,6 @@ defineShortcuts({
     <!-- Custom Sidebar (Icons) -->
     <aside class="w-[72px] flex flex-col items-center py-6 border-r border-gray-200 dark:border-gray-800 bg-[#f9f9f9] dark:bg-[#222222] transition-colors duration-200 z-30 shrink-0">
       <div class="flex flex-col gap-6 w-full items-center">
-        <!-- Toggle History/Dashboard -->
-        <button
-          class="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 transition-colors cursor-pointer"
-          title="Toggle Sidebar"
-          @click="isHistoryOpen = !isHistoryOpen"
-        >
-          <span class="material-icons-outlined text-[24px]">space_dashboard</span>
-        </button>
         <!-- New Chat -->
         <NuxtLink
           to="/"
@@ -99,16 +91,23 @@ defineShortcuts({
         >
           <span class="material-icons-round text-[20px]">add</span>
         </NuxtLink>
-      </div>
 
-      <div class="flex flex-col gap-4 mt-8 w-full items-center flex-1">
-        <!-- Search -->
+        <!-- Chat Bubble -->
         <button
           class="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 transition-colors cursor-pointer"
-          title="Search"
+          title="Chats"
+          @click="navigateTo('/')"
+        >
+          <span class="material-icons-outlined text-[24px]">chat_bubble_outline</span>
+        </button>
+
+        <!-- Explore/Compass -->
+        <button
+          class="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 transition-colors cursor-pointer"
+          title="Explore"
           @click="searchOpen = true"
         >
-          <span class="material-icons-outlined text-[24px]">search</span>
+          <span class="material-icons-outlined text-[24px]">explore</span>
         </button>
 
         <!-- History -->
@@ -121,13 +120,15 @@ defineShortcuts({
         </button>
       </div>
 
+      <div class="flex-1"></div>
+
       <div class="flex flex-col gap-4 w-full items-center mb-2">
+        <!-- Settings -->
         <button
           class="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 transition-colors cursor-pointer"
-          title="Toggle Theme"
-          @click="toggleTheme"
+          title="Settings"
         >
-          <span class="material-icons-outlined text-[24px]">{{ colorMode.value === 'dark' ? 'dark_mode' : 'light_mode' }}</span>
+          <span class="material-icons-outlined text-[24px]">settings</span>
         </button>
       </div>
     </aside>
@@ -199,6 +200,14 @@ defineShortcuts({
       <!-- Header -->
       <header class="absolute top-0 right-0 p-6 flex items-center gap-4 z-10 pointer-events-none">
         <div class="pointer-events-auto flex items-center gap-4">
+          <button
+            class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 transition-colors cursor-pointer"
+            title="Toggle Theme"
+            @click="toggleTheme"
+          >
+            <span class="material-icons-outlined text-[20px]">{{ colorMode.value === 'dark' ? 'dark_mode' : 'light_mode' }}</span>
+          </button>
+
           <UserMenu v-if="loggedIn" :collapsed="true" />
           <UButton
             v-else
