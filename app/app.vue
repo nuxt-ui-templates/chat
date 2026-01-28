@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const colorMode = useColorMode()
 
-const color = computed(() => colorMode.value === 'dark' ? '#1b1718' : 'white')
+const color = computed(() => colorMode.value === 'dark' ? '#1a1a1a' : '#EDEDED')
 
 useHead({
   meta: [
@@ -10,14 +10,17 @@ useHead({
     { key: 'theme-color', name: 'theme-color', content: color }
   ],
   link: [
-    { rel: 'icon', href: '/favicon.ico' }
+    { rel: 'icon', href: '/favicon.ico' },
+    { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap' },
+    { rel: 'stylesheet', href: 'https://fonts.googleapis.com/icon?family=Material+Icons+Outlined' },
+    { rel: 'stylesheet', href: 'https://fonts.googleapis.com/icon?family=Material+Icons+Round' }
   ],
   htmlAttrs: {
     lang: 'en'
   }
 })
 
-const title = 'Nuxt AI Chatbot template'
+const title = 'SelamGPT'
 const description = 'A full-featured, hackable Nuxt AI chatbot template made with Nuxt UI.'
 
 useSeoMeta({
@@ -33,7 +36,7 @@ useSeoMeta({
 
 <template>
   <UApp :toaster="{ position: 'top-right' }" :tooltip="{ delayDuration: 200 }">
-    <NuxtLoadingIndicator color="var(--ui-primary)" />
+    <NuxtLoadingIndicator color="#FF6B35" />
 
     <NuxtLayout>
       <NuxtPage />

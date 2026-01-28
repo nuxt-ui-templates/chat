@@ -72,8 +72,7 @@ const chat = new Chat({
   }
 })
 
-async function handleSubmit(e: Event) {
-  e.preventDefault()
+async function handleSubmit() {
   if (input.value.trim() && !isUploading.value) {
     chat.sendMessage({
       text: input.value,
@@ -104,21 +103,19 @@ onMounted(() => {
 </script>
 
 <template>
-  <UDashboardPanel id="chat" class="relative" :ui="{ body: 'p-0 sm:p-0' }">
-    <template #header>
-      <DashboardNavbar />
-    </template>
+  <div class="flex-1 flex flex-col h-full relative overflow-hidden">
+    <DragDropOverlay :show="isDragging" />
 
-    <template #body>
-      <DragDropOverlay :show="isDragging" />
-      <UContainer ref="dropzoneRef" class="flex-1 flex flex-col gap-4 sm:gap-6">
+    <!-- Messages -->
+    <div class="flex-1 overflow-y-auto w-full">
+      <UContainer class="h-full flex flex-col">
         <UChatMessages
           should-auto-scroll
           :messages="chat.messages"
           :status="chat.status"
           :assistant="chat.status !== 'streaming' ? { actions: [{ label: 'Copy', icon: copied ? 'i-lucide-copy-check' : 'i-lucide-copy', onClick: copy }] } : { actions: [] }"
           :spacing-offset="160"
-          class="lg:pt-(--ui-header-height) pb-4 sm:pb-6"
+          class="flex-1 pb-32 pt-20"
         >
           <template #content="{ message }">
             <template v-for="(part, index) in message.parts" :key="`${message.id}-${part.type}-${index}${'state' in part ? `-${part.state}` : ''}`">
@@ -157,49 +154,44 @@ onMounted(() => {
             </template>
           </template>
         </UChatMessages>
-
-        <UChatPrompt
-          v-model="input"
-          :error="chat.error"
-          :disabled="isUploading"
-          variant="subtle"
-          class="sticky bottom-0 [view-transition-name:chat-prompt] rounded-b-none z-10"
-          :ui="{ base: 'px-1.5' }"
-          @submit="handleSubmit"
-        >
-          <template v-if="files.length > 0" #header>
-            <div class="flex flex-wrap gap-2">
-              <FileAvatar
-                v-for="fileWithStatus in files"
-                :key="fileWithStatus.id"
-                :name="fileWithStatus.file.name"
-                :type="fileWithStatus.file.type"
-                :preview-url="fileWithStatus.previewUrl"
-                :status="fileWithStatus.status"
-                :error="fileWithStatus.error"
-                removable
-                @remove="removeFile(fileWithStatus.id)"
-              />
-            </div>
-          </template>
-
-          <template #footer>
-            <div class="flex items-center gap-1">
-              <FileUploadButton @files-selected="addFiles($event)" />
-              <ModelSelect v-model="model" />
-            </div>
-
-            <UChatPromptSubmit
-              :status="chat.status"
-              :disabled="isUploading"
-              color="neutral"
-              size="sm"
-              @stop="chat.stop()"
-              @reload="chat.regenerate()"
-            />
-          </template>
-        </UChatPrompt>
       </UContainer>
-    </template>
-  </UDashboardPanel>
+    </div>
+
+    <!-- Input Area -->
+    <div class="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-background-light dark:from-background-dark to-transparent pt-10 z-20">
+      <div ref="dropzoneRef" class="max-w-4xl mx-auto w-full px-4 sm:px-6">
+        <div class="relative group">
+          <div class="absolute -inset-0.5 bg-gradient-to-r from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 rounded-[2rem] blur opacity-30 group-hover:opacity-50 transition duration-500 pointer-events-none" />
+
+          <SelamInput
+            v-model="input"
+            :disabled="isUploading"
+            :loading="chat.status === 'streaming'"
+            @submit="handleSubmit"
+            @files-selected="addFiles"
+          >
+            <template #files>
+              <div v-if="files.length > 0" class="flex flex-wrap gap-2 mb-2">
+                <FileAvatar
+                  v-for="fileWithStatus in files"
+                  :key="fileWithStatus.id"
+                  :name="fileWithStatus.file.name"
+                  :type="fileWithStatus.file.type"
+                  :preview-url="fileWithStatus.previewUrl"
+                  :status="fileWithStatus.status"
+                  :error="fileWithStatus.error"
+                  removable
+                  @remove="removeFile(fileWithStatus.id)"
+                />
+              </div>
+            </template>
+          </SelamInput>
+        </div>
+
+        <div class="text-center text-[11px] text-gray-400 dark:text-gray-600 mt-2">
+          AI can make mistakes. Please double-check responses.
+        </div>
+      </div>
+    </div>
+  </div>
 </template>

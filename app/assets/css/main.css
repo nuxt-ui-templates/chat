@@ -2,7 +2,34 @@
 @import "@nuxt/ui";
 
 @theme static {
-  --font-sans: 'Public Sans', sans-serif;
+  --font-sans: 'Inter', sans-serif;
+  --font-display: 'Space Grotesk', sans-serif;
+
+  --color-primary-50: #FFF3EB;
+  --color-primary-100: #FFE6D6;
+  --color-primary-200: #FFCCAD;
+  --color-primary-300: #FFB385;
+  --color-primary-400: #FF995C;
+  --color-primary-500: #FF6B35;
+  --color-primary-600: #E66030;
+  --color-primary-700: #CC562B;
+  --color-primary-800: #B34B25;
+  --color-primary-900: #994020;
+  --color-primary-950: #662B15;
+  --color-primary: #FF6B35;
+
+  --color-background-light: #EDEDED;
+  --color-background-dark: #1a1a1a;
+  --color-surface-light: #FFFFFF;
+  --color-surface-dark: #2a2a2a;
+  --color-border-light: #E5E5E5;
+  --color-border-dark: #3a3a3a;
+
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+  --radius-3xl: 2rem;
+
+  --shadow-soft: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
 
   --color-green-50: #EFFDF5;
   --color-green-100: #D9FBE8;
@@ -19,4 +46,22 @@
 
 :root {
   --ui-container: var(--container-3xl);
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 20px;
+}
+.dark ::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+body {
+  @apply bg-background-light dark:bg-background-dark text-gray-900 dark:text-gray-100 font-sans transition-colors duration-200 selection:bg-primary selection:text-white;
 }

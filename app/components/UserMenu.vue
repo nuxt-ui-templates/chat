@@ -161,6 +161,7 @@ const items = computed<DropdownMenuItem[][]>(() => ([[{
       block
       :square="collapsed"
       class="data-[state=open]:bg-elevated"
+      :class="{ 'rounded-full': collapsed }"
       :ui="{
         trailingIcon: 'text-dimmed'
       }"

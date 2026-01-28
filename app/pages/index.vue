@@ -3,8 +3,6 @@ const input = ref('')
 const loading = ref(false)
 const chatId = crypto.randomUUID()
 
-const { model } = useModels()
-
 const {
   dropzoneRef,
   isDragging,
@@ -45,63 +43,29 @@ async function onSubmit() {
   await createChat(input.value)
   clearFiles()
 }
-
-const quickChats = [
-  {
-    label: 'Why use Nuxt UI?',
-    icon: 'i-logos-nuxt-icon'
-  },
-  {
-    label: 'Help me create a Vue composable',
-    icon: 'i-logos-vue'
-  },
-  {
-    label: 'Tell me more about UnJS',
-    icon: 'i-logos-unjs'
-  },
-  {
-    label: 'Why should I consider VueUse?',
-    icon: 'i-logos-vueuse'
-  },
-  {
-    label: 'Tailwind CSS best practices',
-    icon: 'i-logos-tailwindcss-icon'
-  },
-  {
-    label: 'What is the weather in Bordeaux?',
-    icon: 'i-lucide-sun'
-  },
-  {
-    label: 'Show me a chart of sales data',
-    icon: 'i-lucide-line-chart'
-  }
-]
 </script>
 
 <template>
-  <UDashboardPanel id="home" :ui="{ body: 'p-0 sm:p-0' }">
-    <template #header>
-      <DashboardNavbar />
-    </template>
+  <div class="flex-1 flex flex-col items-center justify-center w-full h-full relative p-4">
+    <DragDropOverlay :show="isDragging" />
 
-    <template #body>
-      <DragDropOverlay :show="isDragging" />
-      <UContainer ref="dropzoneRef" class="flex-1 flex flex-col justify-center gap-4 sm:gap-6 py-8">
-        <h1 class="text-3xl sm:text-4xl text-highlighted font-bold">
-          How can I help you today?
-        </h1>
+    <div class="w-full max-w-4xl mx-auto px-4 sm:px-6 flex flex-col items-center">
+      <h1 class="text-4xl md:text-5xl font-display font-bold text-gray-900 dark:text-white mb-10 tracking-tight text-center">
+        What can I help with?
+      </h1>
 
-        <UChatPrompt
+      <div ref="dropzoneRef" class="w-full max-w-2xl relative group">
+        <div class="absolute -inset-0.5 bg-gradient-to-r from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 rounded-[2rem] blur opacity-30 group-hover:opacity-50 transition duration-500 pointer-events-none" />
+
+        <SelamInput
           v-model="input"
-          :status="loading ? 'streaming' : 'ready'"
           :disabled="isUploading"
-          class="[view-transition-name:chat-prompt]"
-          variant="subtle"
-          :ui="{ base: 'px-1.5' }"
+          :loading="loading"
           @submit="onSubmit"
+          @files-selected="addFiles"
         >
-          <template v-if="files.length > 0" #header>
-            <div class="flex flex-wrap gap-2">
+          <template #files>
+            <div v-if="files.length > 0" class="flex flex-wrap gap-2 mb-2">
               <FileAvatar
                 v-for="fileWithStatus in files"
                 :key="fileWithStatus.id"
@@ -115,31 +79,22 @@ const quickChats = [
               />
             </div>
           </template>
+        </SelamInput>
+      </div>
 
-          <template #footer>
-            <div class="flex items-center gap-1">
-              <FileUploadButton @files-selected="addFiles($event)" />
-              <ModelSelect v-model="model" />
-            </div>
-
-            <UChatPromptSubmit color="neutral" size="sm" :disabled="isUploading" />
-          </template>
-        </UChatPrompt>
-
-        <div class="flex flex-wrap gap-2">
-          <UButton
-            v-for="quickChat in quickChats"
-            :key="quickChat.label"
-            :icon="quickChat.icon"
-            :label="quickChat.label"
-            size="sm"
-            color="neutral"
-            variant="outline"
-            class="rounded-full"
-            @click="createChat(quickChat.label)"
-          />
+      <div class="mt-8 flex flex-col items-center gap-4 w-full max-w-2xl px-4 text-center">
+        <div class="bg-gray-200/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-xl p-3 text-xs text-gray-600 dark:text-gray-400 border border-gray-200/50 dark:border-gray-700/50">
+          <p class="font-medium">
+            You've hit the Free plan limit for Crawl-4o. Subscribe to Pro plan to increase limits.
+          </p>
+          <p class="mt-1 opacity-80">
+            Responses will use another model until your limit resets after 6:35 PM.
+          </p>
         </div>
-      </UContainer>
-    </template>
-  </UDashboardPanel>
+        <p class="text-[11px] text-gray-400 dark:text-gray-600">
+          AI can make mistakes. Please double-check responses.
+        </p>
+      </div>
+    </div>
+  </div>
 </template>
