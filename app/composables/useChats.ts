@@ -4,7 +4,8 @@ export interface UIChat {
   id: string
   label: string
   icon: string
-  createdAt: string
+  createdAt: string | Date
+  to?: string
 }
 
 export function useChats(chats: Ref<UIChat[] | undefined>) {

@@ -28,7 +28,17 @@ export default defineOAuthGitHubEventHandler({
       }).where(eq(schema.chats.userId, session.id))
     }
 
-    await setUserSession(event, { user })
+    await setUserSession(event, {
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        avatar: user.avatar,
+        username: user.username,
+        provider: 'github',
+        providerId: user.providerId
+      }
+    })
 
     return sendRedirect(event, '/')
   },
