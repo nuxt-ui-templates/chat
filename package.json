@@ -20,7 +20,7 @@
     "@iconify-json/simple-icons": "^1.2.68",
     "@libsql/client": "^0.17.0",
     "@nuxt/ui": "^4.4.0",
-    "@nuxthub/core": "^0.10.4",
+    "@nuxthub/core": "https://pkg.pr.new/@nuxthub/core@5236b96",
     "@nuxtjs/mdc": "^0.20.0",
     "@vercel/blob": "^2.0.1",
     "@vueuse/core": "^14.1.0",
@@ -44,9 +44,6 @@
     "eslint": "^9.39.2",
     "typescript": "^5.9.3",
     "vue-tsc": "^3.2.4"
-  },
-  "resolutions": {
-    "@nuxthub/core": "0.10.4"
   },
   "packageManager": "pnpm@10.28.2"
 }
