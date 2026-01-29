@@ -11,7 +11,7 @@ export const users = sqliteTable('users', {
   name: text('name').notNull(),
   avatar: text('avatar').notNull(),
   username: text('username').notNull(),
-  provider: text('provider').notNull(), // 'github'
+  provider: text('provider', { enum: ['github'] }).notNull(),
   providerId: text('provider_id').notNull(),
   ...timestamps
 }, table => [
