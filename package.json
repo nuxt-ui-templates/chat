@@ -20,7 +20,7 @@
     "@iconify-json/simple-icons": "^1.2.68",
     "@libsql/client": "^0.17.0",
     "@nuxt/ui": "^4.4.0",
-    "@nuxthub/core": "https://pkg.pr.new/@nuxthub/core@5236b96",
+    "@nuxthub/core": "^0.10.6",
     "@nuxtjs/mdc": "^0.20.0",
     "@vercel/blob": "^2.0.1",
     "@vueuse/core": "^14.1.0",
