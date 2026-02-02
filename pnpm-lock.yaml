@@ -2803,6 +2803,7 @@ packages:
 
   '@unovis/ts@1.6.3':
     resolution: {integrity: sha512-LOy8C/Es44+74xQTBhtjVAmwNzYFqStN+EN8waPSRF8uOSCsFHRjjd4Of9axX/RLbqkeeU8LPdSPCg48WmdNoQ==}
+    deprecated: Please upgrade to the latest version
 
   '@unovis/vue@1.6.2':
     resolution: {integrity: sha512-vFglLeiTnNk8VaCEjctAMQXi8Vi+dc217JLkbiIkOLNLXzOClv1ZLv7QjKplRHG+eq/DKC17WSBKINsjXuYbtQ==}
