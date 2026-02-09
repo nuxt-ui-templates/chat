@@ -41,7 +41,7 @@
     "@nuxt/eslint": "^1.14.0",
     "@types/node": "^24.10.12",
     "drizzle-kit": "^0.31.9",
-    "eslint": "^9.39.2",
+    "eslint": "^10.0.0",
     "typescript": "^5.9.3",
     "vue-tsc": "^3.2.4"
   },
