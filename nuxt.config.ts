@@ -29,12 +29,6 @@ export default defineNuxtConfig({
     viewTransition: true
   },
 
-  vite: {
-    optimizeDeps: {
-      include: ['striptags']
-    }
-  },
-
   compatibilityDate: '2024-07-11',
 
   nitro: {
@@ -46,6 +40,12 @@ export default defineNuxtConfig({
   hub: {
     db: 'sqlite',
     blob: true
+  },
+
+  vite: {
+    optimizeDeps: {
+      include: ['striptags']
+    }
   },
 
   eslint: {
