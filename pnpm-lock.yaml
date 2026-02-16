@@ -60,7 +60,7 @@ importers:
         specifier: ^0.5.28
         version: 0.5.28(magicast@0.5.1)
       nuxt-charts:
-        specifier: 2.1.2
+        specifier: ^2.1.2
         version: 2.1.2(vue@3.5.27(typescript@5.9.3))
       pg:
         specifier: ^8.18.0
