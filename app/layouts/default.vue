@@ -91,7 +91,7 @@ defineShortcuts({
       :min-size="12"
       collapsible
       resizable
-      class="bg-elevated/50"
+      class="border-r-0 py-4"
     >
       <template #header="{ collapsed }">
         <NuxtLink to="/" class="flex items-end gap-0.5">
@@ -101,7 +101,6 @@ defineShortcuts({
 
         <div v-if="!collapsed" class="flex items-center gap-1.5 ms-auto">
           <UDashboardSearchButton collapsed />
-          <UDashboardSidebarCollapse />
         </div>
       </template>
 
@@ -117,7 +116,6 @@ defineShortcuts({
 
           <template v-if="collapsed">
             <UDashboardSearchButton collapsed />
-            <UDashboardSidebarCollapse />
           </template>
         </div>
 
@@ -170,6 +168,8 @@ defineShortcuts({
       }, ...groups]"
     />
 
-    <slot />
+    <div class="flex-1 flex m-4 lg:ml-0 rounded-lg ring ring-default bg-default/75 shadow min-w-0">
+      <slot />
+    </div>
   </UDashboardGroup>
 </template>
