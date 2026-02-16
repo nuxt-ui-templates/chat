@@ -79,7 +79,11 @@ const quickChats = [
 </script>
 
 <template>
-  <UDashboardPanel id="home" :ui="{ body: 'p-0 sm:p-0' }">
+  <UDashboardPanel
+    id="home"
+    class="min-h-0"
+    :ui="{ body: 'p-0 sm:p-0' }"
+  >
     <template #header>
       <DashboardNavbar />
     </template>
