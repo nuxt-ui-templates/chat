@@ -3,8 +3,6 @@ const input = ref('')
 const loading = ref(false)
 const chatId = crypto.randomUUID()
 
-const { model } = useModels()
-
 const {
   dropzoneRef,
   isDragging,
@@ -126,7 +124,7 @@ const quickChats = [
               <div class="flex items-center gap-1">
                 <FileUploadButton :open="open" />
 
-                <ModelSelect v-model="model" />
+                <ModelSelect />
               </div>
 
               <UChatPromptSubmit color="neutral" size="sm" :disabled="isUploading" />
