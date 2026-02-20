@@ -86,7 +86,7 @@ export function useFileUploadWithStatus(chatId: string) {
     await Promise.allSettled(uploadPromises)
   }
 
-  const { dropzoneRef, isDragging } = useFileUpload({
+  const { dropzoneRef, isDragging, open } = useFileUpload({
     accept: FILE_UPLOAD_CONFIG.acceptPattern,
     multiple: true,
     onUpdate: uploadFiles
@@ -135,6 +135,7 @@ export function useFileUploadWithStatus(chatId: string) {
   return {
     dropzoneRef,
     isDragging,
+    open,
     files,
     isUploading,
     uploadedFiles,

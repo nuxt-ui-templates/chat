@@ -11,7 +11,7 @@ defineProps<{
 <template>
   <div
     v-if="show && loggedIn"
-    class="absolute inset-0 z-50 flex items-center justify-center backdrop-blur-lg pointer-events-none"
+    class="absolute inset-0 z-50 flex items-center justify-center backdrop-blur-lg rounded-lg pointer-events-none"
   >
     <div class="absolute text-center">
       <div class="flex items-center justify-center gap-2">

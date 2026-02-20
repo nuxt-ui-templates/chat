@@ -20,15 +20,14 @@ const emit = defineEmits<{
 
 <template>
   <div class="relative group">
-    <UTooltip arrow :text="removeRandomSuffix(name)">
+    <UTooltip :text="removeRandomSuffix(name)">
       <UAvatar
-        size="3xl"
+        size="2xl"
         :src="type.startsWith('image/') ? previewUrl : undefined"
         :icon="getFileIcon(type, name)"
-        class="border border-default rounded-lg"
+        class="rounded-lg"
         :class="{
-          'opacity-50': status === 'uploading',
-          'border-error': status === 'error'
+          'opacity-50': status === 'uploading'
         }"
       />
     </UTooltip>
@@ -37,12 +36,12 @@ const emit = defineEmits<{
       v-if="status === 'uploading'"
       class="absolute inset-0 flex items-center justify-center bg-black/50 rounded-lg"
     >
-      <UIcon name="i-lucide-loader-2" class="size-8 animate-spin text-white" />
+      <UIcon name="i-lucide-loader-2" class="size-6 animate-spin text-white" />
     </div>
 
     <UTooltip v-if="status === 'error'" :text="error">
       <div class="absolute inset-0 flex items-center justify-center bg-error/50 rounded-lg">
-        <UIcon name="i-lucide-alert-circle" class="size-8 text-white" />
+        <UIcon name="i-lucide-alert-circle" class="size-6 text-white" />
       </div>
     </UTooltip>
 
@@ -50,10 +49,8 @@ const emit = defineEmits<{
       v-if="removable && status !== 'uploading'"
       icon="i-lucide-x"
       size="xs"
-      square
       color="neutral"
-      variant="solid"
-      class="absolute p-0 -top-1 -right-1 opacity-0 group-hover:opacity-100 transition-opacity rounded-full"
+      class="absolute p-0 -top-1 -right-1 opacity-0 group-hover:opacity-100 transition-opacity rounded-full ring ring-bg"
       @click="emit('remove')"
     />
   </div>
