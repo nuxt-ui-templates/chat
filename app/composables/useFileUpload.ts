@@ -119,7 +119,7 @@ export function useFileUploadWithStatus(chatId: string) {
     files.value = files.value.filter(f => f.id !== id)
 
     if (file.status === 'uploaded' && file.uploadedPathname) {
-      $fetch(`/api/upload/${file.uploadedPathname}`, {
+      $fetch(`/api/upload/${file.uploadedPathname}` as string, {
         method: 'DELETE',
         headers: { [headerName]: csrf }
       }).catch((error) => {
