@@ -14,6 +14,8 @@ const {
   clearFiles
 } = useFileUploadWithStatus(chatId)
 
+const { csrf, headerName } = useCsrf()
+
 async function createChat(prompt: string) {
   input.value = prompt
   loading.value = true
@@ -26,6 +28,7 @@ async function createChat(prompt: string) {
 
   const chat = await $fetch('/api/chats', {
     method: 'POST',
+    headers: { [headerName]: csrf },
     body: {
       id: chatId,
       message: {

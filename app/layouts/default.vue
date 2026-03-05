@@ -5,6 +5,7 @@ const route = useRoute()
 const toast = useToast()
 const overlay = useOverlay()
 const { loggedIn, openInPopup } = useUserSession()
+const { csrf, headerName } = useCsrf()
 
 const open = ref(false)
 
@@ -61,7 +62,10 @@ async function deleteChat(id: string) {
     return
   }
 
-  await $fetch(`/api/chats/${id}`, { method: 'DELETE' })
+  await $fetch(`/api/chats/${id}`, {
+    method: 'DELETE',
+    headers: { [headerName]: csrf }
+  })
 
   toast.add({
     title: 'Chat deleted',

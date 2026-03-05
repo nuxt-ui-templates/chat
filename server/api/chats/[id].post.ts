@@ -3,6 +3,7 @@ import { z } from 'zod'
 import { db, schema } from 'hub:db'
 import { and, eq } from 'drizzle-orm'
 import type { UIMessage } from 'ai'
+import { MODELS } from '~~/shared/utils/models'
 
 defineRouteMeta({
   openAPI: {
@@ -19,7 +20,9 @@ export default defineEventHandler(async (event) => {
   }).parse)
 
   const { model, messages } = await readValidatedBody(event, z.object({
-    model: z.string(),
+    model: z.string().refine(value => MODELS.some(m => m.value === value), {
+      message: 'Invalid model'
+    }),
     messages: z.array(z.custom<UIMessage>())
   }).parse)
 
