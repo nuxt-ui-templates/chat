@@ -3,7 +3,7 @@ import { z } from 'zod'
 import { db, schema } from 'hub:db'
 import { and, eq } from 'drizzle-orm'
 import type { UIMessage } from 'ai'
-import { MODELS } from '~~/shared/utils/models'
+import { MODELS } from '#shared/utils/models'
 
 defineRouteMeta({
   openAPI: {
