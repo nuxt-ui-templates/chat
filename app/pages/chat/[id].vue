@@ -47,11 +47,14 @@ if (!data.value) {
 
 const input = ref('')
 
+const { csrf, headerName } = useCsrf()
+
 const chat = new Chat({
   id: data.value.id,
   messages: data.value.messages,
   transport: new DefaultChatTransport({
     api: `/api/chats/${data.value.id}`,
+    headers: { [headerName]: csrf },
     body: {
       model: model.value
     }

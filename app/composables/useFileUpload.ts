@@ -25,7 +25,12 @@ export function useFileUploadWithStatus(chatId: string) {
   const toast = useToast()
   const { loggedIn } = useUserSession()
 
-  const upload = useUpload(`/api/upload/${chatId}`, { method: 'PUT' })
+  const { csrf, headerName } = useCsrf()
+
+  const upload = useUpload(`/api/upload/${chatId}`, {
+    method: 'PUT',
+    headers: { [headerName]: csrf }
+  })
 
   async function uploadFiles(newFiles: File[]) {
     if (!loggedIn.value) {
@@ -114,8 +119,9 @@ export function useFileUploadWithStatus(chatId: string) {
     files.value = files.value.filter(f => f.id !== id)
 
     if (file.status === 'uploaded' && file.uploadedPathname) {
-      fetch(`/api/upload/${file.uploadedPathname}`, {
-        method: 'DELETE'
+      $fetch(`/api/upload/${file.uploadedPathname}` as string, {
+        method: 'DELETE',
+        headers: { [headerName]: csrf }
       }).catch((error) => {
         console.error('Failed to delete file from blob:', error)
       })
