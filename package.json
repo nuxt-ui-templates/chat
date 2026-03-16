@@ -19,8 +19,8 @@
     "@ai-sdk/openai": "^3.0.41",
     "@ai-sdk/vue": "^3.0.116",
     "@iconify-json/logos": "^1.2.10",
-    "@iconify-json/lucide": "^1.2.96",
-    "@iconify-json/simple-icons": "^1.2.72",
+    "@iconify-json/lucide": "^1.2.98",
+    "@iconify-json/simple-icons": "^1.2.74",
     "@libsql/client": "^0.17.0",
     "@nuxt/ui": "^4.5.1",
     "@nuxthub/core": "^0.10.7",
@@ -50,5 +50,5 @@
     "typescript": "^5.9.3",
     "vue-tsc": "^3.2.5"
   },
-  "packageManager": "pnpm@10.30.3"
+  "packageManager": "pnpm@10.32.1"
 }
