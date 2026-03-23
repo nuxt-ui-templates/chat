@@ -134,7 +134,8 @@ export default defineEventHandler(async (event) => {
       }
 
       writer.merge(result.toUIMessageStream({
-        sendSources: true
+        sendSources: true,
+        sendReasoning: true
       }))
     },
     onFinish: async ({ messages }) => {
