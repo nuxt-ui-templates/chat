@@ -70,7 +70,7 @@ export function sourceToInlineHtml(url: string): string {
   const domain = getDomain(url)
   const favicon = `https://www.google.com/s2/favicons?sz=32&domain=${domain}`
 
-  return ` :button{to="${url}" target="_blank" :avatar='{ src: "${favicon}" }' label="${domain}" trailingIcon="i-lucide-arrow-up-right" size="xs" color="neutral" variant="outline" class="rounded-full align-middle"}`
+  return ` :button{to="${url}" target="_blank" :avatar='{ "src": "${favicon}" }' label="${domain}" trailingIcon="i-lucide-arrow-up-right" size="xs" color="neutral" variant="outline" class="rounded-full align-middle"}`
 }
 
 export function getMergedParts(parts: UIMessage['parts']): UIMessage['parts'] {

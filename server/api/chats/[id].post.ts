@@ -6,7 +6,7 @@ import { z } from 'zod'
 import type { AnthropicLanguageModelOptions } from '@ai-sdk/anthropic'
 import { anthropic } from '@ai-sdk/anthropic'
 import type { GoogleLanguageModelOptions } from '@ai-sdk/google'
-import { google } from '@ai-sdk/google'
+// import { google } from '@ai-sdk/google'
 import type { OpenAILanguageModelResponsesOptions } from '@ai-sdk/openai'
 import { openai } from '@ai-sdk/openai'
 
@@ -85,9 +85,9 @@ export default defineEventHandler(async (event) => {
 
 **WEB SEARCH:**
 - You have access to a web search tool to find current, up-to-date information
-- Use it when questions involve recent events, real-time data, current facts, or anything that may have changed after your training cutoff
+- Only use it when the user explicitly asks about recent events, real-time data, or current facts
+- Do NOT search proactively — rely on your knowledge first
 - Cite your sources when providing information from web search results
-- Prefer web search over guessing when you're unsure about current information
 
 **RESPONSE QUALITY:**
 - Be concise yet comprehensive
@@ -99,8 +99,9 @@ export default defineEventHandler(async (event) => {
           chart: chartTool,
           weather: weatherTool,
           ...(model.startsWith('anthropic/') && { web_search: anthropic.tools.webSearch_20250305() }),
-          ...(model.startsWith('openai/') && { web_search: openai.tools.webSearch() }),
-          ...(model.startsWith('google/') && { google_search: google.tools.googleSearch({}) })
+          ...(model.startsWith('openai/') && { web_search: openai.tools.webSearch() })
+          // TODO: enable once AI SDK supports combining provider-defined tools with custom tools
+          // ...(model.startsWith('google/') && { google_search: google.tools.googleSearch({}) })
         },
         providerOptions: {
           anthropic: {
