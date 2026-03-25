@@ -1,17 +1,10 @@
 <script setup lang="ts">
-import type { DefineComponent } from 'vue'
 import { Chat } from '@ai-sdk/vue'
 import { DefaultChatTransport } from 'ai'
 import type { UIMessage } from 'ai'
 import { useClipboard } from '@vueuse/core'
 import { getTextFromMessage } from '@nuxt/ui/utils/ai'
 import CharPart from '../../components/CharPart'
-
-// import ProseStreamPre from '../../components/prose/PreStream.vue'
-
-const components = {
-  // pre: ProseStreamPre as unknown as DefineComponent
-}
 
 const route = useRoute()
 const toast = useToast()
@@ -143,8 +136,6 @@ onMounted(() => {
                   v-else-if="part.type === 'text' && message.role === 'assistant'"
                   :markdown="part.text"
                   :cache-key="`${message.id}-${index}`"
-                  :components="components"
-                  :parser-options="{ highlight: false }"
                   class="*:first:mt-0 *:last:mb-0"
                 />
                 <!-- User messages are rendered as plain text (safely escaped by Vue) -->
