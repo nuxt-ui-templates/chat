@@ -5,10 +5,12 @@ import { DefaultChatTransport } from 'ai'
 import type { UIMessage } from 'ai'
 import { useClipboard } from '@vueuse/core'
 import { getTextFromMessage } from '@nuxt/ui/utils/ai'
-import ProseStreamPre from '../../components/prose/PreStream.vue'
+import CharPart from '../../components/CharPart'
+
+// import ProseStreamPre from '../../components/prose/PreStream.vue'
 
 const components = {
-  pre: ProseStreamPre as unknown as DefineComponent
+  // pre: ProseStreamPre as unknown as DefineComponent
 }
 
 const route = useRoute()
@@ -137,9 +139,9 @@ onMounted(() => {
                   :is-streaming="part.state !== 'done'"
                 />
                 <!-- Only render markdown for assistant messages to prevent XSS from user input -->
-                <MDCCached
+                <CharPart
                   v-else-if="part.type === 'text' && message.role === 'assistant'"
-                  :value="part.text"
+                  :markdown="part.text"
                   :cache-key="`${message.id}-${index}`"
                   :components="components"
                   :parser-options="{ highlight: false }"
