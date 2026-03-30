@@ -60,8 +60,8 @@ importers:
         specifier: ^0.45.2
         version: 0.45.2(@cloudflare/workers-types@4.20260316.1)(@libsql/client@0.17.2)(@opentelemetry/api@1.9.0)(pg@8.20.0)
       motion-v:
-        specifier: ^1.10.3
-        version: 1.10.3(@vueuse/core@14.2.1(vue@3.5.30(typescript@5.9.3)))(vue@3.5.30(typescript@5.9.3))
+        specifier: ^2.2.0
+        version: 2.2.0(@vueuse/core@14.2.1(vue@3.5.30(typescript@5.9.3)))(vue@3.5.30(typescript@5.9.3))
       nuxt:
         specifier: ^4.4.2
         version: 4.4.2(@babel/core@7.29.0)(@babel/plugin-syntax-jsx@7.28.6(@babel/core@7.29.0))(@libsql/client@0.17.2)(@parcel/watcher@2.5.6)(@types/node@24.12.0)(@vercel/blob@2.3.2)(@vue/compiler-sfc@3.5.30)(cac@6.7.14)(db0@0.3.4(@libsql/client@0.17.2)(drizzle-orm@0.45.2(@cloudflare/workers-types@4.20260316.1)(@libsql/client@0.17.2)(@opentelemetry/api@1.9.0)(pg@8.20.0)))(drizzle-orm@0.45.2(@cloudflare/workers-types@4.20260316.1)(@libsql/client@0.17.2)(@opentelemetry/api@1.9.0)(pg@8.20.0))(eslint@10.1.0(jiti@2.6.1))(ioredis@5.10.0)(lightningcss@1.32.0)(magicast@0.5.2)(optionator@0.9.4)(rolldown@1.0.0-beta.57)(rollup-plugin-visualizer@6.0.11(rolldown@1.0.0-beta.57)(rollup@4.59.0))(rollup@4.59.0)(terser@5.46.0)(tsx@4.21.0)(typescript@5.9.3)(vite@7.3.1(@types/node@24.12.0)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.46.0)(tsx@4.21.0)(yaml@2.8.2))(vue-tsc@3.2.6(typescript@5.9.3))(yaml@2.8.2)
@@ -5320,12 +5320,6 @@ packages:
 
   motion-utils@12.36.0:
     resolution: {integrity: sha512-eHWisygbiwVvf6PZ1vhaHCLamvkSbPIeAYxWUuL3a2PD/TROgE7FvfHWTIH4vMl798QLfMw15nRqIaRDXTlYRg==}
-
-  motion-v@1.10.3:
-    resolution: {integrity: sha512-9Ewo/wwGv7FO3PqYJpllBF/Efc7tbeM1iinVrM73s0RUQrnXHwMZCaRX98u4lu0PQCrZghPPfCsQ14pWKIEbnQ==}
-    peerDependencies:
-      '@vueuse/core': '>=10.0.0'
-      vue: '>=3.0.0'
 
   motion-v@2.2.0:
     resolution: {integrity: sha512-8rrUBt9UMwy45MfLMwHer9J7xBY/rL31S+0U3ZUAouqjH3AOVHvS0NGuXwF4mfWfvb22rfZEv59ZsBc2f1epxQ==}
@@ -12777,18 +12771,6 @@ snapshots:
       motion-utils: 12.36.0
 
   motion-utils@12.36.0: {}
-
-  motion-v@1.10.3(@vueuse/core@14.2.1(vue@3.5.30(typescript@5.9.3)))(vue@3.5.30(typescript@5.9.3)):
-    dependencies:
-      '@vueuse/core': 14.2.1(vue@3.5.30(typescript@5.9.3))
-      framer-motion: 12.38.0
-      hey-listen: 1.0.8
-      motion-dom: 12.38.0
-      vue: 3.5.30(typescript@5.9.3)
-    transitivePeerDependencies:
-      - '@emotion/is-prop-valid'
-      - react
-      - react-dom
 
   motion-v@2.2.0(@vueuse/core@14.2.1(vue@3.5.30(typescript@5.9.3)))(vue@3.5.30(typescript@5.9.3)):
     dependencies:
