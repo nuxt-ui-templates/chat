@@ -1,18 +1,15 @@
 <script setup lang="ts">
-interface SearchSource {
-  url: string
-  title?: string
-}
+import type { SearchSource } from '~/utils/search'
 
-const props = defineProps<{
+defineProps<{
   sources: SearchSource[]
 }>()
 </script>
 
 <template>
-  <div v-if="props.sources.length" class="p-1 border border-default rounded-md max-h-40 overflow-y-auto">
+  <div v-if="sources.length" class="p-1 border border-default rounded-md max-h-40 overflow-y-auto">
     <a
-      v-for="source in props.sources"
+      v-for="source in sources"
       :key="source.url"
       :href="source.url"
       target="_blank"

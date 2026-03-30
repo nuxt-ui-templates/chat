@@ -1,7 +1,6 @@
-import type { UIMessage, getToolName } from 'ai'
-import { isTextUIPart } from 'ai'
+import type { getToolName } from 'ai'
 
-interface SearchSource {
+export interface SearchSource {
   url: string
   title?: string
 }
@@ -14,17 +13,6 @@ interface SearchOutput {
   sources?: { url: string, type?: string }[]
   groundingChunks?: GoogleGroundingChunk[]
   groundingMetadata?: { groundingChunks?: GoogleGroundingChunk[] }
-}
-
-export function getFileName(url: string): string {
-  try {
-    const urlObj = new URL(url)
-    const pathname = urlObj.pathname
-    const filename = pathname.split('/').pop() || 'file'
-    return decodeURIComponent(filename)
-  } catch {
-    return 'file'
-  }
 }
 
 type ToolPart = Parameters<typeof getToolName>[0]
@@ -58,18 +46,6 @@ export function getSources(part: ToolPart): SearchSource[] {
   return []
 }
 
-export function getDomain(url: string): string {
-  try {
-    return new URL(url).hostname.replace(/^www\./, '')
-  } catch {
-    return url
-  }
-}
-
-export function getFaviconUrl(url: string): string {
-  return `https://www.google.com/s2/favicons?sz=32&domain=${getDomain(url)}`
-}
-
 export function sourceToInlineHtml(url: string): string {
   const domain = getDomain(url)
   const favicon = getFaviconUrl(url)
@@ -77,23 +53,4 @@ export function sourceToInlineHtml(url: string): string {
   const safeFavicon = favicon.replace(/"/g, '&quot;')
 
   return ` :button{to="${safeUrl}" target="_blank" :avatar='{ "src": "${safeFavicon}" }' label="${domain}" trailingIcon="i-lucide-arrow-up-right" size="xs" color="neutral" variant="outline" class="rounded-full align-middle"}`
-}
-
-export function getMergedParts(parts: UIMessage['parts']): UIMessage['parts'] {
-  const result: UIMessage['parts'] = []
-  for (const part of parts) {
-    const prev = result[result.length - 1]
-    if (part.type === 'source-url') {
-      if (prev && isTextUIPart(prev)) {
-        result[result.length - 1] = { type: 'text', text: prev.text + sourceToInlineHtml(part.url) }
-      }
-      continue
-    }
-    if (isTextUIPart(part) && prev && isTextUIPart(prev)) {
-      result[result.length - 1] = { type: 'text', text: prev.text + part.text }
-    } else {
-      result.push(part)
-    }
-  }
-  return result
 }
