@@ -32,19 +32,16 @@ const {
 const { data } = await useFetch(`/api/chats/${route.params.id}`, {
   cache: 'force-cache'
 })
-if (!data.value) {
-  throw createError({ statusCode: 404, statusMessage: 'Chat not found' })
-}
 
 const input = ref('')
 
 const { csrf, headerName } = useCsrf()
 
 const chat = new Chat({
-  id: data.value.id,
-  messages: data.value.messages,
+  id: data.value?.id,
+  messages: data.value?.messages,
   transport: new DefaultChatTransport({
-    api: `/api/chats/${data.value.id}`,
+    api: `/api/chats/${data.value?.id}`,
     headers: { [headerName]: csrf },
     body: {
       model: model.value
@@ -99,6 +96,7 @@ onMounted(() => {
 
 <template>
   <UDashboardPanel
+    v-if="data?.id"
     id="chat"
     class="relative min-h-0"
     :ui="{ body: 'p-0 sm:p-0 overscroll-none' }"
@@ -239,4 +237,8 @@ onMounted(() => {
       </div>
     </template>
   </UDashboardPanel>
+
+  <UContainer v-else class="flex-1 flex flex-col gap-4 sm:gap-6">
+    <UError :error="{ statusMessage: 'Chat not found', statusCode: 404 }" class="min-h-full" />
+  </UContainer>
 </template>
