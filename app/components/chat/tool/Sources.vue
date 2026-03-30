@@ -1,8 +1,6 @@
 <script setup lang="ts">
-import type { SearchSource } from '~/utils/search'
-
 defineProps<{
-  sources: SearchSource[]
+  sources: Source[]
 }>()
 </script>
 

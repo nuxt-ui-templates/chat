@@ -1,6 +1,6 @@
 import type { getToolName } from 'ai'
 
-export interface SearchSource {
+export interface Source {
   url: string
   title?: string
 }
@@ -21,13 +21,13 @@ export function getSearchQuery(part: ToolPart): string | undefined {
   return (part.input as { query?: string } | undefined)?.query
 }
 
-export function getSources(part: ToolPart): SearchSource[] {
+export function getSources(part: ToolPart): Source[] {
   const output = part.output
   if (!output) return []
 
   // Anthropic: array of { url, title }
   if (Array.isArray(output)) {
-    return output.filter((s: SearchSource) => s.url).map((s: SearchSource) => ({ url: s.url, title: s.title }))
+    return output.filter((s: Source) => s.url).map((s: Source) => ({ url: s.url, title: s.title }))
   }
 
   const typed = output as SearchOutput

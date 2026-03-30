@@ -120,6 +120,10 @@ onMounted(() => {
             :spacing-offset="160"
             class="lg:pt-(--ui-header-height) pb-4 sm:pb-6"
           >
+            <template #indicator>
+              <ChatIndicator />
+            </template>
+
             <template #files="{ message, parts }">
               <FileAvatar
                 v-for="(part, index) in parts"
@@ -147,11 +151,11 @@ onMounted(() => {
                 </UChatReasoning>
 
                 <template v-else-if="isToolUIPart(part)">
-                  <ToolChart
+                  <ChatToolChart
                     v-if="getToolName(part) === 'chart'"
                     :invocation="{ ...(part as ChartUIToolInvocation) }"
                   />
-                  <ToolWeather
+                  <ChatToolWeather
                     v-else-if="getToolName(part) === 'weather'"
                     :invocation="{ ...(part as WeatherUIToolInvocation) }"
                   />
@@ -162,7 +166,7 @@ onMounted(() => {
                     :streaming="isToolStreaming(part)"
                     chevron="leading"
                   >
-                    <ToolSearchSources :sources="getSources(part)" />
+                    <ChatToolSources :sources="getSources(part)" />
                   </UChatTool>
                 </template>
 
