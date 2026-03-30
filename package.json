@@ -30,7 +30,7 @@
     "ai": "^6.0.141",
     "date-fns": "^4.1.0",
     "drizzle-orm": "^0.45.2",
-    "motion-v": "^1.10.3",
+    "motion-v": "^2.2.0",
     "nuxt": "^4.4.2",
     "nuxt-auth-utils": "^0.5.29",
     "nuxt-charts": "^2.1.4",
