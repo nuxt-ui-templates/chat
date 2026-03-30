@@ -121,7 +121,11 @@ onMounted(() => {
             class="lg:pt-(--ui-header-height) pb-4 sm:pb-6"
           >
             <template #indicator>
-              <ChatIndicator />
+              <div class="flex items-center gap-1.5">
+                <ChatIndicator />
+
+                <UChatShimmer text="Thinking..." class="text-sm" />
+              </div>
             </template>
 
             <template #files="{ message, parts }">
