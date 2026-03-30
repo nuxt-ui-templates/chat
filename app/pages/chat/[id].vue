@@ -1,31 +1,22 @@
 <script setup lang="ts">
 import type { DefineComponent } from 'vue'
 import { Chat } from '@ai-sdk/vue'
-import { DefaultChatTransport } from 'ai'
+import { DefaultChatTransport, isReasoningUIPart, isTextUIPart, isToolUIPart, getToolName } from 'ai'
 import type { UIMessage } from 'ai'
 import { useClipboard } from '@vueuse/core'
-import { getTextFromMessage } from '@nuxt/ui/utils/ai'
+import { isReasoningStreaming, isToolStreaming, getTextFromMessage } from '@nuxt/ui/utils/ai'
 import ProseStreamPre from '../../components/prose/PreStream.vue'
+import { UButton } from '#components'
 
 const components = {
-  pre: ProseStreamPre as unknown as DefineComponent
+  pre: ProseStreamPre as unknown as DefineComponent,
+  button: UButton
 }
 
 const route = useRoute()
 const toast = useToast()
 const clipboard = useClipboard()
 const { model } = useModels()
-
-function getFileName(url: string): string {
-  try {
-    const urlObj = new URL(url)
-    const pathname = urlObj.pathname
-    const filename = pathname.split('/').pop() || 'file'
-    return decodeURIComponent(filename)
-  } catch {
-    return 'file'
-  }
-}
 
 const {
   dropzoneRef,
@@ -129,41 +120,71 @@ onMounted(() => {
             :spacing-offset="160"
             class="lg:pt-(--ui-header-height) pb-4 sm:pb-6"
           >
+            <template #indicator>
+              <ChatIndicator />
+            </template>
+
+            <template #files="{ message, parts }">
+              <FileAvatar
+                v-for="(part, index) in parts"
+                :key="`${message.id}-${index}`"
+                :name="getFileName(part.url)"
+                :type="part.mediaType"
+                :preview-url="part.url"
+                size="3xl"
+              />
+            </template>
+
             <template #content="{ message }">
-              <template v-for="(part, index) in message.parts" :key="`${message.id}-${part.type}-${index}${'state' in part ? `-${part.state}` : ''}`">
-                <Reasoning
-                  v-if="part.type === 'reasoning'"
+              <template v-for="(part, index) in getMergedParts(message.parts)" :key="`${message.id}-${part.type}-${index}`">
+                <UChatReasoning
+                  v-if="isReasoningUIPart(part)"
                   :text="part.text"
-                  :is-streaming="part.state !== 'done'"
-                />
-                <!-- Only render markdown for assistant messages to prevent XSS from user input -->
-                <MDCCached
-                  v-else-if="part.type === 'text' && message.role === 'assistant'"
-                  :value="part.text"
-                  :cache-key="`${message.id}-${index}`"
-                  :components="components"
-                  :parser-options="{ highlight: false }"
-                  class="*:first:mt-0 *:last:mb-0"
-                />
-                <!-- User messages are rendered as plain text (safely escaped by Vue) -->
-                <p v-else-if="part.type === 'text' && message.role === 'user'" class="whitespace-pre-wrap">
-                  {{ part.text }}
-                </p>
-                <ToolWeather
-                  v-else-if="part.type === 'tool-weather'"
-                  :invocation="(part as WeatherUIToolInvocation)"
-                />
-                <ToolChart
-                  v-else-if="part.type === 'tool-chart'"
-                  :invocation="(part as ChartUIToolInvocation)"
-                />
-                <FileAvatar
-                  v-else-if="part.type === 'file'"
-                  :name="getFileName(part.url)"
-                  :type="part.mediaType"
-                  :preview-url="part.url"
-                  class="inline-flex"
-                />
+                  :streaming="isReasoningStreaming(message, index, chat)"
+                  chevron="leading"
+                >
+                  <MDC
+                    :value="part.text"
+                    :cache-key="`reasoning-${message.id}-${index}`"
+                    class="*:first:mt-0 *:last:mb-0"
+                  />
+                </UChatReasoning>
+
+                <template v-else-if="isToolUIPart(part)">
+                  <ChatToolChart
+                    v-if="getToolName(part) === 'chart'"
+                    :invocation="{ ...(part as ChartUIToolInvocation) }"
+                  />
+                  <ChatToolWeather
+                    v-else-if="getToolName(part) === 'weather'"
+                    :invocation="{ ...(part as WeatherUIToolInvocation) }"
+                  />
+                  <UChatTool
+                    v-else-if="getToolName(part) === 'web_search' || getToolName(part) === 'google_search'"
+                    :text="isToolStreaming(part) ? 'Searching the web...' : 'Searched the web'"
+                    :suffix="getSearchQuery(part)"
+                    :streaming="isToolStreaming(part)"
+                    chevron="leading"
+                  >
+                    <ChatToolSources :sources="getSources(part)" />
+                  </UChatTool>
+                </template>
+
+                <template v-else-if="isTextUIPart(part)">
+                  <!-- Only render markdown for assistant messages to prevent XSS from user input -->
+                  <MDCCached
+                    v-if="message.role === 'assistant'"
+                    :value="part.text"
+                    :cache-key="`${message.id}-${index}`"
+                    :components="components"
+                    :parser-options="{ highlight: false }"
+                    class="*:first:mt-0 *:last:mb-0"
+                  />
+                  <!-- User messages are rendered as plain text (safely escaped by Vue) -->
+                  <p v-else-if="message.role === 'user'" class="whitespace-pre-wrap">
+                    {{ part.text }}
+                  </p>
+                </template>
               </template>
             </template>
           </UChatMessages>

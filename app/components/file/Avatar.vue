@@ -1,8 +1,11 @@
 <script setup lang="ts">
+import type { AvatarProps } from '@nuxt/ui'
+
 interface FileAvatarProps {
   name: string
   type: string
   previewUrl?: string
+  size?: AvatarProps['size']
   status?: 'idle' | 'uploading' | 'uploaded' | 'error'
   error?: string
   removable?: boolean
@@ -10,7 +13,8 @@ interface FileAvatarProps {
 
 withDefaults(defineProps<FileAvatarProps>(), {
   status: 'idle',
-  removable: false
+  removable: false,
+  size: '2xl'
 })
 
 const emit = defineEmits<{
@@ -22,7 +26,7 @@ const emit = defineEmits<{
   <div class="relative group">
     <UTooltip :text="removeRandomSuffix(name)">
       <UAvatar
-        size="2xl"
+        :size="size"
         :src="type.startsWith('image/') ? previewUrl : undefined"
         :icon="getFileIcon(type, name)"
         class="rounded-lg"
