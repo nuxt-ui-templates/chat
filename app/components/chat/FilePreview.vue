@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { AvatarProps } from '@nuxt/ui'
 
-interface FileAvatarProps {
+interface ChatFilePreviewProps {
   name: string
   type: string
   previewUrl?: string
@@ -11,7 +11,7 @@ interface FileAvatarProps {
   removable?: boolean
 }
 
-withDefaults(defineProps<FileAvatarProps>(), {
+withDefaults(defineProps<ChatFilePreviewProps>(), {
   status: 'idle',
   removable: false,
   size: '2xl'

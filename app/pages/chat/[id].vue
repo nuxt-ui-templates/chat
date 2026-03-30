@@ -127,7 +127,7 @@ onMounted(() => {
             </template>
 
             <template #files="{ message, parts }">
-              <FileAvatar
+              <ChatFilePreview
                 v-for="(part, index) in parts"
                 :key="`${message.id}-${index}`"
                 :name="getFileName(part.url)"
@@ -201,24 +201,12 @@ onMounted(() => {
             @submit="handleSubmit"
           >
             <template v-if="files.length > 0" #header>
-              <div class="flex flex-wrap gap-2">
-                <FileAvatar
-                  v-for="fileWithStatus in files"
-                  :key="fileWithStatus.id"
-                  :name="fileWithStatus.file.name"
-                  :type="fileWithStatus.file.type"
-                  :preview-url="fileWithStatus.previewUrl"
-                  :status="fileWithStatus.status"
-                  :error="fileWithStatus.error"
-                  removable
-                  @remove="removeFile(fileWithStatus.id)"
-                />
-              </div>
+              <ChatFiles :files="files" @remove="removeFile" />
             </template>
 
             <template #footer>
               <div class="flex items-center gap-1">
-                <FileUploadButton :open="open" />
+                <ChatFileUploadButton :open="open" />
 
                 <ModelSelect />
               </div>
