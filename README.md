@@ -2,7 +2,7 @@
 
 [![Nuxt UI](https://img.shields.io/badge/Made%20with-Nuxt%20UI-00DC82?logo=nuxt&labelColor=020420)](https://ui.nuxt.com)
 
-Full-featured AI Chatbot Nuxt application with authentication, chat history, multiple pages, collapsible sidebar, keyboard shortcuts, light & dark mode, command palette and more. Built using [Nuxt UI](https://ui.nuxt.com) components and integrated with [AI SDK](https://ai-sdk.dev) for a complete chat experience.
+Full-featured AI Chatbot Nuxt application with authentication, chat history, collapsible sidebar, keyboard shortcuts, light & dark mode, command palette and more. Built using [Nuxt UI](https://ui.nuxt.com) components and integrated with [AI SDK](https://ai-sdk.dev) for a complete chat experience.
 
 - [Live demo](https://chat-template.nuxt.dev/)
 - [Documentation](https://ui.nuxt.com/docs/getting-started/installation/nuxt)
@@ -17,11 +17,14 @@ Full-featured AI Chatbot Nuxt application with authentication, chat history, mul
 
 ## Features
 
-- ⚡️ **Streaming AI messages** powered by the [AI SDK](https://ai-sdk.dev)
-- 🤖 **Multiple model support** via various AI providers with built-in AI Gateway support
-- 🔐 **Authentication** via [nuxt-auth-utils](https://github.com/atinux/nuxt-auth-utils)
-- 💾 **Chat history persistence** using SQLite database (Turso in production) and [Drizzle ORM](https://orm.drizzle.team)
-- 🚀 **Easy deploy** to Vercel with zero configuration
+- ⚡️ **Streaming AI messages** powered by the [AI SDK](https://ai-sdk.dev) with thinking/reasoning support
+- 🤖 **Multiple model support** — Claude Haiku 4.5, Gemini 3 Flash and GPT-5 Nano via [Vercel AI Gateway](https://vercel.com/docs/ai-gateway)
+- 🔍 **Web search** with built-in provider tools (Anthropic, OpenAI)
+- 📊 **Charts and weather** tool calling with rich UI rendering
+- 🔐 **Authentication** via GitHub OAuth using [nuxt-auth-utils](https://github.com/atinux/nuxt-auth-utils)
+- 💾 **Chat history persistence** using SQLite database ([Turso](https://turso.tech) in production) and [Drizzle ORM](https://orm.drizzle.team)
+- 📎 **File uploads** with drag & drop using [NuxtHub Blob](https://hub.nuxt.com/docs/blob) (requires authentication)
+- ✨ **Markdown rendering** with streaming code highlighting via [Nuxt MDC](https://github.com/nuxt-modules/mdc)
 
 ## Quick Start
 
@@ -31,7 +34,7 @@ npm create nuxt@latest -- -t ui/chat
 
 ## Deploy your own
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-name=chat&repository-url=https%3A%2F%2Fgithub.com%2Fnuxt-ui-templates%2Fchat&env=NUXT_SESSION_PASSWORD,NUXT_OAUTH_GITHUB_CLIENT_ID,NUXT_OAUTH_GITHUB_CLIENT_SECRET&products=%5B%7B%22type%22%3A%22integration%22%2C%22protocol%22%3A%22storage%22%2C%22productSlug%22%3A%22database%22%2C%22integrationSlug%22%3A%22tursocloud%22%7D%5D&demo-image=https%3A%2F%2Fui.nuxt.com%2Fassets%2Ftemplates%2Fnuxt%2Fchat-dark.png&demo-url=https%3A%2F%2Fchat-template.nuxt.dev%2F&demo-title=Nuxt%20Chat%20Template&demo-description=An%20AI%20chatbot%20template%20to%20build%20your%20own%20chatbot%20powered%20by%20Nuxt%20MDC%20and%20Vercel%20AI%20SDK.)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fnuxt-ui-templates%2Fchat&repository-name=chat&env=NUXT_OAUTH_GITHUB_CLIENT_ID%2CNUXT_OAUTH_GITHUB_CLIENT_SECRET%2CNUXT_SESSION_PASSWORD&stores=%5B%7B%22type%22%3A%22integration%22%2C%22integrationSlug%22%3A%22tursocloud%22%2C%22productSlug%22%3A%22database%22%2C%22protocol%22%3A%22storage%22%7D%2C%7B%22type%22%3A%22blob%22%7D%5D&demo-title=Nuxt+Chat+Template&demo-description=An+AI+chatbot+template+with+GitHub+authentication+and+persistent+chat+history+powered+by+Vercel+AI+SDK.&demo-url=https%3A%2F%2Fchat-template.nuxt.dev&demo-image=https%3A%2F%2Fui.nuxt.com%2Fassets%2Ftemplates%2Fnuxt%2Fchat-dark.png)
 
 ## Setup
 
@@ -47,19 +50,21 @@ Run database migrations:
 pnpm db:migrate
 ```
 
+> [!NOTE]
+> In production, configure your database connection. On Vercel, add the [Turso integration](https://vercel.com/integrations/turso) to automatically provision `TURSO_DATABASE_URL` and `TURSO_AUTH_TOKEN`.
+
 ### AI Integration
 
-This template uses the [Vercel AI SDK](https://ai-sdk.dev/) for streaming AI responses with support for multiple providers through [Vercel AI Gateway](https://vercel.com/docs/ai-gateway).
+This template uses the [Vercel AI SDK](https://ai-sdk.dev/) for streaming AI responses with support for multiple providers through [Vercel AI Gateway](https://vercel.com/docs/ai-gateway). When deployed on Vercel, the AI Gateway is configured automatically.
 
-Set your AI provider configuration in `.env`:
+For local development, set your API key in `.env`:
 
 ```bash
-# AI Configuration via Vercel AI Gateway (unified API for all providers)
 AI_GATEWAY_API_KEY=<your-vercel-ai-gateway-api-key>
 ```
 
 > [!TIP]
-> With Vercel AI Gateway, you don't need individual API keys for OpenAI, Anthropic, etc. The AI Gateway provides a unified API to access hundreds of models through a single endpoint with automatic load balancing, fallbacks, and spend monitoring.
+> With [Vercel AI Gateway](https://vercel.com/docs/ai-gateway), you don't need individual API keys for OpenAI, Anthropic, etc. It provides a unified API to access hundreds of models through a single endpoint with automatic load balancing, fallbacks, and spend monitoring.
 
 ### Authentication (Optional)
 
@@ -75,30 +80,21 @@ NUXT_SESSION_PASSWORD=<your-password-minimum-32-characters>
 
 ### Blob Storage (Optional)
 
-This template uses [NuxtHub Blob](https://hub.nuxt.com/docs/features/blob) for file uploads, which supports multiple storage providers:
+This template uses [NuxtHub Blob](https://hub.nuxt.com/docs/blob) for file uploads, which supports multiple storage drivers:
 
-- **Local filesystem** (default for development)
-- **Vercel Blob** (auto-configured when deployed to Vercel)
-- **Cloudflare R2** (auto-configured when deployed to Cloudflare)
-- **Amazon S3** (with manual configuration)
+- **Local filesystem** (default for development, stored in `.data/blob`)
+- **[Vercel Blob](https://vercel.com/docs/storage/vercel-blob)** (auto-configured when deployed to Vercel)
+- **[Cloudflare R2](https://hub.nuxt.com/docs/blob#set-a-driver)** (when deployed to Cloudflare)
+- **[Amazon S3](https://hub.nuxt.com/docs/blob#set-a-driver)** (with manual configuration)
 
-For **[Vercel Blob](https://vercel.com/docs/storage/vercel-blob)**, assign a Blob Store to your project from the Vercel dashboard (Project → Storage), then set the token for local development:
+For **Vercel Blob**, assign a Blob Store to your project from the Vercel dashboard (Project → Storage), then set the token for local development:
 
 ```bash
 BLOB_READ_WRITE_TOKEN=<your-vercel-blob-token>
 ```
 
-For **S3-compatible storage**, set:
-
-```bash
-S3_ACCESS_KEY_ID=<your-access-key-id>
-S3_SECRET_ACCESS_KEY=<your-secret-access-key>
-S3_BUCKET=<your-bucket-name>
-S3_REGION=<your-region>
-```
-
 > [!NOTE]
-> Without configuration, files are stored locally in `.data/hub/blob` during development.
+> File uploads require authentication. See the [NuxtHub Blob documentation](https://hub.nuxt.com/docs/blob#set-a-driver) for configuring other storage drivers.
 
 ## Development Server
 
