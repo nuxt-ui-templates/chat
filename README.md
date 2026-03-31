@@ -26,7 +26,7 @@ Full-featured AI Chatbot Nuxt application with authentication, chat history, col
 - 🔐 **Authentication** via GitHub OAuth using [nuxt-auth-utils](https://github.com/atinux/nuxt-auth-utils)
 - 💾 **Chat history persistence** using SQLite database ([Turso](https://turso.tech) in production) and [Drizzle ORM](https://orm.drizzle.team)
 - 📎 **File uploads** with drag & drop using [NuxtHub Blob](https://hub.nuxt.com/docs/blob) (requires authentication)
-- ✨ **Markdown rendering** with streaming code highlighting via [Nuxt MDC](https://github.com/nuxt-modules/mdc)
+- ✨ **Markdown rendering** with streaming code highlighting via [Comark](https://comark.dev)
 
 ## Quick Start
 

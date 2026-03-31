@@ -25,6 +25,9 @@
     "@libsql/client": "^0.17.2",
     "@nuxt/ui": "^4.6.0",
     "@nuxthub/core": "^0.10.7",
+    "@shikijs/langs": "^4.0.2",
+    "@shikijs/primitive": "^4.0.2",
+    "@shikijs/themes": "^4.0.2",
     "@vercel/blob": "^2.3.2",
     "@vueuse/core": "^14.2.1",
     "ai": "^6.0.141",
@@ -35,6 +38,7 @@
     "nuxt-auth-utils": "^0.5.29",
     "nuxt-charts": "^2.1.4",
     "nuxt-csurf": "^1.6.5",
+    "shiki": "^4.0.2",
     "striptags": "3.2.0",
     "tailwindcss": "^4.2.2",
     "zod": "^4.3.6"

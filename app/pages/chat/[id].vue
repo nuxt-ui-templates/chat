@@ -168,6 +168,7 @@ onMounted(() => {
                   <ChatComark
                     v-if="message.role === 'assistant'"
                     :markdown="part.text"
+                    :streaming="part.state === 'streaming'"
                     class="*:first:mt-0 *:last:mb-0"
                   />
                   <p v-else-if="message.role === 'user'" class="whitespace-pre-wrap">
