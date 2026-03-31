@@ -15,6 +15,8 @@ Full-featured AI Chatbot Nuxt application with authentication, chat history, col
   </picture>
 </a>
 
+> The chat template for Vue is on https://github.com/nuxt-ui-templates/chat-vue.
+
 ## Features
 
 - ⚡️ **Streaming AI messages** powered by the [AI SDK](https://ai-sdk.dev) with thinking/reasoning support
@@ -83,7 +85,7 @@ NUXT_SESSION_PASSWORD=<your-password-minimum-32-characters>
 This template uses [NuxtHub Blob](https://hub.nuxt.com/docs/blob) for file uploads, which supports multiple storage drivers:
 
 - **Local filesystem** (default for development, stored in `.data/blob`)
-- **[Vercel Blob](https://vercel.com/docs/storage/vercel-blob)** (auto-configured when deployed to Vercel)
+- **[Vercel Blob](https://vercel.com/docs/vercel-blob)** (auto-configured when deployed to Vercel)
 - **[Cloudflare R2](https://hub.nuxt.com/docs/blob#set-a-driver)** (when deployed to Cloudflare)
 - **[Amazon S3](https://hub.nuxt.com/docs/blob#set-a-driver)** (with manual configuration)
 
