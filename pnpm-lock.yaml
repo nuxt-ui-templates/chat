@@ -15,10 +15,10 @@ importers:
         specifier: ^3.0.83
         version: 3.0.83(zod@4.3.6)
       '@ai-sdk/google':
-        specifier: ^3.0.53
+        specifier: ^3.0.54
         version: 3.0.54(zod@4.3.6)
       '@ai-sdk/openai':
-        specifier: ^3.0.48
+        specifier: ^3.0.49
         version: 3.0.49(zod@4.3.6)
       '@ai-sdk/vue':
         specifier: ^3.0.141
@@ -27,10 +27,10 @@ importers:
         specifier: ^1.2.11
         version: 1.2.11
       '@iconify-json/lucide':
-        specifier: ^1.2.100
+        specifier: ^1.2.101
         version: 1.2.101
       '@iconify-json/simple-icons':
-        specifier: ^1.2.75
+        specifier: ^1.2.76
         version: 1.2.76
       '@libsql/client':
         specifier: ^0.17.2
@@ -42,8 +42,8 @@ importers:
         specifier: ^0.10.7
         version: 0.10.7(@vercel/blob@2.3.2)(db0@0.3.4(@libsql/client@0.17.2)(drizzle-orm@0.45.2(@cloudflare/workers-types@4.20260316.1)(@libsql/client@0.17.2)(@opentelemetry/api@1.9.0)(pg@8.20.0)))(ioredis@5.10.0)(magicast@0.5.2)(typescript@6.0.2)(vue-tsc@3.2.6(typescript@6.0.2))
       '@nuxtjs/mdc':
-        specifier: ^0.21.0
-        version: 0.21.0(magicast@0.5.2)
+        specifier: ^0.21.1
+        version: 0.21.1(magicast@0.5.2)
       '@shikijs/engine-javascript':
         specifier: ^4.0.2
         version: 4.0.2
@@ -1256,8 +1256,8 @@ packages:
   '@nuxtjs/color-mode@3.5.2':
     resolution: {integrity: sha512-cC6RfgZh3guHBMLLjrBB2Uti5eUoGM9KyauOaYS9ETmxNWBMTvpgjvSiSJp1OFljIXPIqVTJ3xtJpSNZiO3ZaA==}
 
-  '@nuxtjs/mdc@0.21.0':
-    resolution: {integrity: sha512-gLd7j/voqVlGuKJnSV44dYkfQnohpQtMWoGpmuZ5aySe/e9OZOueY0ZXvlMUXdVABEYUba/kiYTD5+n/HaiQbw==}
+  '@nuxtjs/mdc@0.21.1':
+    resolution: {integrity: sha512-DIeUD7IahWVUSoZExysxH9dX51Io6hcQYgGJODq0cMTGqaoDD32lRfHBJxYUmy+sUCV1+1hfa2ixspgJgEd2GA==}
 
   '@opentelemetry/api@1.9.0':
     resolution: {integrity: sha512-3giAOQvZiH5F9bMlMiv8+GSPMeqg0dbaeo58/0SlA9sxSqZhnUtxzX9/2FzyhS9sWQf5S0GJE0AKBrFqjpeYcg==}
@@ -8673,10 +8673,11 @@ snapshots:
     transitivePeerDependencies:
       - magicast
 
-  '@nuxtjs/mdc@0.21.0(magicast@0.5.2)':
+  '@nuxtjs/mdc@0.21.1(magicast@0.5.2)':
     dependencies:
       '@nuxt/kit': 4.4.2(magicast@0.5.2)
       '@shikijs/core': 4.0.2
+      '@shikijs/engine-javascript': 4.0.2
       '@shikijs/langs': 4.0.2
       '@shikijs/themes': 4.0.2
       '@shikijs/transformers': 4.0.2
