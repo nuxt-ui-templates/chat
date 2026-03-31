@@ -44,9 +44,6 @@ importers:
       '@nuxtjs/mdc':
         specifier: ^0.21.1
         version: 0.21.1(magicast@0.5.2)
-      '@shikijs/engine-javascript':
-        specifier: ^4.0.2
-        version: 4.0.2
       '@vercel/blob':
         specifier: ^2.3.2
         version: 2.3.2

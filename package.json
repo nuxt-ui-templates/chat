@@ -36,7 +36,6 @@
     "nuxt-charts": "^2.1.4",
     "nuxt-csurf": "^1.6.5",
     "pg": "^8.20.0",
-    "@shikijs/engine-javascript": "^4.0.2",
     "shiki": "^4.0.2",
     "shiki-stream": "^0.1.4",
     "striptags": "3.2.0",
