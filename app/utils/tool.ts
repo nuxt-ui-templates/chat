@@ -46,11 +46,11 @@ export function getSources(part: ToolPart): Source[] {
   return []
 }
 
-export function sourceToInlineHtml(url: string): string {
+export function sourceToInlineMdc(url: string): string {
   const domain = getDomain(url)
   const favicon = getFaviconUrl(url)
   const safeUrl = url.replace(/"/g, '&quot;')
   const safeFavicon = favicon.replace(/"/g, '&quot;')
 
-  return ` :button{to="${safeUrl}" target="_blank" :avatar='{ "src": "${safeFavicon}" }' label="${domain}" trailingIcon="i-lucide-arrow-up-right" size="xs" color="neutral" variant="outline" class="rounded-full align-middle"}`
+  return ` :source-link{url="${safeUrl}" favicon="${safeFavicon}" label="${domain}"}`
 }

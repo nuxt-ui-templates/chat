@@ -3,7 +3,7 @@ export default defineNuxtConfig({
   modules: [
     '@nuxt/eslint',
     '@nuxt/ui',
-    '@nuxtjs/mdc',
+    '@comark/nuxt',
     '@nuxthub/core',
     'nuxt-auth-utils',
     'nuxt-charts',
@@ -15,16 +15,6 @@ export default defineNuxtConfig({
   },
 
   css: ['~/assets/css/main.css'],
-
-  mdc: {
-    headings: {
-      anchorLinks: false
-    },
-    highlight: {
-      // noApiRoute: true
-      shikiEngine: 'javascript'
-    }
-  },
 
   experimental: {
     viewTransition: true
