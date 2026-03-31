@@ -1,17 +1,9 @@
 <script setup lang="ts">
-import type { DefineComponent } from 'vue'
 import { Chat } from '@ai-sdk/vue'
 import { DefaultChatTransport, isReasoningUIPart, isTextUIPart, isToolUIPart, getToolName } from 'ai'
 import type { UIMessage } from 'ai'
 import { useClipboard } from '@vueuse/core'
 import { isToolStreaming, getTextFromMessage } from '@nuxt/ui/utils/ai'
-import ProseStreamPre from '../../components/prose/PreStream.vue'
-import { UButton } from '#components'
-
-const components = {
-  pre: ProseStreamPre as unknown as DefineComponent,
-  button: UButton
-}
 
 const route = useRoute()
 const toast = useToast()
@@ -145,9 +137,9 @@ onMounted(() => {
                   :streaming="part.state === 'streaming'"
                   chevron="leading"
                 >
-                  <MDC
-                    :value="part.text"
-                    :cache-key="`reasoning-${message.id}-${index}`"
+                  <ChatComark
+                    :markdown="part.text"
+                    :streaming="part.state === 'streaming'"
                     class="*:first:mt-0 *:last:mb-0"
                   />
                 </UChatReasoning>
@@ -173,16 +165,12 @@ onMounted(() => {
                 </template>
 
                 <template v-else-if="isTextUIPart(part)">
-                  <!-- Only render markdown for assistant messages to prevent XSS from user input -->
-                  <MDCCached
+                  <ChatComark
                     v-if="message.role === 'assistant'"
-                    :value="part.text"
-                    :cache-key="`${message.id}-${index}`"
-                    :components="components"
-                    :parser-options="{ highlight: false }"
+                    :markdown="part.text"
+                    :streaming="part.state === 'streaming'"
                     class="*:first:mt-0 *:last:mb-0"
                   />
-                  <!-- User messages are rendered as plain text (safely escaped by Vue) -->
                   <p v-else-if="message.role === 'user'" class="whitespace-pre-wrap">
                     {{ part.text }}
                   </p>
