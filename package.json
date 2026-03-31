@@ -35,7 +35,6 @@
     "nuxt-auth-utils": "^0.5.29",
     "nuxt-charts": "^2.1.4",
     "nuxt-csurf": "^1.6.5",
-    "pg": "^8.20.0",
     "shiki": "^4.0.2",
     "shiki-stream": "^0.1.4",
     "striptags": "3.2.0",
