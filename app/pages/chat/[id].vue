@@ -4,7 +4,7 @@ import { Chat } from '@ai-sdk/vue'
 import { DefaultChatTransport, isReasoningUIPart, isTextUIPart, isToolUIPart, getToolName } from 'ai'
 import type { UIMessage } from 'ai'
 import { useClipboard } from '@vueuse/core'
-import { isReasoningStreaming, isToolStreaming, getTextFromMessage } from '@nuxt/ui/utils/ai'
+import { isToolStreaming, getTextFromMessage } from '@nuxt/ui/utils/ai'
 import ProseStreamPre from '../../components/prose/PreStream.vue'
 import { UButton } from '#components'
 
@@ -142,7 +142,7 @@ onMounted(() => {
                 <UChatReasoning
                   v-if="isReasoningUIPart(part)"
                   :text="part.text"
-                  :streaming="isReasoningStreaming(message, index, chat)"
+                  :streaming="part.state === 'streaming'"
                   chevron="leading"
                 >
                   <MDC
