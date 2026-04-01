@@ -2,7 +2,7 @@
 import { Chat } from '@ai-sdk/vue'
 import { DefaultChatTransport, isReasoningUIPart, isTextUIPart, isToolUIPart, getToolName } from 'ai'
 import type { UIMessage } from 'ai'
-import { isToolStreaming, getTextFromMessage } from '@nuxt/ui/utils/ai'
+import { isToolStreaming } from '@nuxt/ui/utils/ai'
 
 const route = useRoute()
 const toast = useToast()
@@ -67,24 +67,13 @@ async function handleSubmit(e: Event) {
 }
 
 const editingMessageId = ref<string | null>(null)
-const editingText = ref('')
 
 function startEdit(message: UIMessage) {
   editingMessageId.value = message.id
-  editingText.value = getTextFromMessage(message)
 }
 
-function cancelEdit() {
+async function saveEdit(message: UIMessage, text: string) {
   editingMessageId.value = null
-  editingText.value = ''
-}
-
-async function saveEdit(message: UIMessage) {
-  if (!editingText.value.trim()) return
-
-  const text = editingText.value
-  editingMessageId.value = null
-  editingText.value = ''
 
   await $fetch(`/api/chats/${data.value!.id}/messages`, {
     method: 'DELETE',
@@ -226,30 +215,13 @@ onMounted(() => {
                     class="*:first:mt-0 *:last:mb-0"
                   />
                   <template v-else-if="message.role === 'user'">
-                    <div v-if="editingMessageId === message.id" class="flex flex-col gap-2 w-full">
-                      <UTextarea
-                        v-model="editingText"
-                        autoresize
-                        :rows="1"
-                        autofocus
-                      />
-
-                      <div class="flex gap-1.5 justify-end">
-                        <UButton
-                          size="sm"
-                          variant="ghost"
-                          color="neutral"
-                          label="Cancel"
-                          @click="cancelEdit"
-                        />
-                        <UButton
-                          size="sm"
-                          label="Save"
-                          :disabled="!editingText.trim()"
-                          @click="saveEdit(message)"
-                        />
-                      </div>
-                    </div>
+                    <ChatMessageEdit
+                      v-if="editingMessageId === message.id"
+                      :message="message"
+                      :text="part.text"
+                      @save="saveEdit"
+                      @cancel="editingMessageId = null"
+                    />
                     <p v-else class="whitespace-pre-wrap">
                       {{ part.text }}
                     </p>

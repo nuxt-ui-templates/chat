@@ -84,9 +84,11 @@ function copy() {
   </template>
 
   <template v-if="message.role === 'user' && !streaming && !editing">
-    <span v-if="formattedDate" class="text-xs text-muted">
-      {{ formattedDate }}
-    </span>
+    <UTooltip :text="message.createdAt">
+      <span v-if="formattedDate" class="text-xs text-muted">
+        {{ formattedDate }}
+      </span>
+    </UTooltip>
 
     <UTooltip text="Edit message">
       <UButton
