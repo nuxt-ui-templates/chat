@@ -261,7 +261,7 @@ onMounted(() => {
             <template #actions="{ message }">
               <ChatMessageActions
                 :message="message"
-                :is-streaming="chat.status === 'streaming'"
+                :is-streaming="chat.status === 'streaming' && message.id === chat.messages[chat.messages.length - 1]?.id"
                 :is-editing="editingMessageId === message.id"
                 :vote="getVote(message.id)"
                 @vote="(_message, isUpvoted) => vote(_message, isUpvoted)"

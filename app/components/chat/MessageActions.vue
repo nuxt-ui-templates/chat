@@ -33,6 +33,16 @@ function copy() {
 
 <template>
   <template v-if="message.role === 'assistant' && !isStreaming">
+    <UTooltip text="Copy response">
+      <UButton
+        size="sm"
+        :color="copied ? 'primary' : 'neutral'"
+        variant="ghost"
+        :icon="copied ? 'i-lucide-copy-check' : 'i-lucide-copy'"
+        @click="copy"
+      />
+    </UTooltip>
+
     <UTooltip text="Good response">
       <UButton
         size="sm"
@@ -50,16 +60,6 @@ function copy() {
         variant="ghost"
         icon="i-lucide-thumbs-down"
         @click="emit('vote', message, false)"
-      />
-    </UTooltip>
-
-    <UTooltip text="Copy response">
-      <UButton
-        size="sm"
-        :color="copied ? 'primary' : 'neutral'"
-        variant="ghost"
-        :icon="copied ? 'i-lucide-copy-check' : 'i-lucide-copy'"
-        @click="copy"
       />
     </UTooltip>
 
