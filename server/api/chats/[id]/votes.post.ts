@@ -36,12 +36,9 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 404, statusMessage: 'Message not found' })
   }
 
-  const existing = await db.select().from(schema.votes).where(
-    and(
-      eq(schema.votes.chatId, id as string),
-      eq(schema.votes.messageId, messageId)
-    )
-  )
+  if (message.role !== 'assistant') {
+    throw createError({ statusCode: 400, statusMessage: 'Can only vote on assistant messages' })
+  }
 
   if (isUpvoted === undefined) {
     await db.delete(schema.votes).where(
@@ -50,18 +47,14 @@ export default defineEventHandler(async (event) => {
         eq(schema.votes.messageId, messageId)
       )
     )
-  } else if (existing.length > 0) {
-    await db.update(schema.votes)
-      .set({ isUpvoted })
-      .where(and(
-        eq(schema.votes.chatId, id as string),
-        eq(schema.votes.messageId, messageId)
-      ))
   } else {
     await db.insert(schema.votes).values({
       chatId: id as string,
       messageId,
       isUpvoted
+    }).onConflictDoUpdate({
+      target: [schema.votes.chatId, schema.votes.messageId],
+      set: { isUpvoted }
     })
   }
 

@@ -106,6 +106,11 @@ async function vote(_e: MouseEvent, message: UIMessage, isUpvoted: boolean) {
     })
   } catch {
     votes.value = snapshot
+    toast.add({
+      description: 'Failed to save vote',
+      icon: 'i-lucide-alert-circle',
+      color: 'error'
+    })
   }
 }
 
