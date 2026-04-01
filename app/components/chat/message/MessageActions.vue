@@ -18,7 +18,8 @@ const formattedDate = computed(() => {
 
   return {
     time: date.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' }),
-    full: date.toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' })
+    full: date.toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' }),
+    iso: date.toISOString()
   }
 })
 
@@ -90,7 +91,7 @@ function copy() {
 
   <template v-if="message.role === 'user' && !streaming && !editing">
     <UTooltip v-if="formattedDate" :text="formattedDate.full">
-      <time :datetime="formattedDate.full" class="text-xs text-muted mr-1.5">
+      <time :datetime="formattedDate.iso" class="text-xs text-muted mr-1.5">
         {{ formattedDate.time }}
       </time>
     </UTooltip>
