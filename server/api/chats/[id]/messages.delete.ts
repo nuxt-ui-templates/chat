@@ -1,5 +1,5 @@
 import { db, schema } from 'hub:db'
-import { and, eq, gte, gt } from 'drizzle-orm'
+import { and, asc, eq, inArray } from 'drizzle-orm'
 import { z } from 'zod'
 
 export default defineEventHandler(async (event) => {
@@ -25,27 +25,24 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 404, statusMessage: 'Chat not found' })
   }
 
-  const message = await db.query.messages.findFirst({
-    where: () => and(
-      eq(schema.messages.id, messageId),
-      eq(schema.messages.chatId, id as string)
-    )
-  })
+  const allMessages = await db.select({ id: schema.messages.id })
+    .from(schema.messages)
+    .where(eq(schema.messages.chatId, id as string))
+    .orderBy(asc(schema.messages.createdAt), asc(schema.messages.id))
 
-  if (!message) {
+  const targetIndex = allMessages.findIndex(m => m.id === messageId)
+  if (targetIndex === -1) {
     throw createError({ statusCode: 404, statusMessage: 'Message not found' })
   }
 
   // Edit: delete messages after the edited one (keep the user message itself)
   // Regenerate: delete the assistant message and everything after it
-  const operator = type === 'edit' ? gt : gte
+  const startIndex = type === 'edit' ? targetIndex + 1 : targetIndex
+  const idsToDelete = allMessages.slice(startIndex).map(m => m.id)
 
-  await db.delete(schema.messages).where(
-    and(
-      eq(schema.messages.chatId, id as string),
-      operator(schema.messages.createdAt, message.createdAt)
-    )
-  )
+  if (idsToDelete.length > 0) {
+    await db.delete(schema.messages).where(inArray(schema.messages.id, idsToDelete))
+  }
 
   return { success: true }
 })

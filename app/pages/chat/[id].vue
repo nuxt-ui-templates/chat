@@ -73,23 +73,32 @@ function startEdit(message: UIMessage) {
 }
 
 async function saveEdit(message: UIMessage, text: string) {
+  try {
+    await $fetch(`/api/chats/${data.value!.id}/messages`, {
+      method: 'DELETE',
+      headers: { [headerName]: csrf },
+      body: { messageId: message.id, type: 'edit' }
+    })
+  } catch {
+    toast.add({ description: 'Failed to save edit.', icon: 'i-lucide-alert-circle', color: 'error' })
+    return
+  }
+
   editingMessageId.value = null
-
-  await $fetch(`/api/chats/${data.value!.id}/messages`, {
-    method: 'DELETE',
-    headers: { [headerName]: csrf },
-    body: { messageId: message.id, type: 'edit' }
-  })
-
   chat.sendMessage({ text, messageId: message.id })
 }
 
 async function regenerateMessage(message: UIMessage) {
-  await $fetch(`/api/chats/${data.value!.id}/messages`, {
-    method: 'DELETE',
-    headers: { [headerName]: csrf },
-    body: { messageId: message.id, type: 'regenerate' }
-  })
+  try {
+    await $fetch(`/api/chats/${data.value!.id}/messages`, {
+      method: 'DELETE',
+      headers: { [headerName]: csrf },
+      body: { messageId: message.id, type: 'regenerate' }
+    })
+  } catch {
+    toast.add({ description: 'Failed to regenerate.', icon: 'i-lucide-alert-circle', color: 'error' })
+    return
+  }
 
   chat.regenerate({ messageId: message.id })
 }

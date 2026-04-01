@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { UIMessage } from 'ai'
+import { isFileUIPart } from 'ai'
 import { useClipboard } from '@vueuse/core'
 import { getTextFromMessage } from '@nuxt/ui/utils/ai'
 
@@ -26,6 +27,8 @@ const emit = defineEmits<{
   regenerate: [message: UIMessage]
   vote: [message: UIMessage, isUpvoted: boolean]
 }>()
+
+const hasFiles = computed(() => props.message.parts.some(isFileUIPart))
 
 const clipboard = useClipboard()
 
@@ -92,7 +95,7 @@ function copy() {
       </time>
     </UTooltip>
 
-    <UTooltip text="Edit message">
+    <UTooltip v-if="!hasFiles" text="Edit message">
       <UButton
         size="sm"
         color="neutral"
