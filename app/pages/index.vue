@@ -18,10 +18,10 @@ const greeting = computed(() => {
 
 const {
   dropzoneRef,
-  isDragging,
+  dragging,
   open,
   files,
-  isUploading,
+  uploading,
   uploadedFiles,
   removeFile,
   clearFiles
@@ -104,7 +104,7 @@ const quickChats = [
 
     <template #body>
       <div ref="dropzoneRef" class="flex flex-1">
-        <DragDropOverlay :show="isDragging" />
+        <DragDropOverlay :show="dragging" />
 
         <UContainer class="flex-1 flex flex-col justify-center gap-4 sm:gap-6 py-8">
           <h1 class="text-3xl sm:text-4xl text-highlighted font-bold">
@@ -114,7 +114,7 @@ const quickChats = [
           <UChatPrompt
             v-model="input"
             :status="loading ? 'streaming' : 'ready'"
-            :disabled="isUploading"
+            :disabled="uploading"
             class="[view-transition-name:chat-prompt]"
             variant="subtle"
             :ui="{ base: 'px-1.5' }"
@@ -131,7 +131,7 @@ const quickChats = [
                 <ModelSelect />
               </div>
 
-              <UChatPromptSubmit color="neutral" size="sm" :disabled="isUploading" />
+              <UChatPromptSubmit color="neutral" size="sm" :disabled="uploading" />
             </template>
           </UChatPrompt>
 
