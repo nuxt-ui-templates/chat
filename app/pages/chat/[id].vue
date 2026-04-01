@@ -2,12 +2,10 @@
 import { Chat } from '@ai-sdk/vue'
 import { DefaultChatTransport, isReasoningUIPart, isTextUIPart, isToolUIPart, getToolName } from 'ai'
 import type { UIMessage } from 'ai'
-import { useClipboard } from '@vueuse/core'
 import { isToolStreaming, getTextFromMessage } from '@nuxt/ui/utils/ai'
 
 const route = useRoute()
 const toast = useToast()
-const clipboard = useClipboard()
 const { model } = useModels()
 const { csrf, headerName } = useCsrf()
 
@@ -68,18 +66,6 @@ async function handleSubmit(e: Event) {
   }
 }
 
-const copied = ref(false)
-
-function copy(_e: MouseEvent, message: UIMessage) {
-  clipboard.copy(getTextFromMessage(message))
-
-  copied.value = true
-
-  setTimeout(() => {
-    copied.value = false
-  }, 2000)
-}
-
 const editingMessageId = ref<string | null>(null)
 const editingText = ref('')
 
@@ -109,7 +95,7 @@ async function saveEdit(message: UIMessage) {
   chat.sendMessage({ text, messageId: message.id })
 }
 
-async function regenerateMessage(_e: MouseEvent, message: UIMessage) {
+async function regenerateMessage(message: UIMessage) {
   await $fetch(`/api/chats/${data.value!.id}/messages`, {
     method: 'DELETE',
     headers: { [headerName]: csrf },
@@ -125,7 +111,7 @@ function getVote(messageId: string) {
   return !!vote.isUpvoted
 }
 
-async function vote(_e: MouseEvent, message: UIMessage, isUpvoted: boolean) {
+async function vote(message: UIMessage, isUpvoted: boolean) {
   const snapshot = (votes.value ?? []).map(v => ({ ...v }))
   const toggling = getVote(message.id) === isUpvoted
   const next = toggling ? null : isUpvoted
@@ -241,11 +227,27 @@ onMounted(() => {
                   />
                   <template v-else-if="message.role === 'user'">
                     <div v-if="editingMessageId === message.id" class="flex flex-col gap-2 w-full">
-                      <UTextarea v-model="editingText" autoresize :rows="1" autofocus />
+                      <UTextarea
+                        v-model="editingText"
+                        autoresize
+                        :rows="1"
+                        autofocus
+                      />
 
                       <div class="flex gap-1.5 justify-end">
-                        <UButton size="sm" variant="ghost" color="neutral" label="Cancel" @click="cancelEdit" />
-                        <UButton size="sm" label="Save" :disabled="!editingText.trim()" @click="saveEdit(message)" />
+                        <UButton
+                          size="sm"
+                          variant="ghost"
+                          color="neutral"
+                          label="Cancel"
+                          @click="cancelEdit"
+                        />
+                        <UButton
+                          size="sm"
+                          label="Save"
+                          :disabled="!editingText.trim()"
+                          @click="saveEdit(message)"
+                        />
                       </div>
                     </div>
                     <p v-else class="whitespace-pre-wrap">
@@ -257,59 +259,15 @@ onMounted(() => {
             </template>
 
             <template #actions="{ message }">
-              <template v-if="message.role === 'assistant' && chat.status !== 'streaming'">
-                <UTooltip text="Good response">
-                  <UButton
-                    size="sm"
-                    :color="getVote(message.id) === true ? 'success' : 'neutral'"
-                    variant="ghost"
-                    icon="i-lucide-thumbs-up"
-                    @click="vote($event, message, true)"
-                  />
-                </UTooltip>
-
-                <UTooltip text="Bad response">
-                  <UButton
-                    size="sm"
-                    :color="getVote(message.id) === false ? 'error' : 'neutral'"
-                    variant="ghost"
-                    icon="i-lucide-thumbs-down"
-                    @click="vote($event, message, false)"
-                  />
-                </UTooltip>
-
-                <UTooltip text="Copy response">
-                  <UButton
-                    size="sm"
-                    :color="copied ? 'primary' : 'neutral'"
-                    variant="ghost"
-                    :icon="copied ? 'i-lucide-copy-check' : 'i-lucide-copy'"
-                    @click="copy($event, message)"
-                  />
-                </UTooltip>
-
-                <UTooltip text="Regenerate response">
-                  <UButton
-                    size="sm"
-                    color="neutral"
-                    variant="ghost"
-                    icon="i-lucide-refresh-cw"
-                    @click="regenerateMessage($event, message)"
-                  />
-                </UTooltip>
-              </template>
-
-              <template v-if="message.role === 'user' && chat.status !== 'streaming' && editingMessageId !== message.id">
-                <UTooltip text="Edit message">
-                  <UButton
-                    size="sm"
-                    color="neutral"
-                    variant="ghost"
-                    icon="i-lucide-pencil"
-                    @click="startEdit(message)"
-                  />
-                </UTooltip>
-              </template>
+              <ChatMessageActions
+                :message="message"
+                :is-streaming="chat.status === 'streaming'"
+                :is-editing="editingMessageId === message.id"
+                :vote="getVote(message.id)"
+                @vote="(_message, isUpvoted) => vote(_message, isUpvoted)"
+                @edit="startEdit"
+                @regenerate="regenerateMessage"
+              />
             </template>
           </UChatMessages>
 
