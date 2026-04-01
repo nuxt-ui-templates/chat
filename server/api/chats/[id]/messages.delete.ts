@@ -25,7 +25,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 404, statusMessage: 'Chat not found' })
   }
 
-  const allMessages = await db.select({ id: schema.messages.id })
+  const allMessages = await db.select({ id: schema.messages.id, role: schema.messages.role })
     .from(schema.messages)
     .where(eq(schema.messages.chatId, id as string))
     .orderBy(asc(schema.messages.createdAt), asc(schema.messages.id))
@@ -35,8 +35,14 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 404, statusMessage: 'Message not found' })
   }
 
-  // Edit: delete messages after the edited one (keep the user message itself)
-  // Regenerate: delete the assistant message and everything after it
+  const targetRole = allMessages[targetIndex]!.role
+  if (type === 'edit' && targetRole !== 'user') {
+    throw createError({ statusCode: 400, statusMessage: 'Can only edit user messages' })
+  }
+  if (type === 'regenerate' && targetRole !== 'assistant') {
+    throw createError({ statusCode: 400, statusMessage: 'Can only regenerate assistant messages' })
+  }
+
   const startIndex = type === 'edit' ? targetIndex + 1 : targetIndex
   const idsToDelete = allMessages.slice(startIndex).map(m => m.id)
 

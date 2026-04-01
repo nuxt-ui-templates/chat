@@ -68,6 +68,8 @@ async function handleSubmit(e: Event) {
 const editingMessageId = ref<string | null>(null)
 
 function startEdit(message: UIMessage) {
+  if (editingMessageId.value) return
+
   editingMessageId.value = message.id
 }
 
