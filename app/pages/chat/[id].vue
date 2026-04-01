@@ -80,6 +80,45 @@ function copy(_e: MouseEvent, message: UIMessage) {
   }, 2000)
 }
 
+const editingMessageId = ref<string | null>(null)
+const editingText = ref('')
+
+function startEdit(message: UIMessage) {
+  editingMessageId.value = message.id
+  editingText.value = getTextFromMessage(message)
+}
+
+function cancelEdit() {
+  editingMessageId.value = null
+  editingText.value = ''
+}
+
+async function saveEdit(message: UIMessage) {
+  if (!editingText.value.trim()) return
+
+  const text = editingText.value
+  editingMessageId.value = null
+  editingText.value = ''
+
+  await $fetch(`/api/chats/${data.value!.id}/messages`, {
+    method: 'DELETE',
+    headers: { [headerName]: csrf },
+    body: { messageId: message.id, type: 'edit' }
+  })
+
+  chat.sendMessage({ text, messageId: message.id })
+}
+
+async function regenerateMessage(_e: MouseEvent, message: UIMessage) {
+  await $fetch(`/api/chats/${data.value!.id}/messages`, {
+    method: 'DELETE',
+    headers: { [headerName]: csrf },
+    body: { messageId: message.id, type: 'regenerate' }
+  })
+
+  chat.regenerate({ messageId: message.id })
+}
+
 function getVote(messageId: string) {
   const vote = votes.value?.find(v => v.messageId === messageId)
   if (!vote) return null
@@ -200,9 +239,19 @@ onMounted(() => {
                     :streaming="part.state === 'streaming'"
                     class="*:first:mt-0 *:last:mb-0"
                   />
-                  <p v-else-if="message.role === 'user'" class="whitespace-pre-wrap">
-                    {{ part.text }}
-                  </p>
+                  <template v-else-if="message.role === 'user'">
+                    <div v-if="editingMessageId === message.id" class="flex flex-col gap-2 w-full">
+                      <UTextarea v-model="editingText" autoresize :rows="1" autofocus />
+
+                      <div class="flex gap-1.5 justify-end">
+                        <UButton size="sm" variant="ghost" color="neutral" label="Cancel" @click="cancelEdit" />
+                        <UButton size="sm" label="Save" :disabled="!editingText.trim()" @click="saveEdit(message)" />
+                      </div>
+                    </div>
+                    <p v-else class="whitespace-pre-wrap">
+                      {{ part.text }}
+                    </p>
+                  </template>
                 </template>
               </template>
             </template>
@@ -236,6 +285,28 @@ onMounted(() => {
                     variant="ghost"
                     :icon="copied ? 'i-lucide-copy-check' : 'i-lucide-copy'"
                     @click="copy($event, message)"
+                  />
+                </UTooltip>
+
+                <UTooltip text="Regenerate response">
+                  <UButton
+                    size="sm"
+                    color="neutral"
+                    variant="ghost"
+                    icon="i-lucide-refresh-cw"
+                    @click="regenerateMessage($event, message)"
+                  />
+                </UTooltip>
+              </template>
+
+              <template v-if="message.role === 'user' && chat.status !== 'streaming' && editingMessageId !== message.id">
+                <UTooltip text="Edit message">
+                  <UButton
+                    size="sm"
+                    color="neutral"
+                    variant="ghost"
+                    icon="i-lucide-pencil"
+                    @click="startEdit(message)"
                   />
                 </UTooltip>
               </template>
