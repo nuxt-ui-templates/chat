@@ -18,15 +18,18 @@ const editingText = ref(props.text)
   <div class="flex flex-col gap-2 w-full">
     <UTextarea
       v-model="editingText"
+      autofocus
       autoresize
       :rows="1"
-      autofocus
+      size="xl"
+      variant="none"
+      :ui="{ base: 'p-0' }"
     />
 
     <div class="flex gap-1.5 justify-end">
       <UButton
         size="sm"
-        variant="ghost"
+        variant="soft"
         color="neutral"
         label="Cancel"
         @click="emit('cancel')"
@@ -34,7 +37,7 @@ const editingText = ref(props.text)
       <UButton
         size="sm"
         label="Save"
-        :disabled="!editingText.trim()"
+        :disabled="!editingText.trim() || editingText === text"
         @click="emit('save', message, editingText)"
       />
     </div>
