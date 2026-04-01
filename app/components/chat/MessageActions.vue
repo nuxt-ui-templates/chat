@@ -13,10 +13,12 @@ const props = defineProps<{
 const formattedDate = computed(() => {
   if (!props.message.createdAt) return null
 
-  return new Date(props.message.createdAt).toLocaleTimeString(undefined, {
-    hour: 'numeric',
-    minute: '2-digit'
-  })
+  const date = new Date(props.message.createdAt)
+
+  return {
+    time: date.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' }),
+    full: date.toLocaleString(undefined, { dateStyle: 'full', timeStyle: 'short' })
+  }
 })
 
 const emit = defineEmits<{
@@ -84,9 +86,9 @@ function copy() {
   </template>
 
   <template v-if="message.role === 'user' && !streaming && !editing">
-    <UTooltip :text="message.createdAt">
-      <span v-if="formattedDate" class="text-xs text-muted">
-        {{ formattedDate }}
+    <UTooltip v-if="formattedDate" :text="formattedDate.full">
+      <span class="text-xs text-muted mr-1.5">
+        {{ formattedDate.time }}
       </span>
     </UTooltip>
 
