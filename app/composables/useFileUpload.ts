@@ -97,7 +97,7 @@ export function useFileUploadWithStatus(chatId: string) {
     onUpdate: uploadFiles
   })
 
-  const isUploading = computed(() =>
+  const uploading = computed(() =>
     files.value.some(f => f.status === 'uploading')
   )
 
@@ -143,7 +143,7 @@ export function useFileUploadWithStatus(chatId: string) {
     isDragging,
     open,
     files,
-    isUploading,
+    uploading,
     uploadedFiles,
     addFiles: uploadFiles,
     removeFile,

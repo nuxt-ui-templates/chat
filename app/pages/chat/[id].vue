@@ -14,7 +14,7 @@ const {
   isDragging,
   open,
   files,
-  isUploading,
+  uploading,
   uploadedFiles,
   removeFile,
   clearFiles
@@ -56,7 +56,7 @@ const chat = new Chat({
 
 async function handleSubmit(e: Event) {
   e.preventDefault()
-  if (input.value.trim() && !isUploading.value) {
+  if (input.value.trim() && !uploading.value) {
     chat.sendMessage({
       text: input.value,
       files: uploadedFiles.value.length > 0 ? uploadedFiles.value : undefined
@@ -261,8 +261,8 @@ onMounted(() => {
             <template #actions="{ message }">
               <ChatMessageActions
                 :message="message"
-                :is-streaming="chat.status === 'streaming' && message.id === chat.messages[chat.messages.length - 1]?.id"
-                :is-editing="editingMessageId === message.id"
+                :streaming="chat.status === 'streaming' && message.id === chat.messages[chat.messages.length - 1]?.id"
+                :editing="editingMessageId === message.id"
                 :vote="getVote(message.id)"
                 @vote="(_message, isUpvoted) => vote(_message, isUpvoted)"
                 @edit="startEdit"
@@ -274,7 +274,7 @@ onMounted(() => {
           <UChatPrompt
             v-model="input"
             :error="chat.error"
-            :disabled="isUploading"
+            :disabled="uploading"
             variant="subtle"
             class="sticky bottom-0 [view-transition-name:chat-prompt] rounded-b-none z-10"
             :ui="{ base: 'px-1.5' }"
@@ -293,7 +293,7 @@ onMounted(() => {
 
               <UChatPromptSubmit
                 :status="chat.status"
-                :disabled="isUploading"
+                :disabled="uploading"
                 color="neutral"
                 size="sm"
                 @stop="chat.stop()"

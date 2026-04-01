@@ -21,7 +21,7 @@ const {
   isDragging,
   open,
   files,
-  isUploading,
+  uploading,
   uploadedFiles,
   removeFile,
   clearFiles
@@ -114,7 +114,7 @@ const quickChats = [
           <UChatPrompt
             v-model="input"
             :status="loading ? 'streaming' : 'ready'"
-            :disabled="isUploading"
+            :disabled="uploading"
             class="[view-transition-name:chat-prompt]"
             variant="subtle"
             :ui="{ base: 'px-1.5' }"
@@ -131,7 +131,7 @@ const quickChats = [
                 <ModelSelect />
               </div>
 
-              <UChatPromptSubmit color="neutral" size="sm" :disabled="isUploading" />
+              <UChatPromptSubmit color="neutral" size="sm" :disabled="uploading" />
             </template>
           </UChatPrompt>
 

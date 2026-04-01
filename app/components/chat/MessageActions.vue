@@ -5,8 +5,8 @@ import { getTextFromMessage } from '@nuxt/ui/utils/ai'
 
 const props = defineProps<{
   message: UIMessage
-  isStreaming: boolean
-  isEditing: boolean
+  streaming: boolean
+  editing: boolean
   vote: boolean | null
 }>()
 
@@ -32,7 +32,7 @@ function copy() {
 </script>
 
 <template>
-  <template v-if="message.role === 'assistant' && !isStreaming">
+  <template v-if="message.role === 'assistant' && !streaming">
     <UTooltip text="Copy response">
       <UButton
         size="sm"
@@ -74,7 +74,7 @@ function copy() {
     </UTooltip>
   </template>
 
-  <template v-if="message.role === 'user' && !isStreaming && !isEditing">
+  <template v-if="message.role === 'user' && !streaming && !editing">
     <UTooltip text="Edit message">
       <UButton
         size="sm"
