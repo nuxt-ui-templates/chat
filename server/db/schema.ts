@@ -1,4 +1,4 @@
-import { sqliteTable, text, integer, index, uniqueIndex } from 'drizzle-orm/sqlite-core'
+import { sqliteTable, text, integer, index, uniqueIndex, primaryKey } from 'drizzle-orm/sqlite-core'
 import { relations } from 'drizzle-orm'
 
 const timestamps = {
@@ -53,5 +53,24 @@ export const messagesRelations = relations(messages, ({ one }) => ({
   chat: one(chats, {
     fields: [messages.chatId],
     references: [chats.id]
+  })
+}))
+
+export const votes = sqliteTable('votes', {
+  chatId: text('chat_id').notNull().references(() => chats.id, { onDelete: 'cascade' }),
+  messageId: text('message_id').notNull().references(() => messages.id, { onDelete: 'cascade' }),
+  isUpvoted: integer('is_upvoted', { mode: 'boolean' }).notNull()
+}, table => [
+  primaryKey({ columns: [table.chatId, table.messageId] })
+])
+
+export const votesRelations = relations(votes, ({ one }) => ({
+  chat: one(chats, {
+    fields: [votes.chatId],
+    references: [chats.id]
+  }),
+  message: one(messages, {
+    fields: [votes.messageId],
+    references: [messages.id]
   })
 }))

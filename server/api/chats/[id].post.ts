@@ -62,10 +62,11 @@ export default defineEventHandler(async (event) => {
   const lastMessage = messages[messages.length - 1]
   if (lastMessage?.role === 'user' && messages.length > 1) {
     await db.insert(schema.messages).values({
+      id: lastMessage.id,
       chatId: id as string,
       role: 'user',
       parts: lastMessage.parts
-    })
+    }).onConflictDoNothing()
   }
 
   const stream = createUIMessageStream({
@@ -140,10 +141,11 @@ export default defineEventHandler(async (event) => {
     },
     onFinish: async ({ messages }) => {
       await db.insert(schema.messages).values(messages.map(message => ({
+        id: message.id,
         chatId: chat.id,
         role: message.role as 'user' | 'assistant',
         parts: message.parts
-      })))
+      }))).onConflictDoNothing()
     }
   })
 
