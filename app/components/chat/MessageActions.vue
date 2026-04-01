@@ -4,11 +4,20 @@ import { useClipboard } from '@vueuse/core'
 import { getTextFromMessage } from '@nuxt/ui/utils/ai'
 
 const props = defineProps<{
-  message: UIMessage
+  message: UIMessage & { createdAt?: string | Date }
   streaming: boolean
   editing: boolean
   vote: boolean | null
 }>()
+
+const formattedDate = computed(() => {
+  if (!props.message.createdAt) return null
+
+  return new Date(props.message.createdAt).toLocaleTimeString(undefined, {
+    hour: 'numeric',
+    minute: '2-digit'
+  })
+})
 
 const emit = defineEmits<{
   edit: [message: UIMessage]
@@ -75,6 +84,10 @@ function copy() {
   </template>
 
   <template v-if="message.role === 'user' && !streaming && !editing">
+    <span v-if="formattedDate" class="text-xs text-muted">
+      {{ formattedDate }}
+    </span>
+
     <UTooltip text="Edit message">
       <UButton
         size="sm"
