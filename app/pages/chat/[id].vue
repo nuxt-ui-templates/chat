@@ -9,6 +9,7 @@ const route = useRoute()
 const toast = useToast()
 const clipboard = useClipboard()
 const { model } = useModels()
+const { csrf, headerName } = useCsrf()
 
 const {
   dropzoneRef,
@@ -25,9 +26,9 @@ const { data } = await useFetch(`/api/chats/${route.params.id}`, {
   cache: 'force-cache'
 })
 
-const input = ref('')
+const { data: votes } = await useLazyFetch(`/api/chats/${route.params.id}/votes`)
 
-const { csrf, headerName } = useCsrf()
+const input = ref('')
 
 const chat = new Chat({
   id: data.value?.id,
@@ -69,7 +70,7 @@ async function handleSubmit(e: Event) {
 
 const copied = ref(false)
 
-function copy(e: MouseEvent, message: UIMessage) {
+function copy(_e: MouseEvent, message: UIMessage) {
   clipboard.copy(getTextFromMessage(message))
 
   copied.value = true
@@ -77,6 +78,35 @@ function copy(e: MouseEvent, message: UIMessage) {
   setTimeout(() => {
     copied.value = false
   }, 2000)
+}
+
+function getVote(messageId: string) {
+  const vote = votes.value?.find(v => v.messageId === messageId)
+  if (!vote) return null
+  return !!vote.isUpvoted
+}
+
+async function vote(_e: MouseEvent, message: UIMessage, isUpvoted: boolean) {
+  const snapshot = (votes.value ?? []).map(v => ({ ...v }))
+  const toggling = getVote(message.id) === isUpvoted
+  const next = toggling ? null : isUpvoted
+
+  votes.value = next === null
+    ? (votes.value ?? []).filter(v => v.messageId !== message.id)
+    : [
+        ...(votes.value ?? []).filter(v => v.messageId !== message.id),
+        { chatId: data.value!.id, messageId: message.id, isUpvoted: next }
+      ]
+
+  try {
+    await $fetch(`/api/chats/${data.value!.id}/votes`, {
+      method: 'POST',
+      headers: { [headerName]: csrf },
+      body: next === null ? { messageId: message.id } : { messageId: message.id, isUpvoted: next }
+    })
+  } catch {
+    votes.value = snapshot
+  }
 }
 
 onMounted(() => {
@@ -106,7 +136,6 @@ onMounted(() => {
             should-auto-scroll
             :messages="chat.messages"
             :status="chat.status"
-            :assistant="chat.status !== 'streaming' ? { actions: [{ label: 'Copy', icon: copied ? 'i-lucide-copy-check' : 'i-lucide-copy', onClick: copy }] } : { actions: [] }"
             :spacing-offset="160"
             class="lg:pt-(--ui-header-height) pb-4 sm:pb-6"
           >
@@ -175,6 +204,40 @@ onMounted(() => {
                     {{ part.text }}
                   </p>
                 </template>
+              </template>
+            </template>
+
+            <template #actions="{ message }">
+              <template v-if="message.role === 'assistant' && chat.status !== 'streaming'">
+                <UTooltip text="Good response">
+                  <UButton
+                    size="sm"
+                    :color="getVote(message.id) === true ? 'success' : 'neutral'"
+                    variant="ghost"
+                    icon="i-lucide-thumbs-up"
+                    @click="vote($event, message, true)"
+                  />
+                </UTooltip>
+
+                <UTooltip text="Bad response">
+                  <UButton
+                    size="sm"
+                    :color="getVote(message.id) === false ? 'error' : 'neutral'"
+                    variant="ghost"
+                    icon="i-lucide-thumbs-down"
+                    @click="vote($event, message, false)"
+                  />
+                </UTooltip>
+
+                <UTooltip text="Copy response">
+                  <UButton
+                    size="sm"
+                    :color="copied ? 'primary' : 'neutral'"
+                    variant="ghost"
+                    :icon="copied ? 'i-lucide-copy-check' : 'i-lucide-copy'"
+                    @click="copy($event, message)"
+                  />
+                </UTooltip>
               </template>
             </template>
           </UChatMessages>
