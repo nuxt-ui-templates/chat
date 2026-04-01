@@ -140,7 +140,7 @@ export function useFileUploadWithStatus(chatId: string) {
 
   return {
     dropzoneRef,
-    isDragging,
+    dragging: isDragging,
     open,
     files,
     uploading,

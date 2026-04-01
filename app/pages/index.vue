@@ -18,7 +18,7 @@ const greeting = computed(() => {
 
 const {
   dropzoneRef,
-  isDragging,
+  dragging,
   open,
   files,
   uploading,
@@ -104,7 +104,7 @@ const quickChats = [
 
     <template #body>
       <div ref="dropzoneRef" class="flex flex-1">
-        <DragDropOverlay :show="isDragging" />
+        <DragDropOverlay :show="dragging" />
 
         <UContainer class="flex-1 flex flex-col justify-center gap-4 sm:gap-6 py-8">
           <h1 class="text-3xl sm:text-4xl text-highlighted font-bold">
