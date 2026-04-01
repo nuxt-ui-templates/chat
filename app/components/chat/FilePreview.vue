@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { AvatarProps } from '@nuxt/ui'
+import { AnimatePresence, Motion } from 'motion-v'
 
 interface ChatFilePreviewProps {
   name: string
@@ -11,7 +12,7 @@ interface ChatFilePreviewProps {
   removable?: boolean
 }
 
-withDefaults(defineProps<ChatFilePreviewProps>(), {
+const props = withDefaults(defineProps<ChatFilePreviewProps>(), {
   status: 'idle',
   removable: false,
   size: '2xl'
@@ -20,6 +21,32 @@ withDefaults(defineProps<ChatFilePreviewProps>(), {
 const emit = defineEmits<{
   remove: []
 }>()
+
+const open = ref(false)
+
+const isZoomable = computed(() => props.type.startsWith('image/') && props.previewUrl)
+
+function openZoom() {
+  if (isZoomable.value) {
+    open.value = true
+  }
+}
+
+function closeZoom() {
+  open.value = false
+}
+
+defineShortcuts({
+  escape: closeZoom
+})
+
+onMounted(() => {
+  window.addEventListener('scroll', closeZoom, true)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', closeZoom, true)
+})
 </script>
 
 <template>
@@ -31,8 +58,10 @@ const emit = defineEmits<{
         :icon="getFileIcon(type, name)"
         class="rounded-lg"
         :class="{
-          'opacity-50': status === 'uploading'
+          'opacity-50': status === 'uploading',
+          'cursor-zoom-in': isZoomable
         }"
+        @click="openZoom"
       />
     </UTooltip>
 
@@ -57,5 +86,33 @@ const emit = defineEmits<{
       class="absolute p-0 -top-1 -right-1 opacity-0 group-hover:opacity-100 transition-opacity rounded-full ring ring-bg"
       @click="emit('remove')"
     />
+
+    <Teleport to="body">
+      <AnimatePresence>
+        <div v-if="open" class="fixed inset-0 z-50">
+          <Motion
+            :initial="{ opacity: 0 }"
+            :animate="{ opacity: 1 }"
+            :exit="{ opacity: 0 }"
+            class="absolute inset-0 bg-default/75 backdrop-blur-sm"
+          />
+
+          <Motion
+            :initial="{ opacity: 0, scale: 0.9 }"
+            :animate="{ opacity: 1, scale: 1 }"
+            :exit="{ opacity: 0, scale: 0.9 }"
+            :transition="{ type: 'spring', bounce: 0.15, duration: 0.5, ease: 'easeInOut' }"
+            class="absolute inset-0 flex items-center justify-center cursor-zoom-out"
+            @click="closeZoom"
+          >
+            <img
+              :src="previewUrl"
+              :alt="removeRandomSuffix(name)"
+              class="max-w-[95vw] max-h-[95vh] object-contain rounded-md"
+            >
+          </Motion>
+        </div>
+      </AnimatePresence>
+    </Teleport>
   </div>
 </template>
