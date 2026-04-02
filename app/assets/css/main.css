@@ -15,10 +15,6 @@
   --ui-container: var(--container-3xl);
 }
 
-.shiki span.line:empty {
-  height: 1lh;
-}
-
 html.dark .shiki span {
   color: var(--shiki-dark) !important;
   background-color: var(--shiki-dark-bg) !important;

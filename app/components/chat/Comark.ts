@@ -6,5 +6,6 @@ export default defineComarkComponent({
   plugins: [highlight()],
   components: {
     'source-link': SourceLink
-  }
+  },
+  class: '*:first:mt-0 *:last:mb-0'
 })

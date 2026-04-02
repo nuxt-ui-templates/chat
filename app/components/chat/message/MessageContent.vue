@@ -25,7 +25,6 @@ const emit = defineEmits<{
       <ChatComark
         :markdown="part.text"
         :streaming="part.state === 'streaming'"
-        class="*:first:mt-0 *:last:mb-0"
       />
     </UChatReasoning>
 
@@ -54,7 +53,6 @@ const emit = defineEmits<{
         v-if="message.role === 'assistant'"
         :markdown="part.text"
         :streaming="part.state === 'streaming'"
-        class="*:first:mt-0 *:last:mb-0"
       />
       <template v-else-if="message.role === 'user'">
         <ChatMessageEdit
