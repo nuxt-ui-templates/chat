@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { isReasoningUIPart, isTextUIPart, isToolUIPart, getToolName } from 'ai'
 import type { UIMessage } from 'ai'
-import { isToolStreaming } from '@nuxt/ui/utils/ai'
+import { isPartStreaming, isToolStreaming } from '@nuxt/ui/utils/ai'
 
 defineProps<{
   message: UIMessage
@@ -19,12 +19,12 @@ const emit = defineEmits<{
     <UChatReasoning
       v-if="isReasoningUIPart(part)"
       :text="part.text"
-      :streaming="part.state === 'streaming'"
+      :streaming="isPartStreaming(part)"
       chevron="leading"
     >
       <ChatComark
         :markdown="part.text"
-        :streaming="part.state === 'streaming'"
+        :streaming="isPartStreaming(part)"
       />
     </UChatReasoning>
 
@@ -52,7 +52,7 @@ const emit = defineEmits<{
       <ChatComark
         v-if="message.role === 'assistant'"
         :markdown="part.text"
-        :streaming="part.state === 'streaming'"
+        :streaming="isPartStreaming(part)"
       />
       <template v-else-if="message.role === 'user'">
         <ChatMessageEdit
