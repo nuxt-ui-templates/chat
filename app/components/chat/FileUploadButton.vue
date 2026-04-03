@@ -19,6 +19,7 @@ defineProps<{
       color="neutral"
       size="sm"
       :disabled="!loggedIn"
+      aria-label="Attach file"
       @click="open()"
     />
   </UTooltip>

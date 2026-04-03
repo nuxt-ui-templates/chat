@@ -26,8 +26,15 @@ export default defineEventHandler(async (event) => {
 
   const [updated] = await db.update(schema.chats)
     .set({ visibility })
-    .where(eq(schema.chats.id, id as string))
+    .where(and(
+      eq(schema.chats.id, id as string),
+      eq(schema.chats.userId, session.user?.id || session.id)
+    ))
     .returning()
+
+  if (!updated) {
+    throw createError({ statusCode: 404, statusMessage: 'Chat not found' })
+  }
 
   return updated
 })

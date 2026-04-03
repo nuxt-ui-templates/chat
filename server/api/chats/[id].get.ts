@@ -29,5 +29,6 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 404, statusMessage: 'Chat not found' })
   }
 
-  return { ...chat, isOwner }
+  const { userId: _, ...rest } = chat
+  return { ...rest, isOwner }
 })

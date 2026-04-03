@@ -138,6 +138,7 @@ defineShortcuts({
                 variant="ghost"
                 size="xs"
                 class="text-muted hover:text-primary hover:bg-accented/50 focus-visible:bg-accented/50 p-0.5"
+                aria-label="Delete chat"
                 tabindex="-1"
                 @click.stop.prevent="deleteChat((item as any).id)"
               />

@@ -82,6 +82,7 @@ function copyLink() {
         color="neutral"
         variant="ghost"
         icon="i-lucide-share"
+        aria-label="Share chat"
       />
     </UTooltip>
 
