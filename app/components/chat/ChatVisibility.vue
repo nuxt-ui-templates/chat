@@ -73,12 +73,11 @@ function copyLink() {
 <template>
   <UModal
     :title="isShared ? 'Chat shared' : 'Share chat'"
-    :description="isShared ? 'Anyone with the link can view this chat.' : 'Choose who can view this chat.'"
+    :description="isShared ? 'Anyone with the link can view this chat.' : 'Only you can view this chat.'"
     close
   >
     <UTooltip text="Share chat">
       <UButton
-        size="sm"
         color="neutral"
         variant="ghost"
         icon="i-lucide-share"
