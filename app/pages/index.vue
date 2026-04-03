@@ -99,7 +99,7 @@ const quickChats = [
     :ui="{ body: 'p-0 sm:p-0' }"
   >
     <template #header>
-      <DashboardNavbar />
+      <Navbar />
     </template>
 
     <template #body>
