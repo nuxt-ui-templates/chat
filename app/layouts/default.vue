@@ -138,6 +138,7 @@ defineShortcuts({
                 variant="ghost"
                 size="xs"
                 class="text-muted hover:text-primary hover:bg-accented/50 focus-visible:bg-accented/50 p-0.5"
+                aria-label="Delete chat"
                 tabindex="-1"
                 @click.stop.prevent="deleteChat((item as any).id)"
               />
@@ -172,7 +173,7 @@ defineShortcuts({
       }, ...groups]"
     />
 
-    <div class="flex-1 flex m-4 lg:ml-0 rounded-lg ring ring-default bg-default/75 shadow min-w-0">
+    <div class="flex-1 flex m-4 lg:ml-0 rounded-lg ring ring-default bg-default/75 shadow min-w-0 overflow-hidden">
       <slot />
     </div>
   </UDashboardGroup>

@@ -8,6 +8,13 @@ const toast = useToast()
 const { model } = useModels()
 const { csrf, headerName } = useCsrf()
 
+const { data } = await useFetch(`/api/chats/${route.params.id}`, {
+  cache: 'force-cache'
+})
+
+const isOwner = computed(() => data.value?.isOwner ?? false)
+const visibility = ref<'public' | 'private'>(data.value?.visibility ?? 'private')
+
 const {
   dropzoneRef,
   dragging,
@@ -19,11 +26,9 @@ const {
   clearFiles
 } = useFileUploadWithStatus(route.params.id as string)
 
-const { data } = await useFetch(`/api/chats/${route.params.id}`, {
-  cache: 'force-cache'
+const { data: votes } = await useLazyFetch(`/api/chats/${route.params.id}/votes`, {
+  immediate: isOwner.value
 })
-
-const { data: votes } = await useLazyFetch(`/api/chats/${route.params.id}/votes`)
 
 const input = ref('')
 
@@ -139,7 +144,7 @@ async function vote(message: UIMessage, isUpvoted: boolean) {
 }
 
 onMounted(() => {
-  if (data.value?.messages.length === 1) {
+  if (isOwner.value && data.value?.messages.length === 1) {
     chat.regenerate()
   }
 })
@@ -153,20 +158,27 @@ onMounted(() => {
     :ui="{ body: 'p-0 sm:p-0 overscroll-none' }"
   >
     <template #header>
-      <DashboardNavbar />
+      <Navbar>
+        <ChatVisibility
+          v-if="isOwner"
+          :chat-id="data!.id"
+          :visibility="visibility"
+          @update:visibility="visibility = $event"
+        />
+      </Navbar>
     </template>
 
     <template #body>
       <div ref="dropzoneRef" class="flex flex-1">
-        <DragDropOverlay :show="dragging" />
+        <DragDropOverlay v-if="isOwner" :show="dragging" />
 
         <UContainer class="flex-1 flex flex-col gap-4 sm:gap-6">
           <UChatMessages
             should-auto-scroll
             :messages="chat.messages"
             :status="chat.status"
-            :spacing-offset="160"
-            class="lg:pt-(--ui-header-height) pb-4 sm:pb-6"
+            :spacing-offset="isOwner ? 160 : 0"
+            class="pt-(--ui-header-height) pb-4 sm:pb-6"
           >
             <template #indicator>
               <div class="flex items-center gap-1.5">
@@ -190,13 +202,13 @@ onMounted(() => {
             <template #content="{ message }">
               <ChatMessageContent
                 :message="message"
-                :editing="editingMessageId === message.id"
+                :editing="isOwner && editingMessageId === message.id"
                 @save="saveEdit"
                 @cancel-edit="editingMessageId = null"
               />
             </template>
 
-            <template #actions="{ message }">
+            <template v-if="isOwner" #actions="{ message }">
               <ChatMessageActions
                 :message="message"
                 :streaming="chat.status === 'streaming' && message.id === chat.messages[chat.messages.length - 1]?.id"
@@ -210,6 +222,7 @@ onMounted(() => {
           </UChatMessages>
 
           <UChatPrompt
+            v-if="isOwner"
             v-model="input"
             :error="chat.error"
             :disabled="uploading"
