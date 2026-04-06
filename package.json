@@ -25,6 +25,7 @@
     "@libsql/client": "^0.17.2",
     "@nuxt/ui": "^4.6.1",
     "@nuxthub/core": "^0.10.7",
+    "@shikijs/langs": "^4.0.2",
     "@vercel/blob": "^2.3.3",
     "@vueuse/core": "^14.2.1",
     "ai": "^6.0.145",

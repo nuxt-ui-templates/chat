@@ -44,6 +44,9 @@ importers:
       '@nuxthub/core':
         specifier: ^0.10.7
         version: 0.10.7(@vercel/blob@2.3.3)(db0@0.3.4(@libsql/client@0.17.2)(drizzle-orm@0.45.2(@cloudflare/workers-types@4.20260316.1)(@libsql/client@0.17.2)(@opentelemetry/api@1.9.0)(pg@8.20.0)))(ioredis@5.10.0)(magicast@0.5.2)(typescript@6.0.2)(vue-tsc@3.2.6(typescript@6.0.2))
+      '@shikijs/langs':
+        specifier: ^4.0.2
+        version: 4.0.2
       '@vercel/blob':
         specifier: ^2.3.3
         version: 2.3.3
