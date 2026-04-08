@@ -85,7 +85,7 @@ const formatValue = (value: string | number | undefined): string => {
         :show-tooltip="true"
       >
         <template #tooltip="{ values }">
-          <div class="bg-muted/50 rounded-sm px-2 py-1 shadow-lg backdrop-blur-sm max-w-xs ring ring-offset-2 ring-offset-(--ui-bg) ring-default border border-default">
+          <div class="bg-muted/50 rounded-sm px-2 py-1 shadow-lg backdrop-blur-sm max-w-xs ring ring-offset-2 ring-offset-bg ring-default border border-default">
             <div v-if="values && values[invocation.output.xKey]" class="text-sm font-semibold text-highlighted mb-2">
               {{ values[invocation.output.xKey] }}
             </div>
