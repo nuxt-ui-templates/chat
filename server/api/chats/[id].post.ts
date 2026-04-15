@@ -69,9 +69,13 @@ export default defineEventHandler(async (event) => {
     }).onConflictDoUpdate({ target: schema.messages.id, set: { parts: lastMessage.parts } })
   }
 
+  const abortController = new AbortController()
+  event.node.req.on('close', () => abortController.abort())
+
   const stream = createUIMessageStream({
     execute: async ({ writer }) => {
       const result = streamText({
+        abortSignal: abortController.signal,
         model,
         system: `You are a knowledgeable and helpful AI assistant. ${session.user?.username ? `The user's name is ${session.user.username}.` : ''} Your goal is to provide clear, accurate, and well-structured responses.
 
