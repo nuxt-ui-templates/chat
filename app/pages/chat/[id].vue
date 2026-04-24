@@ -48,7 +48,15 @@ const chat = new Chat({
     }
   },
   onError(error) {
-    const { message } = typeof error.message === 'string' && error.message[0] === '{' ? JSON.parse(error.message) : error
+    let message = error.message
+    if (typeof message === 'string' && message[0] === '{') {
+      try {
+        message = JSON.parse(message).message || message
+      } catch {
+        // keep original message on malformed JSON
+      }
+    }
+
     toast.add({
       description: message,
       icon: 'i-lucide-alert-circle',
