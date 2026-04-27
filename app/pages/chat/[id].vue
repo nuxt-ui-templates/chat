@@ -9,11 +9,17 @@ const { model } = useModels()
 const { csrf, headerName } = useCsrf()
 
 const { data } = await useFetch(`/api/chats/${route.params.id}`, {
+  key: `chat-${route.params.id}`,
   cache: 'force-cache'
 })
 
 const isOwner = computed(() => data.value?.isOwner ?? false)
 const visibility = ref<'public' | 'private'>(data.value?.visibility ?? 'private')
+const title = ref<string | null>(data.value?.title ?? null)
+
+watch(() => data.value?.title, (next) => {
+  title.value = next ?? null
+})
 
 const {
   dropzoneRef,
@@ -42,9 +48,14 @@ const chat = new Chat({
       model: model.value
     }
   }),
-  onData: (dataPart) => {
+  onData: async (dataPart) => {
     if (dataPart.type === 'data-chat-title') {
-      refreshNuxtData('chats')
+      await refreshNuxtData('chats')
+      const chatsCache = useNuxtData<{ id: string, label: string }[]>('chats')
+      const updated = chatsCache.data.value?.find(c => c.id === data.value!.id)
+      if (updated && updated.label !== 'Untitled') {
+        title.value = updated.label
+      }
     }
   },
   onError(error) {
@@ -167,6 +178,15 @@ onMounted(() => {
   >
     <template #header>
       <Navbar>
+        <template #title>
+          <ChatTitle
+            :chat-id="data!.id"
+            :title="title"
+            :is-owner="isOwner"
+            @update:title="title = $event"
+          />
+        </template>
+
         <ChatVisibility
           v-if="isOwner"
           :chat-id="data!.id"

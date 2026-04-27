@@ -1,20 +1,11 @@
 <script setup lang="ts">
-import { LazyModalConfirm } from '#components'
+import type { DropdownMenuItem } from '@nuxt/ui'
 
-const route = useRoute()
-const toast = useToast()
-const overlay = useOverlay()
 const { loggedIn, openInPopup } = useUserSession()
-const { csrf, headerName } = useCsrf()
+const { renameChat, deleteChat } = useChatActions()
 
-const open = ref(false)
-
-const deleteModal = overlay.create(LazyModalConfirm, {
-  props: {
-    title: 'Delete chat',
-    description: 'Are you sure you want to delete this chat? This cannot be undone.'
-  }
-})
+const sidebarOpen = ref(false)
+const searchOpen = ref(false)
 
 const { data: chats, refresh: refreshChats } = await useFetch('/api/chats', {
   key: 'chats',
@@ -38,7 +29,7 @@ onNuxtReady(async () => {
 watch(loggedIn, () => {
   refreshChats()
 
-  open.value = false
+  sidebarOpen.value = false
 })
 
 const { groups } = useChats(chats)
@@ -55,33 +46,25 @@ const items = computed(() => groups.value?.flatMap((group) => {
   }))]
 }))
 
-async function deleteChat(id: string) {
-  const instance = deleteModal.open()
-  const result = await instance.result
-  if (!result) {
-    return
-  }
-
-  await $fetch(`/api/chats/${id}`, {
-    method: 'DELETE',
-    headers: { [headerName]: csrf }
-  })
-
-  toast.add({
-    title: 'Chat deleted',
-    description: 'Your chat has been deleted',
-    icon: 'i-lucide-trash'
-  })
-
-  refreshChats()
-
-  if (route.params.id === id) {
-    navigateTo('/')
-  }
+function getChatActions(item: { id: string, label: string }): DropdownMenuItem[][] {
+  return [[
+    {
+      label: 'Rename',
+      icon: 'i-lucide-pencil',
+      onSelect: () => renameChat(item.id, item.label === 'Untitled' ? '' : item.label)
+    }
+  ], [
+    {
+      label: 'Delete',
+      icon: 'i-lucide-trash',
+      color: 'error' as const,
+      onSelect: () => deleteChat(item.id)
+    }
+  ]]
 }
 
 defineShortcuts({
-  c: () => {
+  meta_o: () => {
     navigateTo('/')
   }
 })
@@ -91,58 +74,81 @@ defineShortcuts({
   <UDashboardGroup unit="rem">
     <UDashboardSidebar
       id="default"
-      v-model:open="open"
+      v-model:open="sidebarOpen"
       :min-size="12"
       collapsible
       resizable
-      class="border-r-0 py-4"
+      :menu="{ inset: true }"
+      class="border-r-0 py-4 dark:[--ui-bg-elevated:var(--ui-color-neutral-900)]"
     >
       <template #header="{ collapsed }">
-        <NuxtLink to="/" class="flex items-end gap-0.5">
+        <NuxtLink v-if="!collapsed" to="/" class="flex items-end gap-0.5">
           <Logo class="h-8 w-auto shrink-0" />
-          <span v-if="!collapsed" class="text-xl font-bold text-highlighted">Chat</span>
+          <span class="text-xl font-bold text-highlighted">Chat</span>
         </NuxtLink>
 
-        <div v-if="!collapsed" class="flex items-center gap-1.5 ms-auto">
-          <UDashboardSearchButton collapsed />
-        </div>
+        <UDashboardSidebarCollapse class="ms-auto" />
       </template>
 
       <template #default="{ collapsed }">
-        <div class="flex flex-col gap-1.5">
-          <UButton
-            v-bind="collapsed ? { icon: 'i-lucide-plus' } : { label: 'New chat' }"
-            variant="soft"
-            block
-            to="/"
-            @click="open = false"
-          />
-
-          <template v-if="collapsed">
-            <UDashboardSearchButton collapsed />
+        <UNavigationMenu
+          :items="[{
+            label: 'New chat',
+            to: '/',
+            kbds: ['meta', 'o'],
+            icon: 'i-lucide-circle-plus'
+          }, {
+            label: 'Search',
+            icon: 'i-lucide-search',
+            kbds: ['meta', 'k'],
+            onSelect: () => {
+              searchOpen = true
+            }
+          }]"
+          :collapsed="collapsed"
+          orientation="vertical"
+        >
+          <template #item-trailing="{ item }">
+            <div v-if="item.kbds?.length" class="flex items-center gap-px opacity-0 group-hover:opacity-100 transition-opacity">
+              <UKbd
+                v-for="kbd in item.kbds"
+                :key="kbd"
+                :value="kbd"
+                size="sm"
+                variant="soft"
+                class="bg-accented/50"
+              />
+            </div>
           </template>
-        </div>
+        </UNavigationMenu>
 
         <UNavigationMenu
           v-if="!collapsed"
           :items="items"
           :collapsed="collapsed"
           orientation="vertical"
-          :ui="{ link: 'overflow-hidden' }"
+          :ui="{
+            link: 'overflow-hidden pr-7.5',
+            linkTrailing: 'translate-x-full group-hover:translate-x-0 group-has-data-[state=open]:translate-x-0 transition-transform ms-0 absolute inset-e-px'
+          }"
         >
           <template #chat-trailing="{ item }">
-            <div class="flex -mr-1.25 translate-x-full group-hover:translate-x-0 transition-transform">
+            <UDropdownMenu
+              :items="getChatActions(item as { id: string, label: string })"
+              :content="{ align: 'end' }"
+            >
               <UButton
-                icon="i-lucide-x"
+                as="div"
+                icon="i-lucide-ellipsis"
                 color="neutral"
-                variant="ghost"
-                size="xs"
-                class="text-muted hover:text-primary hover:bg-accented/50 focus-visible:bg-accented/50 p-0.5"
-                aria-label="Delete chat"
+                variant="link"
+                size="sm"
+                class="rounded-[5px] hover:bg-accented/50 focus-visible:bg-accented/50 data-[state=open]:bg-accented/50"
+                aria-label="Chat actions"
                 tabindex="-1"
-                @click.stop.prevent="deleteChat((item as any).id)"
+                @click.stop.prevent
               />
-            </div>
+            </UDropdownMenu>
           </template>
         </UNavigationMenu>
       </template>
@@ -162,13 +168,15 @@ defineShortcuts({
     </UDashboardSidebar>
 
     <UDashboardSearch
+      v-model:open="searchOpen"
       placeholder="Search chats..."
       :groups="[{
         id: 'links',
         items: [{
           label: 'New chat',
           to: '/',
-          icon: 'i-lucide-square-pen'
+          icon: 'i-lucide-circle-plus',
+          kbds: ['meta', 'o']
         }]
       }, ...groups]"
     />
