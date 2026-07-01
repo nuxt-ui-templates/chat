@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.89",
-    "@ai-sdk/gateway": "^3.0.139",
+    "@ai-sdk/gateway": "^4.0.7",
     "@ai-sdk/google": "^3.0.86",
     "@ai-sdk/openai": "^3.0.77",
     "@ai-sdk/vue": "^3.0.214",
