@@ -16,7 +16,7 @@
     "@ai-sdk/anthropic": "^3.0.89",
     "@ai-sdk/gateway": "^3.0.139",
     "@ai-sdk/google": "^3.0.86",
-    "@ai-sdk/openai": "^3.0.77",
+    "@ai-sdk/openai": "^4.0.4",
     "@ai-sdk/vue": "^3.0.214",
     "@comark/nuxt": "^0.4.0",
     "@iconify-json/logos": "^1.2.11",
