@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Chat } from '@ai-sdk/vue'
+import { useChat } from '@ai-sdk/vue'
 import { DefaultChatTransport } from 'ai'
 import type { UIMessage } from 'ai'
 
@@ -38,7 +38,7 @@ const { data: votes } = await useLazyFetch(`/api/chats/${route.params.id}/votes`
 
 const input = ref('')
 
-const chat = new Chat({
+const { messages, status, error, sendMessage, regenerate, stop } = useChat({
   id: data.value?.id,
   messages: data.value?.messages,
   transport: new DefaultChatTransport({
@@ -80,7 +80,7 @@ const chat = new Chat({
 async function handleSubmit(e: Event) {
   e.preventDefault()
   if (input.value.trim() && !uploading.value) {
-    chat.sendMessage({
+    sendMessage({
       text: input.value,
       files: uploadedFiles.value.length > 0 ? uploadedFiles.value : undefined
     })
@@ -110,7 +110,7 @@ async function saveEdit(message: UIMessage, text: string) {
   }
 
   editingMessageId.value = null
-  chat.sendMessage({ text, messageId: message.id })
+  sendMessage({ text, messageId: message.id })
 }
 
 async function regenerateMessage(message: UIMessage) {
@@ -125,7 +125,7 @@ async function regenerateMessage(message: UIMessage) {
     return
   }
 
-  chat.regenerate({ messageId: message.id })
+  regenerate({ messageId: message.id })
 }
 
 function getVote(messageId: string) {
@@ -164,7 +164,7 @@ async function vote(message: UIMessage, isUpvoted: boolean) {
 
 onMounted(() => {
   if (isOwner.value && data.value?.messages.length === 1) {
-    chat.regenerate()
+    regenerate()
   }
 })
 </script>
@@ -203,8 +203,8 @@ onMounted(() => {
         <UContainer class="flex-1 flex flex-col gap-4 sm:gap-6">
           <UChatMessages
             should-auto-scroll
-            :messages="chat.messages"
-            :status="chat.status"
+            :messages="messages"
+            :status="status"
             :spacing-offset="isOwner ? 160 : 0"
             class="pt-(--ui-header-height) pb-4 sm:pb-6"
           >
@@ -239,7 +239,7 @@ onMounted(() => {
             <template v-if="isOwner" #actions="{ message }">
               <ChatMessageActions
                 :message="message"
-                :streaming="chat.status === 'streaming' && message.id === chat.messages[chat.messages.length - 1]?.id"
+                :streaming="status === 'streaming' && message.id === messages[messages.length - 1]?.id"
                 :editing="editingMessageId === message.id"
                 :vote="getVote(message.id)"
                 @vote="(_message, isUpvoted) => vote(_message, isUpvoted)"
@@ -252,7 +252,7 @@ onMounted(() => {
           <UChatPrompt
             v-if="isOwner"
             v-model="input"
-            :error="chat.error"
+            :error="error"
             :disabled="uploading"
             variant="subtle"
             class="sticky bottom-0 [view-transition-name:chat-prompt] rounded-b-none z-10"
@@ -271,12 +271,12 @@ onMounted(() => {
               </div>
 
               <UChatPromptSubmit
-                :status="chat.status"
+                :status="status"
                 :disabled="uploading"
                 color="neutral"
                 size="sm"
-                @stop="chat.stop()"
-                @reload="chat.regenerate()"
+                @stop="stop()"
+                @reload="regenerate()"
               />
             </template>
           </UChatPrompt>
