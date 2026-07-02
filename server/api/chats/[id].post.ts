@@ -133,6 +133,10 @@ export default defineEventHandler(async (event) => {
     sendSources: true,
     sendReasoning: true,
     onEnd: async ({ responseMessage }) => {
+      // Don't persist an empty assistant message (e.g. the stream was aborted
+      // before any content), otherwise it reloads as an empty frame.
+      if (!responseMessage.parts?.length) return
+
       await db.insert(schema.messages).values([{
         id: responseMessage.id,
         chatId: chat.id,
