@@ -48,16 +48,6 @@ const { messages, status, error, sendMessage, regenerate, stop } = useChat({
       model: model.value
     }
   }),
-  onData: async (dataPart) => {
-    if (dataPart.type === 'data-chat-title') {
-      await refreshNuxtData('chats')
-      const chatsCache = useNuxtData<{ id: string, label: string }[]>('chats')
-      const updated = chatsCache.data.value?.find(c => c.id === data.value!.id)
-      if (updated && updated.label !== 'Untitled') {
-        title.value = updated.label
-      }
-    }
-  },
   onError(error) {
     let message = error.message
     if (typeof message === 'string' && message[0] === '{') {
@@ -74,6 +64,20 @@ const { messages, status, error, sendMessage, regenerate, stop } = useChat({
       color: 'error',
       duration: 0
     })
+  }
+})
+
+// The title is generated server-side (and persisted) before streaming starts on
+// the first message; there's no in-stream signal, so refresh the sidebar/title as
+// soon as the response begins streaming.
+watch(status, async (value) => {
+  if (value !== 'streaming' || title.value || !isOwner.value) return
+
+  await refreshNuxtData('chats')
+  const chatsCache = useNuxtData<{ id: string, label: string }[]>('chats')
+  const updated = chatsCache.data.value?.find(c => c.id === data.value!.id)
+  if (updated && updated.label !== 'Untitled') {
+    title.value = updated.label
   }
 })
 
