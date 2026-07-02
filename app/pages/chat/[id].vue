@@ -205,7 +205,7 @@ onMounted(() => {
             should-auto-scroll
             :messages="messages"
             :status="status"
-            :spacing-offset="isOwner ? 160 : 0"
+            :spacing-offset="isOwner ? 200 : 0"
             class="pt-(--ui-header-height) pb-4 sm:pb-6"
           >
             <template #indicator>
