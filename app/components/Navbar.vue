@@ -1,7 +1,7 @@
 <template>
   <UDashboardNavbar
-    class="absolute top-0 inset-x-0 border-b-0 z-10 backdrop-blur lg:backdrop-blur-none pointer-events-none sm:px-4"
-    :ui="{ left: 'pointer-events-auto min-w-0', right: 'pointer-events-auto' }"
+    class="absolute top-0 inset-x-0 border-b-0 z-10 backdrop-blur sm:px-4"
+    :ui="{ left: 'min-w-0' }"
   >
     <template #left>
       <slot name="title" />
