@@ -258,6 +258,7 @@ onMounted(() => {
             v-model="input"
             :error="error"
             :disabled="uploading"
+            color="neutral"
             variant="subtle"
             class="sticky bottom-0 [view-transition-name:chat-prompt] rounded-b-none z-10"
             :ui="{ base: 'px-1.5' }"

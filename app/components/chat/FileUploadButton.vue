@@ -15,8 +15,8 @@ defineProps<{
   >
     <UButton
       icon="i-lucide-paperclip"
-      variant="ghost"
       color="neutral"
+      variant="ghost"
       size="sm"
       :disabled="!loggedIn"
       aria-label="Attach file"

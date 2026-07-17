@@ -116,6 +116,7 @@ const quickChats = [
             :status="loading ? 'streaming' : 'ready'"
             :disabled="uploading"
             class="[view-transition-name:chat-prompt]"
+            color="neutral"
             variant="subtle"
             :ui="{ base: 'px-1.5' }"
             @submit="onSubmit"
