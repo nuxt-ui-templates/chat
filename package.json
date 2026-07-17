@@ -14,7 +14,6 @@
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^4.0.4",
-    "@ai-sdk/gateway": "^4.0.7",
     "@ai-sdk/google": "^4.0.3",
     "@ai-sdk/openai": "^4.0.4",
     "@ai-sdk/vue": "^4.0.9",
@@ -23,7 +22,7 @@
     "@iconify-json/lucide": "^1.2.114",
     "@iconify-json/simple-icons": "^1.2.87",
     "@libsql/client": "^0.17.4",
-    "@nuxt/ui": "^4.9.0",
+    "@nuxt/ui": "^4.10.0",
     "@nuxthub/core": "^0.10.7",
     "@shikijs/langs": "^4.3.0",
     "@vercel/blob": "^2.5.0",
