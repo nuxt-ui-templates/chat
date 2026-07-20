@@ -98,6 +98,27 @@ BLOB_READ_WRITE_TOKEN=<your-vercel-blob-token>
 > [!NOTE]
 > File uploads require authentication. See the [NuxtHub Blob documentation](https://hub.nuxt.com/docs/blob#set-a-driver) for configuring other storage drivers.
 
+### AgentPond Tracing (Optional)
+
+This template can export OpenInference AI traces directly to a private Vercel
+Blob store for local analysis with [AgentPond](https://github.com/marcusschiesser/agentpond).
+Run the AgentPond 0.6 initializer from the project root:
+
+```bash
+npx agentpond@0.6.0 init --platform vercel
+```
+
+Follow the generated instrumentation prompt, connect a **private** Vercel Blob
+store, enable access to Vercel System Environment Variables, and set
+`AGENTPOND_ENABLED=true`. No tracing data is exported when the flag is unset.
+
+After exercising an AI request on the deployed target, sync and inspect it:
+
+```bash
+npx agentpond@0.6.0 sync
+npx agentpond@0.6.0 traces list --limit 10
+```
+
 ## Development Server
 
 Start the development server on `http://localhost:3000`:

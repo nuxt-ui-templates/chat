@@ -13,10 +13,13 @@
     "db:migrate": "nuxt db migrate"
   },
   "dependencies": {
+    "@agentpond/vercel": "0.5.0",
     "@ai-sdk/anthropic": "^4.0.15",
     "@ai-sdk/google": "^4.0.17",
     "@ai-sdk/openai": "^4.0.15",
+    "@ai-sdk/otel": "1.0.29",
     "@ai-sdk/vue": "^4.0.29",
+    "@arizeai/openinference-vercel": "3.1.0",
     "@comark/nuxt": "^0.5.1",
     "@iconify-json/logos": "^1.2.11",
     "@iconify-json/lucide": "^1.2.117",
@@ -24,6 +27,9 @@
     "@libsql/client": "^0.17.4",
     "@nuxt/ui": "^4.10.0",
     "@nuxthub/core": "^0.10.8",
+    "@opentelemetry/api": "1.9.1",
+    "@opentelemetry/sdk-trace-node": "2.9.0",
+    "@opentelemetry/semantic-conventions": "1.41.1",
     "@shikijs/langs": "^4.3.1",
     "@vercel/blob": "^2.6.1",
     "@vueuse/core": "^14.3.0",
