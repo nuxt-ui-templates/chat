@@ -47,7 +47,11 @@ export default defineEventHandler(async (event) => {
   if (!chat.title) {
     const { text: title } = await generateText({
       model: 'openai/gpt-5-nano',
-      experimental_telemetry: { isEnabled: process.env.AGENTPOND_ENABLED === 'true' },
+      experimental_telemetry: {
+        isEnabled: process.env.AGENTPOND_ENABLED === 'true',
+        recordInputs: true,
+        recordOutputs: true
+      },
       instructions: `You are a title generator for a chat:
           - Generate a short title based on the first user's message
           - The title should be less than 30 characters long
@@ -78,7 +82,11 @@ export default defineEventHandler(async (event) => {
       const result = streamText({
         abortSignal: abortController.signal,
         model,
-        experimental_telemetry: { isEnabled: process.env.AGENTPOND_ENABLED === 'true' },
+        experimental_telemetry: {
+          isEnabled: process.env.AGENTPOND_ENABLED === 'true',
+          recordInputs: true,
+          recordOutputs: true
+        },
         instructions: `You are a knowledgeable and helpful AI assistant. ${session.user?.username ? `The user's name is ${session.user.username}.` : ''} Your goal is to provide clear, accurate, and well-structured responses.
 
 **FORMATTING RULES (CRITICAL):**
