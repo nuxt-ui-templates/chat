@@ -1,16 +1,16 @@
 export default defineNitroPlugin(async () => {
-  if (process.env.AGENTPOND_ENABLED !== 'true' || !process.env.VERCEL_PROJECT_ID) {
+  if (process.env.AGENTPOND_ENABLED !== 'true') {
     return
   }
 
   const [
-    { createVercelSpanExporter },
+    { createFilesSpanExporterFromRuntimeEnv },
     { OpenTelemetry },
     { isOpenInferenceSpan, OpenInferenceSimpleSpanProcessor },
     { NodeTracerProvider },
     { registerTelemetry }
   ] = await Promise.all([
-    import('@agentpond/vercel'),
+    import('@agentpond/files-sdk/otel'),
     import('@ai-sdk/otel'),
     import('@arizeai/openinference-vercel'),
     import('@opentelemetry/sdk-trace-node'),
@@ -20,7 +20,7 @@ export default defineNitroPlugin(async () => {
   const provider = new NodeTracerProvider({
     spanProcessors: [
       new OpenInferenceSimpleSpanProcessor({
-        exporter: createVercelSpanExporter(),
+        exporter: createFilesSpanExporterFromRuntimeEnv(),
         spanFilter: isOpenInferenceSpan,
         reparentOrphanedSpans: true
       })

@@ -100,31 +100,38 @@ BLOB_READ_WRITE_TOKEN=<your-vercel-blob-token>
 
 ### AgentPond Tracing (Optional)
 
-This template can export OpenInference AI traces directly to a private Vercel
-Blob store for local analysis with [AgentPond](https://github.com/marcusschiesser/agentpond).
-Run the AgentPond 0.6 initializer from the project root:
+This template can export OpenInference AI traces through the AgentPond Files SDK
+for local analysis with [AgentPond](https://github.com/marcusschiesser/agentpond).
+For the Vercel setup, install Node.js 22 or newer and Vercel CLI 50.20 or newer,
+link the project, and ensure you can manage its private Vercel Blob integration.
+Then run the pinned initializer from the project root:
 
 ```bash
-npx agentpond@0.6.0 init --platform vercel
+npx agentpond@0.9.0 init --platform vercel
 ```
 
-Follow the generated instrumentation prompt, connect a **private** Vercel Blob
-store, enable access to Vercel System Environment Variables, and set
-`AGENTPOND_ENABLED=true`. No tracing data is exported when the flag is unset.
+Follow the generated storage setup, connect a **private** Vercel Blob store,
+enable access to Vercel System Environment Variables, and set
+`AGENTPOND_ENABLED=true` on the target that should export traces. No tracing
+data is exported when the flag is unset.
 
-The AI SDK telemetry settings explicitly enable `recordInputs` and
-`recordOutputs`. This records input and output values for each instrumented
-call, which may include prompts, messages, tool data, and generated content. A
-private Blob store restricts access but does not redact these values. Review
-the [Vercel AI SDK telemetry documentation](https://ai-sdk.dev/docs/ai-sdk-core/telemetry)
-before enabling tracing.
+Prompt and response content remains excluded by default. Set
+`AGENTPOND_RECORD_CONTENT=true` only when prompts, messages, tool data, and
+generated content may be stored under the application's privacy policy. A
+private store restricts access but does not redact captured values. Review the
+[Vercel AI SDK telemetry documentation](https://ai-sdk.dev/docs/ai-sdk-core/telemetry)
+before enabling content capture.
 
-After exercising an AI request on the deployed target, sync and inspect it:
+After exercising an AI request, select the same deployment target before
+syncing. These commands read production traces:
 
 ```bash
-npx agentpond@0.6.0 sync
-npx agentpond@0.6.0 traces list --limit 10
+npx agentpond@0.9.0 --env production sync
+npx agentpond@0.9.0 --env production traces list --limit 10
 ```
+
+Use `--env preview` for preview traces, or run
+`npx agentpond@0.9.0 env use <target>` first for a preview or custom target.
 
 ## Development Server
 

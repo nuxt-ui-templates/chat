@@ -49,8 +49,8 @@ export default defineEventHandler(async (event) => {
       model: 'openai/gpt-5-nano',
       experimental_telemetry: {
         isEnabled: process.env.AGENTPOND_ENABLED === 'true',
-        recordInputs: true,
-        recordOutputs: true
+        recordInputs: process.env.AGENTPOND_RECORD_CONTENT === 'true',
+        recordOutputs: process.env.AGENTPOND_RECORD_CONTENT === 'true'
       },
       instructions: `You are a title generator for a chat:
           - Generate a short title based on the first user's message
@@ -84,8 +84,8 @@ export default defineEventHandler(async (event) => {
         model,
         experimental_telemetry: {
           isEnabled: process.env.AGENTPOND_ENABLED === 'true',
-          recordInputs: true,
-          recordOutputs: true
+          recordInputs: process.env.AGENTPOND_RECORD_CONTENT === 'true',
+          recordOutputs: process.env.AGENTPOND_RECORD_CONTENT === 'true'
         },
         instructions: `You are a knowledgeable and helpful AI assistant. ${session.user?.username ? `The user's name is ${session.user.username}.` : ''} Your goal is to provide clear, accurate, and well-structured responses.
 

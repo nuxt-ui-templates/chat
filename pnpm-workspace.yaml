@@ -3,14 +3,14 @@ allowBuilds:
   '@tailwindcss/oxide': false
   esbuild: false
   maplibre-gl: false
+  protobufjs: false
   unrs-resolver: false
   vue-demi: false
 
 minimumReleaseAgeExclude:
-  - '@agentpond/core@0.5.0'
-  - '@agentpond/ingest@0.3.6'
-  - '@agentpond/otel@0.1.2'
-  - '@agentpond/vercel@0.5.0'
+  - '@agentpond/core@0.6.0'
+  - '@agentpond/files-sdk@0.1.0'
+  - '@agentpond/otel@0.1.4'
 
 overrides:
   # Pin h3 to v1: nuxt-csurf still uses the v1 event API (event.req.headers.get), breaks on h3 v2 RC

@@ -13,7 +13,8 @@
     "db:migrate": "nuxt db migrate"
   },
   "dependencies": {
-    "@agentpond/vercel": "0.5.0",
+    "@agentpond/files-sdk": "0.1.0",
+    "@agentpond/otel": "0.1.4",
     "@ai-sdk/anthropic": "^4.0.15",
     "@ai-sdk/google": "^4.0.17",
     "@ai-sdk/openai": "^4.0.15",
@@ -33,9 +34,10 @@
     "@shikijs/langs": "^4.3.1",
     "@vercel/blob": "^2.6.1",
     "@vueuse/core": "^14.3.0",
-    "ai": "^7.0.29",
+    "ai": "7.0.29",
     "date-fns": "^4.4.0",
     "drizzle-orm": "^0.45.2",
+    "files-sdk": "2.2.1",
     "motion-v": "^2.3.0",
     "nuxt": "^4.4.8",
     "nuxt-auth-utils": "^0.5.29",
