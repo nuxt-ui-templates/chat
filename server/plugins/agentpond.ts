@@ -1,5 +1,8 @@
 export default defineNitroPlugin(async () => {
-  if (process.env.AGENTPOND_ENABLED !== 'true') {
+  if (
+    process.env.AGENTPOND_ENABLED !== 'true'
+    || !process.env.VERCEL_PROJECT_ID
+  ) {
     return
   }
 
