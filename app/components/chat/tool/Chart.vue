@@ -78,7 +78,7 @@ const formatValue = (value: string | number | undefined): string => {
         :y-label="invocation.output.yLabel"
         :y-grid-line="true"
         :curve-type="CurveType.MonotoneX"
-        :legend-position="LegendPosition.Top"
+        :legend-position="LegendPosition.TopRight"
         :hide-legend="false"
         :x-num-ticks="Math.min(6, invocation.output.data.length)"
         :y-num-ticks="5"
