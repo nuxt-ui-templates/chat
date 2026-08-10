@@ -17,7 +17,7 @@
     "@ai-sdk/google": "^4.0.31",
     "@ai-sdk/openai": "^4.0.27",
     "@ai-sdk/vue": "^4.0.48",
-    "@comark/nuxt": "^0.5.1",
+    "@comark/nuxt": "^0.6.2",
     "@iconify-json/logos": "^1.2.11",
     "@iconify-json/lucide": "^1.2.121",
     "@iconify-json/simple-icons": "^1.2.92",
