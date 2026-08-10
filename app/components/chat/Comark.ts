@@ -1,4 +1,4 @@
-import highlight from '@comark/nuxt/plugins/highlight'
+import shiki from '@comark/nuxt/plugins/shiki'
 import html from '@shikijs/langs/html'
 import css from '@shikijs/langs/css'
 import python from '@shikijs/langs/python'
@@ -22,7 +22,7 @@ import SourceLink from './SourceLink.vue'
 export default defineMarkdownComponent({
   name: 'ChatComark',
   plugins: [
-    highlight({
+    shiki({
       languages: [html, css, python, sql, go, rust, java, c, cpp, ruby, php, swift, kotlin, diff, dockerfile, xml, toml, graphql]
     })
   ],
