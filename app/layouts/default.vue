@@ -82,7 +82,11 @@ defineShortcuts({
       class="border-r-0 py-4 dark:[--ui-bg-elevated:var(--ui-color-neutral-900)]"
     >
       <template #header="{ collapsed }">
-        <NuxtLink v-if="!collapsed" to="/" class="flex items-end gap-0.5">
+        <NuxtLink
+          v-if="!collapsed"
+          to="/"
+          class="flex items-end gap-0.5 outline-primary/25 focus-visible:outline-3 rounded-md"
+        >
           <Logo class="h-8 w-auto shrink-0" />
           <span class="text-xl font-bold text-highlighted">Chat</span>
         </NuxtLink>
