@@ -45,7 +45,7 @@
     "@types/node": "^24.13.3",
     "drizzle-kit": "^0.31.10",
     "eslint": "^10.10.0",
-    "typescript": "^6.0.3",
+    "typescript": "^7.0.2",
     "vue-tsc": "^3.3.11"
   },
   "packageManager": "pnpm@12.3.4"
