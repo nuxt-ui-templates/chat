@@ -92,17 +92,6 @@ async function handleSubmit(e: Event) {
   }
 }
 
-const dictation = ref<'idle' | 'recording' | 'transcribing'>('idle')
-const dictationPreview = ref('')
-const dictationPlaceholder = computed(() => {
-  if (dictation.value === 'idle') return undefined
-  return dictationPreview.value || (dictation.value === 'recording' ? 'Listening...' : 'Transcribing...')
-})
-
-function appendTranscript(text: string) {
-  input.value = input.value.trim() ? `${input.value.trimEnd()} ${text}` : text
-}
-
 const editingMessageId = ref<string | null>(null)
 
 function startEdit(message: UIMessage) {
@@ -263,47 +252,20 @@ onMounted(() => {
             </template>
           </UChatMessages>
 
-          <UChatPrompt
+          <ChatPrompt
             v-if="isOwner"
             v-model="input"
+            :status="status"
             :error="error"
-            :disabled="uploading"
-            color="neutral"
-            variant="subtle"
+            :files="files"
+            :uploading="uploading"
+            :open="open"
             class="sticky bottom-0 [view-transition-name:chat-prompt] rounded-b-none z-10"
-            :placeholder="dictationPlaceholder"
-            :ui="{ base: ['px-1.5', dictation !== 'idle' && 'placeholder:italic'] }"
             @submit="handleSubmit"
-          >
-            <template v-if="files.length > 0" #header>
-              <ChatFiles :files="files" @remove="removeFile" />
-            </template>
-
-            <template #footer>
-              <ChatPromptMenu :open="open" />
-
-              <div class="flex items-center gap-1">
-                <ModelSelect />
-
-                <ChatDictateButton
-                  v-if="status === 'ready' && !input.trim() && !files.length"
-                  v-model:state="dictation"
-                  v-model:preview="dictationPreview"
-                  :disabled="uploading"
-                  @transcript="appendTranscript"
-                />
-                <UChatPromptSubmit
-                  v-else
-                  :status="status"
-                  :disabled="uploading"
-                  color="neutral"
-                  size="sm"
-                  @stop="stop()"
-                  @reload="regenerate()"
-                />
-              </div>
-            </template>
-          </UChatPrompt>
+            @stop="stop()"
+            @reload="regenerate()"
+            @remove="removeFile"
+          />
         </UContainer>
       </div>
     </template>

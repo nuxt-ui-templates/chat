@@ -60,17 +60,6 @@ async function onSubmit() {
   clearFiles()
 }
 
-const dictation = ref<'idle' | 'recording' | 'transcribing'>('idle')
-const dictationPreview = ref('')
-const dictationPlaceholder = computed(() => {
-  if (dictation.value === 'idle') return undefined
-  return dictationPreview.value || (dictation.value === 'recording' ? 'Listening...' : 'Transcribing...')
-})
-
-function appendTranscript(text: string) {
-  input.value = input.value.trim() ? `${input.value.trimEnd()} ${text}` : text
-}
-
 const quickChats = [
   {
     label: 'Why use Nuxt UI?',
@@ -122,43 +111,16 @@ const quickChats = [
             {{ greeting }}
           </h1>
 
-          <UChatPrompt
+          <ChatPrompt
             v-model="input"
             :status="loading ? 'streaming' : 'ready'"
-            :disabled="uploading"
+            :files="files"
+            :uploading="uploading"
+            :open="open"
             class="[view-transition-name:chat-prompt]"
-            color="neutral"
-            variant="subtle"
-            :placeholder="dictationPlaceholder"
-            :ui="{ base: ['px-1.5', dictation !== 'idle' && 'placeholder:italic'] }"
             @submit="onSubmit"
-          >
-            <template v-if="files.length > 0" #header>
-              <ChatFiles :files="files" @remove="removeFile" />
-            </template>
-
-            <template #footer>
-              <ChatPromptMenu :open="open" />
-
-              <div class="flex items-center gap-1">
-                <ModelSelect />
-
-                <ChatDictateButton
-                  v-if="!input.trim() && !files.length && !loading"
-                  v-model:state="dictation"
-                  v-model:preview="dictationPreview"
-                  :disabled="uploading"
-                  @transcript="appendTranscript"
-                />
-                <UChatPromptSubmit
-                  v-else
-                  color="neutral"
-                  size="sm"
-                  :disabled="uploading"
-                />
-              </div>
-            </template>
-          </UChatPrompt>
+            @remove="removeFile"
+          />
 
           <div class="flex flex-wrap gap-2">
             <UButton
