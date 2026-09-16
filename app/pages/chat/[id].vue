@@ -6,6 +6,7 @@ import type { UIMessage } from 'ai'
 const route = useRoute()
 const toast = useToast()
 const { model } = useModels()
+const { webSearch, reasoning } = useChatSettings()
 const { csrf, headerName } = useCsrf()
 
 const { data } = await useFetch(`/api/chats/${route.params.id}`, {
@@ -44,9 +45,11 @@ const { messages, status, error, sendMessage, regenerate, stop } = useChat({
   transport: new DefaultChatTransport({
     api: `/api/chats/${data.value?.id}`,
     headers: { [headerName]: csrf },
-    body: {
-      model: model.value
-    }
+    body: () => ({
+      model: model.value,
+      webSearch: webSearch.value,
+      reasoning: reasoning.value
+    })
   }),
   onData: async (dataPart) => {
     if (dataPart.type === 'data-chat-title') {
@@ -87,6 +90,17 @@ async function handleSubmit(e: Event) {
     input.value = ''
     clearFiles()
   }
+}
+
+const dictation = ref<'idle' | 'recording' | 'transcribing'>('idle')
+const dictationPreview = ref('')
+const dictationPlaceholder = computed(() => {
+  if (dictation.value === 'idle') return undefined
+  return dictationPreview.value || (dictation.value === 'recording' ? 'Listening...' : 'Transcribing...')
+})
+
+function appendTranscript(text: string) {
+  input.value = input.value.trim() ? `${input.value.trimEnd()} ${text}` : text
 }
 
 const editingMessageId = ref<string | null>(null)
@@ -257,7 +271,8 @@ onMounted(() => {
             color="neutral"
             variant="subtle"
             class="sticky bottom-0 [view-transition-name:chat-prompt] rounded-b-none z-10"
-            :ui="{ base: 'px-1.5' }"
+            :placeholder="dictationPlaceholder"
+            :ui="{ base: ['px-1.5', dictation !== 'idle' && 'placeholder:italic'] }"
             @submit="handleSubmit"
           >
             <template v-if="files.length > 0" #header>
@@ -265,20 +280,28 @@ onMounted(() => {
             </template>
 
             <template #footer>
+              <ChatPromptMenu :open="open" />
+
               <div class="flex items-center gap-1">
-                <ChatFileUploadButton :open="open" />
-
                 <ModelSelect />
-              </div>
 
-              <UChatPromptSubmit
-                :status="status"
-                :disabled="uploading"
-                color="neutral"
-                size="sm"
-                @stop="stop()"
-                @reload="regenerate()"
-              />
+                <ChatDictateButton
+                  v-if="status === 'ready' && !input.trim() && !files.length"
+                  v-model:state="dictation"
+                  v-model:preview="dictationPreview"
+                  :disabled="uploading"
+                  @transcript="appendTranscript"
+                />
+                <UChatPromptSubmit
+                  v-else
+                  :status="status"
+                  :disabled="uploading"
+                  color="neutral"
+                  size="sm"
+                  @stop="stop()"
+                  @reload="regenerate()"
+                />
+              </div>
             </template>
           </UChatPrompt>
         </UContainer>
