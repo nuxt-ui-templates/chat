@@ -154,30 +154,41 @@ export function useDictation() {
       return
     }
 
-    const audioContext = new AudioContext({ sampleRate: SAMPLE_RATE })
-    const source = audioContext.createMediaStreamSource(stream)
-    const processor = audioContext.createScriptProcessor(4096, 1, 1)
+    let audioContext: AudioContext
+    let source: MediaStreamAudioSourceNode
+    let processor: ScriptProcessorNode
 
-    processor.onaudioprocess = (event) => {
-      const input = event.inputBuffer.getChannelData(0)
+    try {
+      audioContext = new AudioContext({ sampleRate: SAMPLE_RATE })
+      source = audioContext.createMediaStreamSource(stream)
+      processor = audioContext.createScriptProcessor(4096, 1, 1)
 
-      let sum = 0
-      for (const sample of input) {
-        sum += sample * sample
+      processor.onaudioprocess = (event) => {
+        const input = event.inputBuffer.getChannelData(0)
+
+        let sum = 0
+        for (const sample of input) {
+          sum += sample * sample
+        }
+        level.value = Math.min(1, Math.sqrt(sum / input.length) * 5)
+
+        const samples = audioContext.sampleRate === SAMPLE_RATE
+          ? new Float32Array(input)
+          : resampleAudio(new Float32Array(input), audioContext.sampleRate, SAMPLE_RATE)
+        controller.enqueue(encodeRealtimeAudio(samples))
       }
-      level.value = Math.min(1, Math.sqrt(sum / input.length) * 5)
-
-      const samples = audioContext.sampleRate === SAMPLE_RATE
-        ? new Float32Array(input)
-        : resampleAudio(new Float32Array(input), audioContext.sampleRate, SAMPLE_RATE)
-      controller.enqueue(encodeRealtimeAudio(samples))
+      // The processor must be connected to run, mute it so the microphone is not played back
+      const silence = audioContext.createGain()
+      silence.gain.value = 0
+      source.connect(processor)
+      processor.connect(silence)
+      silence.connect(audioContext.destination)
+    } catch (cause) {
+      // The microphone is open and the transcription stream is connected, tear both down
+      abort.abort()
+      stream.getTracks().forEach(track => track.stop())
+      throw cause
     }
-    // The processor must be connected to run, mute it so the microphone is not played back
-    const silence = audioContext.createGain()
-    silence.gain.value = 0
-    source.connect(processor)
-    processor.connect(silence)
-    silence.connect(audioContext.destination)
 
     session = {
       stream,
