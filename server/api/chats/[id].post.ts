@@ -24,11 +24,13 @@ export default defineEventHandler(async (event) => {
     id: z.string()
   }).parse)
 
-  const { model, messages } = await readValidatedBody(event, z.object({
+  const { model, messages, webSearch, reasoning } = await readValidatedBody(event, z.object({
     model: z.string().refine(value => MODELS.some(m => m.value === value), {
       message: 'Invalid model'
     }),
-    messages: z.array(z.custom<UIMessage>())
+    messages: z.array(z.custom<UIMessage>()),
+    webSearch: z.boolean().default(true),
+    reasoning: z.boolean().default(true)
   }).parse)
 
   const chat = await db.query.chats.findFirst({
@@ -69,6 +71,27 @@ export default defineEventHandler(async (event) => {
     }).onConflictDoUpdate({ target: schema.messages.id, set: { parts: lastMessage.parts } })
   }
 
+  // Web search is a provider-defined tool, only available on Anthropic and OpenAI models.
+  // TODO: enable Google once AI SDK supports combining provider-defined tools with custom tools
+  // ...(model.startsWith('google/') && { google_search: google.tools.googleSearch({}) })
+  const webSearchTool = webSearch
+    ? model.startsWith('anthropic/')
+      ? anthropic.tools.webSearch_20250305()
+      : model.startsWith('openai/')
+        ? openai.tools.webSearch()
+        : undefined
+    : undefined
+
+  const webSearchInstructions = webSearchTool
+    ? `**WEB SEARCH:**
+- You have access to a web search tool to find current, up-to-date information
+- Only use it when the user explicitly asks about recent events, real-time data, or current facts
+- Do NOT search proactively — rely on your knowledge first
+- Cite your sources when providing information from web search results
+
+`
+    : ''
+
   const abortController = new AbortController()
   event.node.req.on('close', () => abortController.abort())
 
@@ -88,13 +111,7 @@ export default defineEventHandler(async (event) => {
   * Instead of "# Complete Guide", write "**Complete Guide**" or start directly with content
 - Start all responses with content, never with a heading
 
-**WEB SEARCH:**
-- You have access to a web search tool to find current, up-to-date information
-- Only use it when the user explicitly asks about recent events, real-time data, or current facts
-- Do NOT search proactively — rely on your knowledge first
-- Cite your sources when providing information from web search results
-
-**RESPONSE QUALITY:**
+${webSearchInstructions}**RESPONSE QUALITY:**
 - Be concise yet comprehensive
 - Use examples when helpful
 - Break down complex topics into digestible parts
@@ -103,27 +120,25 @@ export default defineEventHandler(async (event) => {
         tools: {
           chart: chartTool,
           weather: weatherTool,
-          ...(model.startsWith('anthropic/') && { web_search: anthropic.tools.webSearch_20250305() }),
-          ...(model.startsWith('openai/') && { web_search: openai.tools.webSearch() })
-          // TODO: enable once AI SDK supports combining provider-defined tools with custom tools
-          // ...(model.startsWith('google/') && { google_search: google.tools.googleSearch({}) })
+          ...(webSearchTool && { web_search: webSearchTool })
         },
         providerOptions: {
           anthropic: {
-            thinking: {
-              type: 'enabled',
-              budgetTokens: 2048
-            }
+            thinking: reasoning
+              ? { type: 'enabled', budgetTokens: 2048 }
+              : { type: 'disabled' }
           } satisfies AnthropicLanguageModelOptions,
           google: {
+            // Gemini 3 always thinks, the toggle only controls whether the thoughts are shown
             thinkingConfig: {
-              includeThoughts: true,
+              includeThoughts: reasoning,
               thinkingLevel: 'low'
             }
           } satisfies GoogleLanguageModelOptions,
           openai: {
-            reasoningEffort: 'low',
-            reasoningSummary: 'detailed'
+            // The web search tool is rejected at minimal effort
+            reasoningEffort: reasoning || webSearchTool ? 'low' : 'minimal',
+            ...(reasoning && { reasoningSummary: 'detailed' })
           } satisfies OpenAILanguageModelResponsesOptions
         },
         stopWhen: isStepCount(5),
@@ -141,7 +156,7 @@ export default defineEventHandler(async (event) => {
       writer.merge(toUIMessageStream({
         stream: result.stream,
         sendSources: true,
-        sendReasoning: true
+        sendReasoning: reasoning
       }))
     },
     onEnd: async ({ messages }) => {

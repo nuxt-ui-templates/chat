@@ -3,3 +3,6 @@ export const MODELS = [
   { label: 'Gemini 3 Flash', value: 'google/gemini-3-flash', icon: 'i-simple-icons-google' },
   { label: 'GPT-5 Nano', value: 'openai/gpt-5-nano', icon: 'i-simple-icons-openai' }
 ]
+
+// Streaming speech-to-text model used for dictation, served through the AI Gateway
+export const TRANSCRIPTION_MODEL = 'openai/gpt-realtime-whisper'

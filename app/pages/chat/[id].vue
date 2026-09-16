@@ -6,6 +6,7 @@ import type { UIMessage } from 'ai'
 const route = useRoute()
 const toast = useToast()
 const { model } = useModels()
+const { webSearch, reasoning } = useChatSettings()
 const { csrf, headerName } = useCsrf()
 
 const { data } = await useFetch(`/api/chats/${route.params.id}`, {
@@ -44,9 +45,11 @@ const { messages, status, error, sendMessage, regenerate, stop } = useChat({
   transport: new DefaultChatTransport({
     api: `/api/chats/${data.value?.id}`,
     headers: { [headerName]: csrf },
-    body: {
-      model: model.value
-    }
+    body: () => ({
+      model: model.value,
+      webSearch: webSearch.value,
+      reasoning: reasoning.value
+    })
   }),
   onData: async (dataPart) => {
     if (dataPart.type === 'data-chat-title') {
@@ -249,38 +252,20 @@ onMounted(() => {
             </template>
           </UChatMessages>
 
-          <UChatPrompt
+          <ChatPrompt
             v-if="isOwner"
             v-model="input"
+            :status="status"
             :error="error"
-            :disabled="uploading"
-            color="neutral"
-            variant="subtle"
+            :files="files"
+            :uploading="uploading"
+            :open="open"
             class="sticky bottom-0 [view-transition-name:chat-prompt] rounded-b-none z-10"
-            :ui="{ base: 'px-1.5' }"
             @submit="handleSubmit"
-          >
-            <template v-if="files.length > 0" #header>
-              <ChatFiles :files="files" @remove="removeFile" />
-            </template>
-
-            <template #footer>
-              <div class="flex items-center gap-1">
-                <ChatFileUploadButton :open="open" />
-
-                <ModelSelect />
-              </div>
-
-              <UChatPromptSubmit
-                :status="status"
-                :disabled="uploading"
-                color="neutral"
-                size="sm"
-                @stop="stop()"
-                @reload="regenerate()"
-              />
-            </template>
-          </UChatPrompt>
+            @stop="stop()"
+            @reload="regenerate()"
+            @remove="removeFile"
+          />
         </UContainer>
       </div>
     </template>

@@ -111,30 +111,16 @@ const quickChats = [
             {{ greeting }}
           </h1>
 
-          <UChatPrompt
+          <ChatPrompt
             v-model="input"
-            :status="loading ? 'streaming' : 'ready'"
-            :disabled="uploading"
+            :disabled="loading"
+            :files="files"
+            :uploading="uploading"
+            :open="open"
             class="[view-transition-name:chat-prompt]"
-            color="neutral"
-            variant="subtle"
-            :ui="{ base: 'px-1.5' }"
             @submit="onSubmit"
-          >
-            <template v-if="files.length > 0" #header>
-              <ChatFiles :files="files" @remove="removeFile" />
-            </template>
-
-            <template #footer>
-              <div class="flex items-center gap-1">
-                <ChatFileUploadButton :open="open" />
-
-                <ModelSelect />
-              </div>
-
-              <UChatPromptSubmit color="neutral" size="sm" :disabled="uploading" />
-            </template>
-          </UChatPrompt>
+            @remove="removeFile"
+          />
 
           <div class="flex flex-wrap gap-2">
             <UButton
