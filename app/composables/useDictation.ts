@@ -50,6 +50,7 @@ export function useDictation() {
   const error = ref<Error | null>(null)
 
   let session: Session | null = null
+  let finalizingSession: Session | null = null
   let starting = false
   let cancelled = false
 
@@ -154,14 +155,14 @@ export function useDictation() {
       return
     }
 
-    let audioContext: AudioContext
+    let audioContext: AudioContext | undefined
     let source: MediaStreamAudioSourceNode
     let processor: ScriptProcessorNode
 
     try {
-      audioContext = new AudioContext({ sampleRate: SAMPLE_RATE })
-      source = audioContext.createMediaStreamSource(stream)
-      processor = audioContext.createScriptProcessor(4096, 1, 1)
+      const context = audioContext = new AudioContext({ sampleRate: SAMPLE_RATE })
+      source = context.createMediaStreamSource(stream)
+      processor = context.createScriptProcessor(4096, 1, 1)
 
       processor.onaudioprocess = (event) => {
         const input = event.inputBuffer.getChannelData(0)
@@ -172,20 +173,21 @@ export function useDictation() {
         }
         level.value = Math.min(1, Math.sqrt(sum / input.length) * 5)
 
-        const samples = audioContext.sampleRate === SAMPLE_RATE
+        const samples = context.sampleRate === SAMPLE_RATE
           ? new Float32Array(input)
-          : resampleAudio(new Float32Array(input), audioContext.sampleRate, SAMPLE_RATE)
+          : resampleAudio(new Float32Array(input), context.sampleRate, SAMPLE_RATE)
         controller.enqueue(encodeRealtimeAudio(samples))
       }
       // The processor must be connected to run, mute it so the microphone is not played back
-      const silence = audioContext.createGain()
+      const silence = context.createGain()
       silence.gain.value = 0
       source.connect(processor)
       processor.connect(silence)
-      silence.connect(audioContext.destination)
+      silence.connect(context.destination)
     } catch (cause) {
-      // The microphone is open and the transcription stream is connected, tear both down
+      // The microphone is open and the transcription stream is connected, tear everything down
       abort.abort()
+      audioContext?.close().catch(() => {})
       stream.getTracks().forEach(track => track.stop())
       throw cause
     }
@@ -213,24 +215,27 @@ export function useDictation() {
     if (!current) return ''
 
     session = null
+    finalizingSession = current
     release(current)
     finalizing.value = true
 
     try {
       const text = await current.result.text
-      return text.trim()
+      return current.abort.signal.aborted ? '' : text.trim()
     } catch (cause) {
       if (current.abort.signal.aborted) return ''
       throw cause
     } finally {
+      finalizingSession = null
       finalizing.value = false
       transcript.value = ''
     }
   }
 
-  /** Stop recording and discard the transcript. */
+  /** Stop recording and discard the transcript, or drop a pending final transcript. */
   function cancel() {
     cancelled = true
+    finalizingSession?.abort.abort()
     const current = session
     if (!current) return
 

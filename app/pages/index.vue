@@ -113,7 +113,7 @@ const quickChats = [
 
           <ChatPrompt
             v-model="input"
-            :status="loading ? 'streaming' : 'ready'"
+            :disabled="loading"
             :files="files"
             :uploading="uploading"
             :open="open"

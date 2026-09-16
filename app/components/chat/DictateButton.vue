@@ -59,6 +59,11 @@ function fail(cause: Error) {
 }
 
 async function record() {
+  if (!supported.value || !loggedIn.value) {
+    toast.add({ description: tooltip.value, icon: 'i-lucide-info', color: 'neutral' })
+    return
+  }
+
   try {
     await start({ onMaxDuration: finish })
   } catch (cause) {
@@ -130,7 +135,7 @@ onBeforeUnmount(() => {
         color="neutral"
         variant="ghost"
         size="sm"
-        :disabled="disabled || !loggedIn || !supported"
+        :disabled="disabled"
         aria-label="Dictate"
         @click="record"
       />

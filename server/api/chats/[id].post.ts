@@ -129,13 +129,15 @@ ${webSearchInstructions}**RESPONSE QUALITY:**
               : { type: 'disabled' }
           } satisfies AnthropicLanguageModelOptions,
           google: {
+            // Gemini 3 always thinks, the toggle only controls whether the thoughts are shown
             thinkingConfig: {
               includeThoughts: reasoning,
-              thinkingLevel: reasoning ? 'low' : 'minimal'
+              thinkingLevel: 'low'
             }
           } satisfies GoogleLanguageModelOptions,
           openai: {
-            reasoningEffort: reasoning ? 'low' : 'minimal',
+            // The web search tool is rejected at minimal effort
+            reasoningEffort: reasoning || webSearchTool ? 'low' : 'minimal',
             ...(reasoning && { reasoningSummary: 'detailed' })
           } satisfies OpenAILanguageModelResponsesOptions
         },
