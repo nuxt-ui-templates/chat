@@ -8,4 +8,4 @@ allowBuilds:
 
 overrides:
   # Pin h3 to v1: nuxt-csurf still uses the v1 event API (event.req.headers.get), breaks on h3 v2 RC
-  h3: 1.15.11
+  h3: 2.0.2
