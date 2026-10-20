@@ -6,7 +6,6 @@ export default defineNuxtConfig({
     '@comark/nuxt',
     '@nuxthub/core',
     'nuxt-auth-utils',
-    'nuxt-charts',
     'nuxt-csurf'
   ],
 
