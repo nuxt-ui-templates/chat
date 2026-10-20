@@ -23,6 +23,15 @@ const message = computed(() => {
   })[props.invocation.state as string] || 'Loading chart data...'
 })
 
+const type = computed(() => props.invocation.output?.type ?? 'line')
+
+const typeIcon = computed(() => ({
+  line: 'i-lucide-chart-line',
+  area: 'i-lucide-chart-area',
+  bar: 'i-lucide-chart-column',
+  donut: 'i-lucide-chart-pie'
+})[type.value])
+
 const categories = computed(() => props.invocation.output?.series.map(serie => ({
   key: serie.key,
   label: serie.name,
@@ -47,7 +56,7 @@ const data = computed(() => {
 <template>
   <div v-if="invocation.state === 'output-available'" class="my-5">
     <div v-if="invocation.output.title" class="flex items-center gap-2 mb-2">
-      <UIcon name="i-lucide-line-chart" class="size-5 text-primary shrink-0" />
+      <UIcon :name="typeIcon" class="size-5 text-primary shrink-0" />
       <div class="min-w-0">
         <h3 class="text-lg font-semibold truncate">
           {{ invocation.output.title }}
@@ -59,6 +68,7 @@ const data = computed(() => {
       <div class="dot-pattern inset-0" />
 
       <UChart
+        :type="type"
         :data="data"
         :index="invocation.output.xKey"
         :categories="categories"
