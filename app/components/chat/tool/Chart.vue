@@ -73,6 +73,7 @@ const data = computed(() => {
 
       <UChart
         :type="type"
+        :stacked="invocation.output.stacked"
         :data="data"
         :index="invocation.output.xKey"
         :categories="categories"

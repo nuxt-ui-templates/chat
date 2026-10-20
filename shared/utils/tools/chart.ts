@@ -9,6 +9,7 @@ export const chartTool = tool({
   inputSchema: z.object({
     title: z.string().optional().describe('Title of the chart'),
     type: z.enum(['line', 'area', 'bar', 'donut']).optional().describe('Type of chart, defaults to line. A donut chart only uses the first series, with one slice per data point'),
+    stacked: z.boolean().optional().describe('Stack the series on top of each other, only for area and bar charts with several series'),
     data: z.array(z.record(z.string(), z.union([z.string(), z.number()]))).min(1).describe('REQUIRED: Array of data points (minimum 1 point). Each object must contain the xKey property and all series keys'),
     xKey: z.string().describe('The property name in data objects to use for x-axis values (e.g., "month", "date"), or for the slice labels of a donut chart'),
     series: z.array(z.object({
@@ -19,13 +20,14 @@ export const chartTool = tool({
     xLabel: z.string().optional().describe('Optional label for x-axis'),
     yLabel: z.string().optional().describe('Optional label for y-axis')
   }),
-  execute: async ({ title, type, data, xKey, series, xLabel, yLabel }) => {
+  execute: async ({ title, type, stacked, data, xKey, series, xLabel, yLabel }) => {
     // Create a delay to simulate the input-available state
     await new Promise(resolve => setTimeout(resolve, 1500))
 
     return {
       title,
       type,
+      stacked,
       data,
       xKey,
       series,
