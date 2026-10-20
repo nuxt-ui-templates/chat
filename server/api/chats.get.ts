@@ -1,3 +1,4 @@
+import { defineEventHandler } from 'nuxt/server'
 import { db, schema } from 'hub:db'
 import { eq, desc } from 'drizzle-orm'
 

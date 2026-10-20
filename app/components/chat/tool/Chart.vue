@@ -23,42 +23,44 @@ const message = computed(() => {
   })[props.invocation.state as string] || 'Loading chart data...'
 })
 
-const xFormatter = (invocation: ChartUIToolInvocation) => {
-  return (tick: number, _i?: number, _ticks?: number[]): string => {
-    if (!invocation.output?.data[tick]) return ''
-    return String(invocation.output.data[tick][invocation.output.xKey] ?? '')
-  }
-}
+// A single row has no segment to draw, so an area chart falls back to a line with a point
+const type = computed(() => {
+  const requested = props.invocation.output?.type ?? 'line'
+  return requested === 'area' && props.invocation.output?.data.length === 1 ? 'line' : requested
+})
 
-const categories = (invocation: ChartUIToolInvocation): Record<string, BulletLegendItemInterface> => {
-  if (!invocation.output?.series) return {}
-  return invocation.output.series.reduce((acc: Record<string, BulletLegendItemInterface>, serie: { key: string, name: string, color: string }) => {
-    acc[serie.key] = {
-      name: serie.name,
-      color: serie.color
-    }
-    return acc
-  }, {} as Record<string, BulletLegendItemInterface>)
-}
+const typeIcon = computed(() => ({
+  line: 'i-lucide-chart-line',
+  area: 'i-lucide-chart-area',
+  bar: 'i-lucide-chart-column',
+  donut: 'i-lucide-chart-pie'
+})[type.value])
 
-const formatValue = (value: string | number | undefined): string => {
-  if (value === undefined || value === null) return 'N/A'
-  if (typeof value === 'string') return value
+const categories = computed(() => props.invocation.output?.series.map(serie => ({
+  key: serie.key,
+  label: serie.name,
+  color: serie.color
+})) ?? [])
 
-  if (Number.isInteger(value)) {
-    return value.toLocaleString()
-  }
-  return value.toLocaleString(undefined, {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 2
-  })
-}
+// The tool accepts strings for any value but UChart only plots numbers
+const data = computed(() => {
+  const output = props.invocation.output
+  if (!output) return []
+
+  return output.data.map(row => ({
+    ...row,
+    ...Object.fromEntries(output.series.map(({ key }) => {
+      const value = row[key]
+      return [key, typeof value === 'string' && value.trim() ? Number(value) : value]
+    }))
+  }))
+})
 </script>
 
 <template>
   <div v-if="invocation.state === 'output-available'" class="my-5">
     <div v-if="invocation.output.title" class="flex items-center gap-2 mb-2">
-      <UIcon name="i-lucide-line-chart" class="size-5 text-primary shrink-0" />
+      <UIcon :name="typeIcon" class="size-5 text-primary shrink-0" />
       <div class="min-w-0">
         <h3 class="text-lg font-semibold truncate">
           {{ invocation.output.title }}
@@ -66,50 +68,23 @@ const formatValue = (value: string | number | undefined): string => {
       </div>
     </div>
 
-    <div class="relative overflow-hidden">
-      <div class="dot-pattern h-full -top-5 left-0 right-0" />
+    <div class="relative">
+      <div class="dot-pattern inset-0" />
 
-      <LineChart
-        :height="300"
-        :data="invocation.output.data"
-        :categories="categories(invocation)"
-        :x-formatter="xFormatter(invocation)"
+      <UChart
+        :type="type"
+        :stacked="invocation.output.stacked"
+        :data="data"
+        :index="invocation.output.xKey"
+        :categories="categories"
         :x-label="invocation.output.xLabel"
         :y-label="invocation.output.yLabel"
-        :y-grid-line="true"
-        :curve-type="CurveType.MonotoneX"
-        :legend-position="LegendPosition.TopRight"
-        :hide-legend="false"
-        :x-num-ticks="Math.min(6, invocation.output.data.length)"
-        :y-num-ticks="5"
-        :show-tooltip="true"
-      >
-        <template #tooltip="{ values }">
-          <div class="bg-muted/50 rounded-sm px-2 py-1 shadow-lg backdrop-blur-sm max-w-xs ring ring-offset-2 ring-offset-bg ring-default border border-default">
-            <div v-if="values && values[invocation.output.xKey]" class="text-sm font-semibold text-highlighted mb-2">
-              {{ values[invocation.output.xKey] }}
-            </div>
-            <div class="space-y-1.5">
-              <div
-                v-for="serie in invocation.output.series"
-                :key="serie.key"
-                class="flex items-center justify-between gap-3"
-              >
-                <div class="flex items-center gap-2 min-w-0">
-                  <div
-                    class="size-2.5 rounded-full shrink-0"
-                    :style="{ backgroundColor: serie.color }"
-                  />
-                  <span class="text-sm text-muted truncate">{{ serie.name }}</span>
-                </div>
-                <span class="text-sm font-semibold text-highlighted shrink-0">
-                  {{ formatValue(values?.[serie.key]) }}
-                </span>
-              </div>
-            </div>
-          </div>
-        </template>
-      </LineChart>
+        curve="monotone"
+        :points="data.length === 1"
+        legend
+        :height="300"
+        :aria-label="invocation.output.title"
+      />
     </div>
   </div>
 
@@ -131,15 +106,6 @@ const formatValue = (value: string | number | undefined): string => {
 
 <style>
 :root {
-  --vis-tooltip-padding: 0 !important;
-  --vis-tooltip-background-color: transparent !important;
-  --vis-tooltip-border-color: transparent !important;
-
-  --vis-axis-grid-color: rgba(255, 255, 255, 0) !important;
-  --vis-axis-tick-label-color: var(--ui-text-muted) !important;
-  --vis-axis-label-color: var(--ui-text-toned) !important;
-  --vis-legend-label-color: var(--ui-text-muted) !important;
-
   --dot-pattern-color: #111827;
 }
 
