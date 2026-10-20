@@ -23,7 +23,11 @@ const message = computed(() => {
   })[props.invocation.state as string] || 'Loading chart data...'
 })
 
-const type = computed(() => props.invocation.output?.type ?? 'line')
+// A single row has no segment to draw, so an area chart falls back to a line with a point
+const type = computed(() => {
+  const requested = props.invocation.output?.type ?? 'line'
+  return requested === 'area' && props.invocation.output?.data.length === 1 ? 'line' : requested
+})
 
 const typeIcon = computed(() => ({
   line: 'i-lucide-chart-line',
