@@ -1,22 +1,20 @@
+import { createError, defineEventHandler, getRouterParam } from 'nuxt/server'
 import { blob } from 'hub:blob'
 import { db, schema } from 'hub:db'
 import { and, eq } from 'drizzle-orm'
-import { z } from 'zod'
 
 export default defineEventHandler(async (event) => {
   const session = await getUserSession(event)
-  const { id } = await getValidatedRouterParams(event, z.object({
-    id: z.string()
-  }).parse)
+  const id = getRouterParam(event, 'id', { decode: true })!
 
   const chat = await db.query.chats.findFirst({
-    where: () => and(eq(schema.chats.id, id as string), eq(schema.chats.userId, session.user?.id || session.id))
+    where: () => and(eq(schema.chats.id, id), eq(schema.chats.userId, session.user?.id || session.id))
   })
 
   if (!chat) {
     throw createError({
-      statusCode: 404,
-      statusMessage: 'Chat not found'
+      status: 404,
+      statusText: 'Chat not found'
     })
   }
 
@@ -42,6 +40,6 @@ export default defineEventHandler(async (event) => {
   }
 
   return await db.delete(schema.chats)
-    .where(and(eq(schema.chats.id, id as string), eq(schema.chats.userId, session.user?.id || session.id)))
+    .where(and(eq(schema.chats.id, id), eq(schema.chats.userId, session.user?.id || session.id)))
     .returning()
 })

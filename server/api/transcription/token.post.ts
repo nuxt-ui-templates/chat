@@ -1,3 +1,4 @@
+import { defineEventHandler } from 'nuxt/server'
 import { gateway } from 'ai'
 
 defineRouteMeta({
