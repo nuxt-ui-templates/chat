@@ -28,6 +28,20 @@ const categories = computed(() => props.invocation.output?.series.map(serie => (
   label: serie.name,
   color: serie.color
 })) ?? [])
+
+// The tool accepts strings for any value but UChart only plots numbers
+const data = computed(() => {
+  const output = props.invocation.output
+  if (!output) return []
+
+  return output.data.map(row => ({
+    ...row,
+    ...Object.fromEntries(output.series.map(({ key }) => {
+      const value = row[key]
+      return [key, typeof value === 'string' && value.trim() ? Number(value) : value]
+    }))
+  }))
+})
 </script>
 
 <template>
@@ -45,12 +59,13 @@ const categories = computed(() => props.invocation.output?.series.map(serie => (
       <div class="dot-pattern inset-0" />
 
       <UChart
-        :data="invocation.output.data"
+        :data="data"
         :index="invocation.output.xKey"
         :categories="categories"
         :x-label="invocation.output.xLabel"
         :y-label="invocation.output.yLabel"
         curve="monotone"
+        :points="data.length === 1"
         legend
         :height="300"
         :aria-label="invocation.output.title"
