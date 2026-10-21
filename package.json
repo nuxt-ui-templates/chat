@@ -23,7 +23,7 @@
     "@iconify-json/simple-icons": "^1.2.100",
     "@libsql/client": "^0.18.0",
     "@nuxt/ui": "^4.12.0",
-    "@nuxthub/core": "^0.10.8",
+    "@nuxthub/core": "^0.10.10",
     "@shikijs/langs": "^4.5.0",
     "@tanstack/charts": "^1.1.0",
     "@vercel/blob": "^2.8.2",
