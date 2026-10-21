@@ -1,14 +1,12 @@
+import { createError, defineEventHandler, getRouterParam } from 'nuxt/server'
 import { blob } from 'hub:blob'
 import { db, schema } from 'hub:db'
 import { eq } from 'drizzle-orm'
-import { z } from 'zod'
 
 export default defineEventHandler(async (event) => {
   const { user } = await requireUserSession(event)
 
-  const { chatId } = await getValidatedRouterParams(event, z.object({
-    chatId: z.string()
-  }).parse)
+  const chatId = getRouterParam(event, 'chatId', { decode: true })!
 
   const userId = user.id
 
@@ -18,8 +16,8 @@ export default defineEventHandler(async (event) => {
 
   if (chat && chat.userId !== userId) {
     throw createError({
-      statusCode: 403,
-      statusMessage: 'You do not have permission to upload files to this chat'
+      status: 403,
+      statusText: 'You do not have permission to upload files to this chat'
     })
   }
 
