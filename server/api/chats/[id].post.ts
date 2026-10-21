@@ -1,3 +1,4 @@
+import { createError, defineEventHandler, getRouterParam, readValidatedBody } from 'nuxt/server'
 import type { UIMessage } from 'ai'
 import { convertToModelMessages, createUIMessageStream, createUIMessageStreamResponse, generateText, isStepCount, smoothStream, streamText, toUIMessageStream } from 'ai'
 import { db, schema } from 'hub:db'
@@ -20,9 +21,7 @@ defineRouteMeta({
 export default defineEventHandler(async (event) => {
   const session = await getUserSession(event)
 
-  const { id } = await getValidatedRouterParams(event, z.object({
-    id: z.string()
-  }).parse)
+  const id = getRouterParam(event, 'id', { decode: true })!
 
   const { model, messages, webSearch, reasoning } = await readValidatedBody(event, z.object({
     model: z.string().refine(value => MODELS.some(m => m.value === value), {
@@ -31,11 +30,11 @@ export default defineEventHandler(async (event) => {
     messages: z.array(z.custom<UIMessage>()),
     webSearch: z.boolean().default(true),
     reasoning: z.boolean().default(true)
-  }).parse)
+  }))
 
   const chat = await db.query.chats.findFirst({
     where: () => and(
-      eq(schema.chats.id, id as string),
+      eq(schema.chats.id, id),
       eq(schema.chats.userId, session.user?.id || session.id)
     ),
     with: {
@@ -43,7 +42,7 @@ export default defineEventHandler(async (event) => {
     }
   })
   if (!chat) {
-    throw createError({ statusCode: 404, statusMessage: 'Chat not found' })
+    throw createError({ status: 404, statusText: 'Chat not found' })
   }
 
   if (!chat.title) {
@@ -58,14 +57,14 @@ export default defineEventHandler(async (event) => {
       prompt: JSON.stringify(messages[0])
     })
 
-    await db.update(schema.chats).set({ title }).where(eq(schema.chats.id, id as string))
+    await db.update(schema.chats).set({ title }).where(eq(schema.chats.id, id))
   }
 
   const lastMessage = messages[messages.length - 1]
   if (lastMessage?.role === 'user' && messages.length > 1) {
     await db.insert(schema.messages).values({
       id: lastMessage.id,
-      chatId: id as string,
+      chatId: id,
       role: 'user',
       parts: lastMessage.parts
     }).onConflictDoUpdate({ target: schema.messages.id, set: { parts: lastMessage.parts } })
@@ -92,13 +91,10 @@ export default defineEventHandler(async (event) => {
 `
     : ''
 
-  const abortController = new AbortController()
-  event.node.req.on('close', () => abortController.abort())
-
   const stream = createUIMessageStream({
     execute: async ({ writer }) => {
       const result = streamText({
-        abortSignal: abortController.signal,
+        abortSignal: event.req.signal,
         model,
         instructions: `You are a knowledgeable and helpful AI assistant. ${session.user?.username ? `The user's name is ${session.user.username}.` : ''} Your goal is to provide clear, accurate, and well-structured responses.
 
