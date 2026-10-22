@@ -212,8 +212,8 @@ importers:
         specifier: ^2.8.2
         version: 2.8.2
       '@vueuse/core':
-        specifier: ^14.4.0
-        version: 14.4.0(vue@3.5.44(typescript@6.0.3))
+        specifier: ^15.0.0
+        version: 15.0.0(vue@3.5.44(typescript@6.0.3))
       ai:
         specifier: ^7.0.143
         version: 7.0.143(zod@4.6.7)
@@ -225,7 +225,7 @@ importers:
         version: 0.45.4(@cloudflare/workers-types@4.20260519.1)(@libsql/client@0.18.0)(@opentelemetry/api@1.9.1)
       motion-v:
         specifier: ^2.8.0
-        version: 2.8.0(@vueuse/core@14.4.0(vue@3.5.44(typescript@6.0.3)))(vue@3.5.44(typescript@6.0.3))
+        version: 2.8.0(@vueuse/core@15.0.0(vue@3.5.44(typescript@6.0.3)))(vue@3.5.44(typescript@6.0.3))
       nuxt:
         specifier: ^4.6.2
         version: 4.6.2(005106b0a672bc09d2cf3158920dad8e)
@@ -3303,6 +3303,12 @@ packages:
     peerDependencies:
       vue: ^3.5.0
 
+  '@vueuse/core@15.0.0':
+    resolution: {integrity: sha512-Zv67h5mrk7YHDJsRObx+DXaCBz6RKBUpxqLesJ+3xZNPG6yuQs7ja7kg3veFrrouYLWAqydQ7CwGEbLVxB43Ng==}
+    engines: {node: '>=22'}
+    peerDependencies:
+      vue: ^3.5.0
+
   '@vueuse/integrations@14.4.0':
     resolution: {integrity: sha512-oJz9qTgczvA7L1nXQFRU7h8tQbOCoiceqvMMhT9XYMyOGTqLJ2rEa09PON+nD2t48sZUfeOmg4eaWJXV4sZb/w==}
     peerDependencies:
@@ -3351,11 +3357,21 @@ packages:
   '@vueuse/metadata@14.4.0':
     resolution: {integrity: sha512-swx/255R6JyHZFJhx845iz5CRWDZdCfvkZOpACWc5+c5WHcG24mv8gUT1WIdFQaHt6dq79rvILd9QnCWiyVm9g==}
 
+  '@vueuse/metadata@15.0.0':
+    resolution: {integrity: sha512-sfWE5LADAKJ0KnjtGliMdSN8Ij/L7uP6rXIZlgPloAI4zvvefbw6H5Lt7KJA6RqQOYgVqWF5Guj50HHMIzygBg==}
+    engines: {node: '>=22'}
+
   '@vueuse/shared@10.11.1':
     resolution: {integrity: sha512-LHpC8711VFZlDaYUXEBbFBCQ7GS3dVU9mjOhhMhXP6txTV4EhYQg/KGnQuvt/sPAtoUKq7VVUnL6mVtFoL42sA==}
 
   '@vueuse/shared@14.4.0':
     resolution: {integrity: sha512-JRgY90Sz8DDtPMsaDflvPMp9xYk69JZAmbuDvAquUVXKr2gEjqtzGNTTthLfckH0BzBqvnu31gb4a8TGLRe79g==}
+    peerDependencies:
+      vue: ^3.5.0
+
+  '@vueuse/shared@15.0.0':
+    resolution: {integrity: sha512-vbNXhGrbV53xPOMSyOzMHQRvhMgZf7oNDw2RChUetVxwTIEkInQ1joZ9JbT0G3z2n2AJNjvmCWeM9ySYrnvogA==}
+    engines: {node: '>=22'}
     peerDependencies:
       vue: ^3.5.0
 
@@ -5207,10 +5223,6 @@ packages:
   lru-cache@10.4.3:
     resolution: {integrity: sha512-JNAzZcXrCt42VGLuYz0zfAzDfAvJWW6AfYlDBQyDV5DClI2m5sAmK+OIO7s59XfsRsWHp02jAJrRadPRGTt6SQ==}
 
-  lru-cache@11.4.0:
-    resolution: {integrity: sha512-W+R+kFL4HgVxONq2bhXPi3bGpzGe/yEhVOp233qw9wCRtgncJ15P3bC+e4zZMu4Cq7d+WAJjXGW0uUkifhcatA==}
-    engines: {node: 20 || >=22}
-
   lru-cache@11.5.3:
     resolution: {integrity: sha512-U4N8FgzmWxc8k1VH8Kr6lQg18U7Fjvby6wXHVRX/ZZ7IwWbRMgrRbP0Wrb5q5NVinryp4SQampHKdvtecItxUg==}
     engines: {node: 20 || >=22}
@@ -6557,68 +6569,6 @@ packages:
       synckit: ^0.11.11
     peerDependenciesMeta:
       synckit:
-        optional: true
-
-  unstorage@1.17.5:
-    resolution: {integrity: sha512-0i3iqvRfx29hkNntHyQvJTpf5W9dQ9ZadSoRU8+xVlhVtT7jAX57fazYO9EHvcRCfBCyi5YRya7XCDOsbTgkPg==}
-    peerDependencies:
-      '@azure/app-configuration': ^1.8.0
-      '@azure/cosmos': ^4.2.0
-      '@azure/data-tables': ^13.3.0
-      '@azure/identity': ^4.6.0
-      '@azure/keyvault-secrets': ^4.9.0
-      '@azure/storage-blob': ^12.26.0
-      '@capacitor/preferences': ^6 || ^7 || ^8
-      '@deno/kv': '>=0.9.0'
-      '@netlify/blobs': ^6.5.0 || ^7.0.0 || ^8.1.0 || ^9.0.0 || ^10.0.0
-      '@planetscale/database': ^1.19.0
-      '@upstash/redis': ^1.34.3
-      '@vercel/blob': '>=0.27.1'
-      '@vercel/functions': ^2.2.12 || ^3.0.0
-      '@vercel/kv': ^1 || ^2 || ^3
-      aws4fetch: ^1.0.20
-      db0: '>=0.2.1'
-      idb-keyval: ^6.2.1
-      ioredis: ^5.4.2
-      uploadthing: ^7.4.4
-    peerDependenciesMeta:
-      '@azure/app-configuration':
-        optional: true
-      '@azure/cosmos':
-        optional: true
-      '@azure/data-tables':
-        optional: true
-      '@azure/identity':
-        optional: true
-      '@azure/keyvault-secrets':
-        optional: true
-      '@azure/storage-blob':
-        optional: true
-      '@capacitor/preferences':
-        optional: true
-      '@deno/kv':
-        optional: true
-      '@netlify/blobs':
-        optional: true
-      '@planetscale/database':
-        optional: true
-      '@upstash/redis':
-        optional: true
-      '@vercel/blob':
-        optional: true
-      '@vercel/functions':
-        optional: true
-      '@vercel/kv':
-        optional: true
-      aws4fetch:
-        optional: true
-      db0:
-        optional: true
-      idb-keyval:
-        optional: true
-      ioredis:
-        optional: true
-      uploadthing:
         optional: true
 
   unstorage@1.17.6:
@@ -8130,7 +8080,7 @@ snapshots:
       structured-clone-es: 2.0.1
       tinyexec: 1.3.1
       tinyglobby: 0.2.17
-      unstorage: 1.17.5(@vercel/blob@2.8.2)(db0@0.3.4(@libsql/client@0.18.0)(drizzle-orm@0.45.4(@cloudflare/workers-types@4.20260519.1)(@libsql/client@0.18.0)(@opentelemetry/api@1.9.1)))(ioredis@5.10.1(supports-color@10.2.2))
+      unstorage: 1.17.6(@vercel/blob@2.8.2)(db0@0.3.4(@libsql/client@0.18.0)(drizzle-orm@0.45.4(@cloudflare/workers-types@4.20260519.1)(@libsql/client@0.18.0)(@opentelemetry/api@1.9.1)))(ioredis@5.10.1(supports-color@10.2.2))
       vite: 8.3.4(@types/node@24.19.2)(esbuild@0.28.0)(jiti@2.7.0)(terser@5.47.1)(tsx@4.22.3)(yaml@2.9.0)
       vite-plugin-inspect: 11.4.1(@nuxt/kit@4.6.2(@nuxt/schema@4.6.2)(confbox@0.3.1)(dotenv@17.4.2)(giget@3.3.1)(jiti@2.7.0)(magic-string@1.4.3)(mlly@1.8.2)(oxc-parser@0.140.0)(rolldown@1.2.12)(unplugin@3.4.0(esbuild@0.28.0)(rolldown@1.2.12)(rollup@4.60.4)(vite@8.3.4(@types/node@24.19.2)(esbuild@0.28.0)(jiti@2.7.0)(terser@5.47.1)(tsx@4.22.3)(yaml@2.9.0))))(vite@8.3.4(@types/node@24.19.2)(esbuild@0.28.0)(jiti@2.7.0)(terser@5.47.1)(tsx@4.22.3)(yaml@2.9.0))
       vite-plugin-vue-tracer: 1.6.0(vite@8.3.4(@types/node@24.19.2)(esbuild@0.28.0)(jiti@2.7.0)(terser@5.47.1)(tsx@4.22.3)(yaml@2.9.0))(vue@3.5.44(typescript@6.0.3))
@@ -8271,7 +8221,7 @@ snapshots:
       ufo: 1.6.4
       unifont: 0.7.4
       unplugin: 3.4.0(esbuild@0.28.0)(rolldown@1.2.12)(rollup@4.60.4)(vite@8.3.4(@types/node@24.19.2)(esbuild@0.28.0)(jiti@2.7.0)(terser@5.47.1)(tsx@4.22.3)(yaml@2.9.0))
-      unstorage: 1.17.5(@vercel/blob@2.8.2)(db0@0.3.4(@libsql/client@0.18.0)(drizzle-orm@0.45.4(@cloudflare/workers-types@4.20260519.1)(@libsql/client@0.18.0)(@opentelemetry/api@1.9.1)))(ioredis@5.10.1(supports-color@10.2.2))
+      unstorage: 1.17.6(@vercel/blob@2.8.2)(db0@0.3.4(@libsql/client@0.18.0)(drizzle-orm@0.45.4(@cloudflare/workers-types@4.20260519.1)(@libsql/client@0.18.0)(@opentelemetry/api@1.9.1)))(ioredis@5.10.1(supports-color@10.2.2))
     transitivePeerDependencies:
       - '@azure/app-configuration'
       - '@azure/cosmos'
@@ -8426,7 +8376,7 @@ snapshots:
       ufo: 1.6.4
       unctx: 3.0.1(magic-string@1.4.3)(oxc-parser@0.140.0)(rolldown@1.2.12)(unplugin@3.4.0(esbuild@0.28.0)(rolldown@1.2.12)(rollup@4.60.4)(vite@8.3.4(@types/node@24.19.2)(esbuild@0.28.0)(jiti@2.7.0)(terser@5.47.1)(tsx@4.22.3)(yaml@2.9.0)))
       unrouting: 0.2.3
-      unstorage: 1.17.5(@vercel/blob@2.8.2)(db0@0.3.4(@libsql/client@0.18.0)(drizzle-orm@0.45.4(@cloudflare/workers-types@4.20260519.1)(@libsql/client@0.18.0)(@opentelemetry/api@1.9.1)))(ioredis@5.10.1(supports-color@10.2.2))
+      unstorage: 1.17.6(@vercel/blob@2.8.2)(db0@0.3.4(@libsql/client@0.18.0)(drizzle-orm@0.45.4(@cloudflare/workers-types@4.20260519.1)(@libsql/client@0.18.0)(@opentelemetry/api@1.9.1)))(ioredis@5.10.1(supports-color@10.2.2))
       vue: 3.5.44(typescript@6.0.3)
       vue-bundle-renderer: 2.4.0
       vue-devtools-stub: 0.1.0
@@ -10199,6 +10149,13 @@ snapshots:
       '@vueuse/shared': 14.4.0(vue@3.5.44(typescript@6.0.3))
       vue: 3.5.44(typescript@6.0.3)
 
+  '@vueuse/core@15.0.0(vue@3.5.44(typescript@6.0.3))':
+    dependencies:
+      '@types/web-bluetooth': 0.0.21
+      '@vueuse/metadata': 15.0.0
+      '@vueuse/shared': 15.0.0(vue@3.5.44(typescript@6.0.3))
+      vue: 3.5.44(typescript@6.0.3)
+
   '@vueuse/integrations@14.4.0(change-case@5.4.4)(fuse.js@7.5.0)(vue@3.5.44(typescript@6.0.3))':
     dependencies:
       '@vueuse/core': 14.4.0(vue@3.5.44(typescript@6.0.3))
@@ -10212,6 +10169,8 @@ snapshots:
 
   '@vueuse/metadata@14.4.0': {}
 
+  '@vueuse/metadata@15.0.0': {}
+
   '@vueuse/shared@10.11.1(vue@3.5.44(typescript@6.0.3))':
     dependencies:
       vue-demi: 0.14.10(vue@3.5.44(typescript@6.0.3))
@@ -10220,6 +10179,10 @@ snapshots:
       - vue
 
   '@vueuse/shared@14.4.0(vue@3.5.44(typescript@6.0.3))':
+    dependencies:
+      vue: 3.5.44(typescript@6.0.3)
+
+  '@vueuse/shared@15.0.0(vue@3.5.44(typescript@6.0.3))':
     dependencies:
       vue: 3.5.44(typescript@6.0.3)
 
@@ -11406,7 +11369,7 @@ snapshots:
       pathe: 2.0.3
       ufo: 1.6.4
       unifont: 0.7.4
-      unstorage: 1.17.5(@vercel/blob@2.8.2)(db0@0.3.4(@libsql/client@0.18.0)(drizzle-orm@0.45.4(@cloudflare/workers-types@4.20260519.1)(@libsql/client@0.18.0)(@opentelemetry/api@1.9.1)))(ioredis@5.10.1(supports-color@10.2.2))
+      unstorage: 1.17.6(@vercel/blob@2.8.2)(db0@0.3.4(@libsql/client@0.18.0)(drizzle-orm@0.45.4(@cloudflare/workers-types@4.20260519.1)(@libsql/client@0.18.0)(@opentelemetry/api@1.9.1)))(ioredis@5.10.1(supports-color@10.2.2))
     optionalDependencies:
       vite: 8.3.4(@types/node@24.19.2)(esbuild@0.28.0)(jiti@2.7.0)(terser@5.47.1)(tsx@4.22.3)(yaml@2.9.0)
     transitivePeerDependencies:
@@ -11989,8 +11952,6 @@ snapshots:
 
   lru-cache@10.4.3: {}
 
-  lru-cache@11.4.0: {}
-
   lru-cache@11.5.3: {}
 
   lru-cache@5.1.1:
@@ -12148,6 +12109,18 @@ snapshots:
       - react
       - react-dom
 
+  motion-v@2.8.0(@vueuse/core@15.0.0(vue@3.5.44(typescript@6.0.3)))(vue@3.5.44(typescript@6.0.3)):
+    dependencies:
+      '@vueuse/core': 15.0.0(vue@3.5.44(typescript@6.0.3))
+      framer-motion: 14.3.0
+      hey-listen: 1.0.8
+      motion-dom: 14.3.0
+      motion-utils: 14.1.1
+      vue: 3.5.44(typescript@6.0.3)
+    transitivePeerDependencies:
+      - react
+      - react-dom
+
   mrmime@2.0.1: {}
 
   ms@2.1.3: {}
@@ -12237,7 +12210,7 @@ snapshots:
       unenv: 2.0.0-rc.24
       unimport: 6.4.0(esbuild@0.28.0)(oxc-parser@0.140.0)(rolldown@1.2.12)(rollup@4.60.4)(vite@8.3.4(@types/node@24.19.2)(esbuild@0.28.0)(jiti@2.7.0)(terser@5.47.1)(tsx@4.22.3)(yaml@2.9.0))
       unplugin-utils: 0.3.2
-      unstorage: 1.17.5(@vercel/blob@2.8.2)(db0@0.3.4(@libsql/client@0.18.0)(drizzle-orm@0.45.4(@cloudflare/workers-types@4.20260519.1)(@libsql/client@0.18.0)(@opentelemetry/api@1.9.1)))(ioredis@5.10.1(supports-color@10.2.2))
+      unstorage: 1.17.6(@vercel/blob@2.8.2)(db0@0.3.4(@libsql/client@0.18.0)(drizzle-orm@0.45.4(@cloudflare/workers-types@4.20260519.1)(@libsql/client@0.18.0)(@opentelemetry/api@1.9.1)))(ioredis@5.10.1(supports-color@10.2.2))
       untyped: 2.0.0
       unwasm: 0.5.3
       youch: 4.1.1
@@ -12677,7 +12650,7 @@ snapshots:
 
   path-scurry@2.0.2:
     dependencies:
-      lru-cache: 11.4.0
+      lru-cache: 11.5.3
       minipass: 7.1.3
 
   pathe@1.1.2: {}
@@ -13720,21 +13693,6 @@ snapshots:
       rolldown: 1.0.0-rc.17
     optionalDependencies:
       synckit: 0.11.13
-
-  unstorage@1.17.5(@vercel/blob@2.8.2)(db0@0.3.4(@libsql/client@0.18.0)(drizzle-orm@0.45.4(@cloudflare/workers-types@4.20260519.1)(@libsql/client@0.18.0)(@opentelemetry/api@1.9.1)))(ioredis@5.10.1(supports-color@10.2.2)):
-    dependencies:
-      anymatch: 3.1.3
-      chokidar: 5.0.0
-      destr: 2.0.5
-      h3: 1.15.11
-      lru-cache: 11.4.0
-      node-fetch-native: 1.6.7
-      ofetch: 1.5.1
-      ufo: 1.6.4
-    optionalDependencies:
-      '@vercel/blob': 2.8.2
-      db0: 0.3.4(@libsql/client@0.18.0)(drizzle-orm@0.45.4(@cloudflare/workers-types@4.20260519.1)(@libsql/client@0.18.0)(@opentelemetry/api@1.9.1))
-      ioredis: 5.10.1(supports-color@10.2.2)
 
   unstorage@1.17.6(@vercel/blob@2.8.2)(db0@0.3.4(@libsql/client@0.18.0)(drizzle-orm@0.45.4(@cloudflare/workers-types@4.20260519.1)(@libsql/client@0.18.0)(@opentelemetry/api@1.9.1)))(ioredis@5.10.1(supports-color@10.2.2)):
     dependencies:
