@@ -27,7 +27,7 @@
     "@shikijs/langs": "^4.5.0",
     "@tanstack/charts": "^1.1.0",
     "@vercel/blob": "^2.8.2",
-    "@vueuse/core": "^14.4.0",
+    "@vueuse/core": "^15.0.0",
     "ai": "^7.0.153",
     "date-fns": "^4.4.0",
     "drizzle-orm": "^0.45.4",
