@@ -2,6 +2,7 @@
 import { useChat } from '@ai-sdk/vue'
 import { DefaultChatTransport } from 'ai'
 import type { UIMessage } from 'ai'
+import type { ChatPromptQueueItem } from '@nuxt/ui'
 
 const route = useRoute()
 const toast = useToast()
@@ -22,13 +23,18 @@ watch(() => data.value?.title, (next) => {
   title.value = next ?? null
 })
 
+// Messages sent while a response streams wait here, `UChatPrompt` queues a submit while the chat is busy
+const queue = ref<ChatPromptQueueItem[]>([])
+
 const {
   files,
   promptFiles,
   uploading,
   uploadedFiles,
+  queueUploading,
+  takeQueuedFiles,
   clearFiles
-} = useFileUploadWithStatus(route.params.id as string)
+} = useFileUploadWithStatus(route.params.id as string, queue)
 
 const { data: votes } = await useLazyFetch(`/api/chats/${route.params.id}/votes`, {
   immediate: isOwner.value
@@ -84,6 +90,35 @@ async function handleSubmit(e: Event) {
     sendMessage(input.value.trim() ? { text: input.value, files } : { files: files! })
     input.value = ''
     clearFiles()
+  }
+}
+
+function sendNext() {
+  // A queued message waits for its files to finish uploading
+  if (queueUploading.value) return
+
+  const next = queue.value.shift()
+  if (!next) return
+
+  const parts = takeQueuedFiles(next.files)
+  // Nothing left to send when its only file failed to upload
+  if (!next.text.trim() && !parts.length) return sendNext()
+
+  sendMessage(next.text.trim() ? { text: next.text, files: parts.length ? parts : undefined } : { files: parts })
+}
+
+watch([status, queueUploading], () => {
+  if (status.value === 'ready') {
+    sendNext()
+  }
+})
+
+// A queued message picked to be sent now is at the front of the queue, it goes out once the current response stops
+function onSend() {
+  if (status.value === 'submitted' || status.value === 'streaming') {
+    stop()
+  } else {
+    sendNext()
   }
 }
 
@@ -249,12 +284,14 @@ onMounted(() => {
               <ChatPrompt
                 v-model="input"
                 v-model:files="promptFiles"
+                v-model:queue="queue"
                 :status="status"
                 :error="error"
                 :uploads="files"
                 :uploading="uploading"
                 class="[view-transition-name:chat-prompt] rounded-b-none"
                 @submit="handleSubmit"
+                @send="onSend"
                 @stop="stop()"
                 @reload="regenerate()"
               />
