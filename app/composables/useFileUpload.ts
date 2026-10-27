@@ -5,10 +5,6 @@ interface BlobResult {
   size: number
 }
 
-function createObjectUrl(file: File): string {
-  return URL.createObjectURL(file)
-}
-
 function fileToInput(file: File): HTMLInputElement {
   const dataTransfer = new DataTransfer()
   dataTransfer.items.add(file)
@@ -32,6 +28,24 @@ export function useFileUploadWithStatus(chatId: string) {
     headers: { [headerName]: csrf }
   })
 
+  // Looked up again after each upload: a file can be removed from the prompt while it uploads
+  function updateFile(id: string, patch: Partial<FileWithStatus>) {
+    const index = files.value.findIndex(f => f.id === id)
+    if (index === -1) return false
+
+    files.value[index] = { ...files.value[index]!, ...patch }
+    return true
+  }
+
+  function deleteBlob(pathname: string) {
+    $fetch(`/api/upload/${pathname}` as string, {
+      method: 'DELETE',
+      headers: { [headerName]: csrf }
+    }).catch((error) => {
+      console.error('Failed to delete file from blob:', error)
+    })
+  }
+
   async function uploadFiles(newFiles: File[]) {
     if (!loggedIn.value) {
       return
@@ -40,16 +54,12 @@ export function useFileUploadWithStatus(chatId: string) {
     const filesWithStatus: FileWithStatus[] = newFiles.map(file => ({
       file,
       id: crypto.randomUUID(),
-      previewUrl: createObjectUrl(file),
       status: 'uploading' as const
     }))
 
     files.value = [...files.value, ...filesWithStatus]
 
     const uploadPromises = filesWithStatus.map(async (fileWithStatus) => {
-      const index = files.value.findIndex(f => f.id === fileWithStatus.id)
-      if (index === -1) return
-
       try {
         const input = fileToInput(fileWithStatus.file)
         const response = await upload(input) as BlobResult | BlobResult[] | undefined
@@ -64,11 +74,8 @@ export function useFileUploadWithStatus(chatId: string) {
           throw new Error('Upload failed')
         }
 
-        files.value[index] = {
-          ...files.value[index]!,
-          status: 'uploaded',
-          uploadedUrl: result.url,
-          uploadedPathname: result.pathname
+        if (!updateFile(fileWithStatus.id, { status: 'uploaded', uploadedUrl: result.url, uploadedPathname: result.pathname })) {
+          deleteBlob(result.pathname)
         }
       } catch (error) {
         const errorMessage = (error as { data?: { message?: string } }).data?.message
@@ -80,22 +87,12 @@ export function useFileUploadWithStatus(chatId: string) {
           icon: 'i-lucide-alert-circle',
           color: 'error'
         })
-        files.value[index] = {
-          ...files.value[index]!,
-          status: 'error',
-          error: errorMessage
-        }
+        updateFile(fileWithStatus.id, { status: 'error', error: errorMessage })
       }
     })
 
     await Promise.allSettled(uploadPromises)
   }
-
-  const { dropzoneRef, isDragging, open } = useFileUpload({
-    accept: FILE_UPLOAD_CONFIG.acceptPattern,
-    multiple: true,
-    onUpdate: uploadFiles
-  })
 
   const uploading = computed(() =>
     files.value.some(f => f.status === 'uploading')
@@ -115,34 +112,36 @@ export function useFileUploadWithStatus(chatId: string) {
     const file = files.value.find(f => f.id === id)
     if (!file) return
 
-    URL.revokeObjectURL(file.previewUrl)
     files.value = files.value.filter(f => f.id !== id)
 
     if (file.status === 'uploaded' && file.uploadedPathname) {
-      $fetch(`/api/upload/${file.uploadedPathname}` as string, {
-        method: 'DELETE',
-        headers: { [headerName]: csrf }
-      }).catch((error) => {
-        console.error('Failed to delete file from blob:', error)
-      })
+      deleteBlob(file.uploadedPathname)
     }
   }
 
   function clearFiles() {
-    if (files.value.length === 0) return
-    files.value.forEach(fileWithStatus => URL.revokeObjectURL(fileWithStatus.previewUrl))
     files.value = []
   }
 
-  onUnmounted(() => {
-    clearFiles()
+  // The `File[]` behind `UChatPrompt` `v-model:files`: the prompt adds files on paste, drop or pick,
+  // they get uploaded here, and a file removed from the prompt is removed from the blob too
+  const promptFiles = computed<File[]>({
+    get: () => files.value.map(f => f.file),
+    set: (next) => {
+      for (const fileWithStatus of files.value.filter(f => !next.includes(f.file))) {
+        removeFile(fileWithStatus.id)
+      }
+
+      const added = next.filter(file => !files.value.some(f => f.file === file))
+      if (added.length) {
+        uploadFiles(added)
+      }
+    }
   })
 
   return {
-    dropzoneRef,
-    dragging: isDragging,
-    open,
     files,
+    promptFiles,
     uploading,
     uploadedFiles,
     addFiles: uploadFiles,

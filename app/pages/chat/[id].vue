@@ -23,13 +23,10 @@ watch(() => data.value?.title, (next) => {
 })
 
 const {
-  dropzoneRef,
-  dragging,
-  open,
   files,
+  promptFiles,
   uploading,
   uploadedFiles,
-  removeFile,
   clearFiles
 } = useFileUploadWithStatus(route.params.id as string)
 
@@ -82,11 +79,9 @@ const { messages, status, error, sendMessage, regenerate, stop } = useChat({
 
 async function handleSubmit(e: Event) {
   e.preventDefault()
-  if (input.value.trim() && !uploading.value) {
-    sendMessage({
-      text: input.value,
-      files: uploadedFiles.value.length > 0 ? uploadedFiles.value : undefined
-    })
+  if ((input.value.trim() || uploadedFiles.value.length) && !uploading.value) {
+    const files = uploadedFiles.value.length > 0 ? uploadedFiles.value : undefined
+    sendMessage(input.value.trim() ? { text: input.value, files } : { files: files! })
     input.value = ''
     clearFiles()
   }
@@ -200,9 +195,7 @@ onMounted(() => {
     </template>
 
     <template #body>
-      <div ref="dropzoneRef" class="flex flex-1">
-        <DragDropOverlay v-if="isOwner" :show="dragging" />
-
+      <div class="flex flex-1">
         <UContainer class="flex-1 flex flex-col gap-4 sm:gap-6">
           <UChatMessages
             should-auto-scroll
@@ -220,13 +213,13 @@ onMounted(() => {
             </template>
 
             <template #files="{ message, parts }">
-              <ChatFilePreview
+              <UChatAttachment
                 v-for="(part, index) in parts"
                 :key="`${message.id}-${index}`"
-                :name="getFileName(part.url)"
+                :name="removeRandomSuffix(getFileName(part.url))"
                 :type="part.mediaType"
-                :preview-url="part.url"
-                size="3xl"
+                :url="part.url"
+                :icon="getFileIcon(part.mediaType, part.url)"
               />
             </template>
 
@@ -255,16 +248,15 @@ onMounted(() => {
             <template v-if="isOwner" #footer>
               <ChatPrompt
                 v-model="input"
+                v-model:files="promptFiles"
                 :status="status"
                 :error="error"
-                :files="files"
+                :uploads="files"
                 :uploading="uploading"
-                :open="open"
                 class="[view-transition-name:chat-prompt] rounded-b-none"
                 @submit="handleSubmit"
                 @stop="stop()"
                 @reload="regenerate()"
-                @remove="removeFile"
               />
             </template>
           </UChatMessages>
