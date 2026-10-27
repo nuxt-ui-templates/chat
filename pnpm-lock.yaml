@@ -197,8 +197,8 @@ importers:
         specifier: ^0.18.0
         version: 0.18.0
       '@nuxt/ui':
-        specifier: https://pkg.pr.new/@nuxt/ui@7299
-        version: https://pkg.pr.new/@nuxt/ui@7299(e8a16d6e55e81a1092cef3009a5a20cf)
+        specifier: https://pkg.pr.new/@nuxt/ui@3ad5f5f
+        version: https://pkg.pr.new/@nuxt/ui@3ad5f5f(e8a16d6e55e81a1092cef3009a5a20cf)
       '@nuxthub/core':
         specifier: ^0.10.11
         version: 0.10.11(@emnapi/core@2.0.0-alpha.3)(@emnapi/runtime@2.0.0-alpha.3)(@nuxt/schema@4.6.2)(@vercel/blob@2.8.2)(confbox@0.3.1)(db0@0.3.4(@libsql/client@0.18.0)(drizzle-orm@0.45.4(@cloudflare/workers-types@4.20260519.1)(@libsql/client@0.18.0)(@opentelemetry/api@1.9.1)))(dotenv@17.4.2)(giget@3.3.1)(ioredis@5.10.1(supports-color@10.2.2))(jiti@2.7.0)(magic-string@1.4.3)(magicast@0.5.5)(mlly@1.8.2)(oxc-parser@0.140.0)(rolldown@1.2.12)(synckit@0.11.13)(typescript@6.0.3)(unplugin@3.4.0(esbuild@0.28.0)(rolldown@1.2.12)(rollup@4.60.4)(vite@8.3.4(@types/node@24.19.2)(esbuild@0.28.0)(jiti@2.7.0)(terser@5.47.1)(tsx@4.22.3)(yaml@2.9.0)))(vue-tsc@3.3.13(typescript@6.0.3))
@@ -1442,8 +1442,8 @@ packages:
     peerDependencies:
       '@nuxt/kit': '>=3.0.0'
 
-  '@nuxt/ui@https://pkg.pr.new/@nuxt/ui@7299':
-    resolution: {integrity: sha512-cuq9FAtdq1wvXGz4seoaln8jc86AP+Yb6uHwLl8RXrUDbk329MrM+cF42t53duQoP0VrYezyWADa1YW9I8mEow==, tarball: https://pkg.pr.new/@nuxt/ui@7299}
+  '@nuxt/ui@https://pkg.pr.new/@nuxt/ui@3ad5f5f':
+    resolution: {integrity: sha512-TNlmo/pPeTpbgpa/zBWmZs04TXH3MXG/9dK9OTo7KkPwhzswcqgAPa1WgkuTiMGGFNZ7QvP8xMr7cqqabSRKYg==, tarball: https://pkg.pr.new/@nuxt/ui@3ad5f5f}
     version: 4.12.0
     engines: {node: ^20.19.0 || >=22.12.0}
     peerDependencies:
@@ -8277,7 +8277,7 @@ snapshots:
       rc9: 3.1.0
       std-env: 4.3.0
 
-  '@nuxt/ui@https://pkg.pr.new/@nuxt/ui@7299(e8a16d6e55e81a1092cef3009a5a20cf)':
+  '@nuxt/ui@https://pkg.pr.new/@nuxt/ui@3ad5f5f(e8a16d6e55e81a1092cef3009a5a20cf)':
     dependencies:
       '@floating-ui/dom': 1.8.0
       '@iconify/vue': 5.0.4(vue@3.5.44(typescript@6.0.3))
