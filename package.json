@@ -22,7 +22,7 @@
     "@iconify-json/lucide": "^1.2.147",
     "@iconify-json/simple-icons": "^1.2.100",
     "@libsql/client": "^0.18.0",
-    "@nuxt/ui": "https://pkg.pr.new/@nuxt/ui@e6d6135",
+    "@nuxt/ui": "https://pkg.pr.new/@nuxt/ui@3ad5f5f",
     "@nuxthub/core": "^0.10.11",
     "@shikijs/langs": "^4.5.0",
     "@tanstack/charts": "^1.1.0",
