@@ -1,3 +1,4 @@
+import { sendRedirect } from 'nuxt/server'
 import { db, schema } from 'hub:db'
 import { and, eq } from 'drizzle-orm'
 
