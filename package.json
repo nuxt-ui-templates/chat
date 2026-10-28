@@ -46,7 +46,7 @@
     "drizzle-kit": "^0.31.11",
     "eslint": "^10.13.0",
     "eslint-plugin-better-tailwindcss": "^4.10.0",
-    "typescript": "^6.0.3",
+    "typescript": "^7.0.2",
     "vue-tsc": "^3.3.13"
   },
   "packageManager": "pnpm@12.15.0"
