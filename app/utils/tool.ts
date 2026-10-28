@@ -46,9 +46,10 @@ export function getSources(part: ToolPart): Source[] {
   return []
 }
 
-export function sourceToInlineMdc(url: string): string {
-  const domain = getDomain(url)
-  const favicon = getFaviconUrl(url)
+export function sourceToInlineMdc(url: string, title?: string): string {
+  // Google grounding links go through a redirect, the title holds the site's domain
+  const domain = title && getDomain(url) === 'vertexaisearch.cloud.google.com' ? title : getDomain(url)
+  const favicon = getFaviconUrl(`https://${domain}`)
   const safeUrl = url.replace(/"/g, '&quot;')
   const safeFavicon = favicon.replace(/"/g, '&quot;')
 
