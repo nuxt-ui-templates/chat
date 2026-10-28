@@ -48,7 +48,7 @@ export default defineEventHandler(async (event) => {
 
   if (!chat.title) {
     const { text: title } = await generateText({
-      model: 'openai/gpt-5-nano',
+      model: 'openai/gpt-6-luna',
       instructions: `You are a title generator for a chat:
           - Generate a short title based on the first user's message
           - The title should be less than 30 characters long
@@ -125,7 +125,7 @@ ${webSearchInstructions}**RESPONSE QUALITY:**
         providerOptions: {
           anthropic: {
             thinking: reasoning
-              ? { type: 'enabled', budgetTokens: 2048 }
+              ? { type: 'adaptive', display: 'summarized' }
               : { type: 'disabled' }
           } satisfies AnthropicLanguageModelOptions,
           google: {
