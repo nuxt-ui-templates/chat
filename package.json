@@ -33,7 +33,7 @@
     "drizzle-orm": "^0.45.4",
     "motion-v": "^2.8.0",
     "nuxt": "^4.6.3",
-    "nuxt-auth-utils": "https://pkg.pr.new/nuxt-auth-utils@ebef7de",
+    "nuxt-auth-utils": "https://pkg.pr.new/nuxt-auth-utils@d6543e9",
     "nuxt-csurf": "^1.6.6",
     "shiki": "^4.5.0",
     "striptags": "3.2.0",
