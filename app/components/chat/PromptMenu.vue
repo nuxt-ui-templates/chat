@@ -10,7 +10,7 @@ const { model } = useModels()
 const { webSearch, reasoning } = useChatSettings()
 
 // Web search is a provider-defined tool, only available on Anthropic and OpenAI models.
-const supportsWebSearch = computed(() => !model.value.startsWith('google/'))
+const supportsWebSearch = computed(() => model.value.startsWith('anthropic/') || model.value.startsWith('openai/'))
 
 defineShortcuts({
   meta_u: {
