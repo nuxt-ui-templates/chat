@@ -20,8 +20,8 @@ Full-featured AI Chatbot Nuxt application with authentication, chat history, col
 ## Features
 
 - ⚡️ **Streaming AI messages** powered by the [AI SDK](https://ai-sdk.dev) with thinking/reasoning support
-- 🤖 **Multiple model support** — Claude Haiku 4.5, Gemini 3 Flash and GPT-5 Nano via [Vercel AI Gateway](https://vercel.com/docs/ai-gateway)
-- 🔍 **Web search** with built-in provider tools (Anthropic, OpenAI), toggleable from the prompt menu along with extended thinking
+- 🤖 **Multiple model support** — Claude Haiku 5.5, Gemini 3 Flash and GPT-5.6 Luna via [Vercel AI Gateway](https://vercel.com/docs/ai-gateway)
+- 🔍 **Web search** with built-in provider tools (Anthropic, Google, OpenAI), toggleable from the prompt menu along with extended thinking
 - 🎤 **Dictation** in the prompt with live streaming transcription over WebSocket through [AI Gateway](https://vercel.com/docs/ai-gateway)
 - 📊 **Charts and weather** tool calling with rich UI rendering
 - 🔐 **Authentication** via GitHub OAuth using [nuxt-auth-utils](https://github.com/atinux/nuxt-auth-utils)

@@ -7,7 +7,7 @@ import { z } from 'zod'
 import type { AnthropicLanguageModelOptions } from '@ai-sdk/anthropic'
 import { anthropic } from '@ai-sdk/anthropic'
 import type { GoogleLanguageModelOptions } from '@ai-sdk/google'
-// import { google } from '@ai-sdk/google'
+import { google } from '@ai-sdk/google'
 import type { OpenAILanguageModelResponsesOptions } from '@ai-sdk/openai'
 import { openai } from '@ai-sdk/openai'
 
@@ -47,7 +47,7 @@ export default defineEventHandler(async (event) => {
 
   if (!chat.title) {
     const { text: title } = await generateText({
-      model: 'openai/gpt-5-nano',
+      model: 'google/gemini-3.5-flash-lite',
       instructions: `You are a title generator for a chat:
           - Generate a short title based on the first user's message
           - The title should be less than 30 characters long
@@ -70,15 +70,15 @@ export default defineEventHandler(async (event) => {
     }).onConflictDoUpdate({ target: schema.messages.id, set: { parts: lastMessage.parts } })
   }
 
-  // Web search is a provider-defined tool, only available on Anthropic and OpenAI models.
-  // TODO: enable Google once AI SDK supports combining provider-defined tools with custom tools
-  // ...(model.startsWith('google/') && { google_search: google.tools.googleSearch({}) })
+  // Web search is a provider-defined tool, each provider has its own
   const webSearchTool = webSearch
     ? model.startsWith('anthropic/')
       ? anthropic.tools.webSearch_20250305()
       : model.startsWith('openai/')
         ? openai.tools.webSearch()
-        : undefined
+        : model.startsWith('google/')
+          ? google.tools.googleSearch({})
+          : undefined
     : undefined
 
   const webSearchInstructions = webSearchTool
@@ -121,7 +121,7 @@ ${webSearchInstructions}**RESPONSE QUALITY:**
         providerOptions: {
           anthropic: {
             thinking: reasoning
-              ? { type: 'enabled', budgetTokens: 2048 }
+              ? { type: 'adaptive', display: 'summarized' }
               : { type: 'disabled' }
           } satisfies AnthropicLanguageModelOptions,
           google: {
@@ -132,8 +132,7 @@ ${webSearchInstructions}**RESPONSE QUALITY:**
             }
           } satisfies GoogleLanguageModelOptions,
           openai: {
-            // The web search tool is rejected at minimal effort
-            reasoningEffort: reasoning || webSearchTool ? 'low' : 'minimal',
+            reasoningEffort: reasoning ? 'low' : 'none',
             ...(reasoning && { reasoningSummary: 'detailed' })
           } satisfies OpenAILanguageModelResponsesOptions
         },
