@@ -32,6 +32,7 @@ const {
   uploading,
   uploadedFiles,
   queueUploading,
+  isQueuedUploading,
   takeQueuedFiles,
   clearFiles
 } = useFileUploadWithStatus(route.params.id as string, queue)
@@ -95,10 +96,9 @@ async function handleSubmit(e: Event) {
 
 function sendNext() {
   // A queued message waits for its files to finish uploading
-  if (queueUploading.value) return
+  if (!queue.value[0] || isQueuedUploading(queue.value[0].files)) return
 
-  const next = queue.value.shift()
-  if (!next) return
+  const next = queue.value.shift()!
 
   const parts = takeQueuedFiles(next.files)
   // Nothing left to send when its only file failed to upload
