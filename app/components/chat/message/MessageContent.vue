@@ -5,6 +5,7 @@ import { isPartStreaming, isToolStreaming } from '@nuxt/ui/utils/ai'
 
 defineProps<{
   message: UIMessage
+  streaming: boolean
   editing: boolean
 }>()
 
@@ -19,12 +20,12 @@ const emit = defineEmits<{
     <UChatReasoning
       v-if="isReasoningUIPart(part)"
       :text="part.text"
-      :streaming="isPartStreaming(part)"
+      :streaming="isPartStreaming(part, streaming)"
       chevron="leading"
     >
       <ChatComark
         :value="part.text"
-        :streaming="isPartStreaming(part)"
+        :streaming="isPartStreaming(part, streaming)"
       />
     </UChatReasoning>
 
@@ -39,9 +40,9 @@ const emit = defineEmits<{
       />
       <UChatTool
         v-else-if="getToolName(part) === 'web_search' || getToolName(part) === 'google_search'"
-        :text="isToolStreaming(part) ? 'Searching the web...' : 'Searched the web'"
+        :text="isToolStreaming(part, streaming) ? 'Searching the web...' : 'Searched the web'"
         :suffix="getSearchQuery(part)"
-        :streaming="isToolStreaming(part)"
+        :streaming="isToolStreaming(part, streaming)"
         chevron="leading"
       >
         <ChatToolSources :sources="getSources(part)" />
@@ -52,7 +53,7 @@ const emit = defineEmits<{
       <ChatComark
         v-if="message.role === 'assistant'"
         :value="part.text"
-        :streaming="isPartStreaming(part)"
+        :streaming="isPartStreaming(part, streaming)"
       />
       <template v-else-if="message.role === 'user'">
         <ChatMessageEdit
