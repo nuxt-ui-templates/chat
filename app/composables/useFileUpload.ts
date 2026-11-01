@@ -164,6 +164,10 @@ export function useFileUploadWithStatus(chatId: string, queue?: Ref<ChatPromptQu
     [...queuedFiles.values()].some(f => f.status === 'uploading')
   )
 
+  function isQueuedUploading(queued: File[] = []) {
+    return queued.some(file => queuedFiles.get(file)?.status === 'uploading')
+  }
+
   // The uploaded files of a queued message about to be sent, they now belong to the message
   function takeQueuedFiles(queued: File[] = []) {
     const taken = queued.map(file => queuedFiles.get(file)).filter(f => !!f)
@@ -194,6 +198,7 @@ export function useFileUploadWithStatus(chatId: string, queue?: Ref<ChatPromptQu
     uploading,
     uploadedFiles,
     queueUploading,
+    isQueuedUploading,
     takeQueuedFiles,
     addFiles: uploadFiles,
     removeFile,
