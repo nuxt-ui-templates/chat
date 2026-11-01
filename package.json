@@ -31,7 +31,7 @@
     "ai": "^7.0.153",
     "date-fns": "^4.4.0",
     "drizzle-orm": "^0.45.4",
-    "nuxt": "^4.6.2",
+    "nuxt": "^4.6.3",
     "nuxt-auth-utils": "^0.5.32",
     "nuxt-csurf": "^1.6.6",
     "shiki": "^4.5.0",

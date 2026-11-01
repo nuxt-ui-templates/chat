@@ -1,3 +1,4 @@
+import { createError, defineEventHandler, getRouterParam, readValidatedBody } from 'nuxt/server'
 import type { UIMessage } from 'ai'
 import { convertToModelMessages, createUIMessageStream, createUIMessageStreamResponse, generateText, isStepCount, smoothStream, streamText, toUIMessageStream } from 'ai'
 import { db, schema } from 'hub:db'
@@ -6,7 +7,7 @@ import { z } from 'zod'
 import type { AnthropicLanguageModelOptions } from '@ai-sdk/anthropic'
 import { anthropic } from '@ai-sdk/anthropic'
 import type { GoogleLanguageModelOptions } from '@ai-sdk/google'
-// import { google } from '@ai-sdk/google'
+import { google } from '@ai-sdk/google'
 import type { OpenAILanguageModelResponsesOptions } from '@ai-sdk/openai'
 import { openai } from '@ai-sdk/openai'
 
@@ -20,9 +21,7 @@ defineRouteMeta({
 export default defineEventHandler(async (event) => {
   const session = await getUserSession(event)
 
-  const { id } = await getValidatedRouterParams(event, z.object({
-    id: z.string()
-  }).parse)
+  const id = getRouterParam(event, 'id', { decode: true })!
 
   const { model, messages, webSearch, reasoning } = await readValidatedBody(event, z.object({
     model: z.string().refine(value => MODELS.some(m => m.value === value), {
@@ -31,11 +30,11 @@ export default defineEventHandler(async (event) => {
     messages: z.array(z.custom<UIMessage>()),
     webSearch: z.boolean().default(true),
     reasoning: z.boolean().default(true)
-  }).parse)
+  }))
 
   const chat = await db.query.chats.findFirst({
     where: () => and(
-      eq(schema.chats.id, id as string),
+      eq(schema.chats.id, id),
       eq(schema.chats.userId, session.user?.id || session.id)
     ),
     with: {
@@ -43,12 +42,12 @@ export default defineEventHandler(async (event) => {
     }
   })
   if (!chat) {
-    throw createError({ statusCode: 404, statusMessage: 'Chat not found' })
+    throw createError({ status: 404, statusText: 'Chat not found' })
   }
 
   if (!chat.title) {
     const { text: title } = await generateText({
-      model: 'openai/gpt-5-nano',
+      model: 'google/gemini-3.5-flash-lite',
       instructions: `You are a title generator for a chat:
           - Generate a short title based on the first user's message
           - The title should be less than 30 characters long
@@ -58,28 +57,28 @@ export default defineEventHandler(async (event) => {
       prompt: JSON.stringify(messages[0])
     })
 
-    await db.update(schema.chats).set({ title }).where(eq(schema.chats.id, id as string))
+    await db.update(schema.chats).set({ title }).where(eq(schema.chats.id, id))
   }
 
   const lastMessage = messages[messages.length - 1]
   if (lastMessage?.role === 'user' && messages.length > 1) {
     await db.insert(schema.messages).values({
       id: lastMessage.id,
-      chatId: id as string,
+      chatId: id,
       role: 'user',
       parts: lastMessage.parts
     }).onConflictDoUpdate({ target: schema.messages.id, set: { parts: lastMessage.parts } })
   }
 
-  // Web search is a provider-defined tool, only available on Anthropic and OpenAI models.
-  // TODO: enable Google once AI SDK supports combining provider-defined tools with custom tools
-  // ...(model.startsWith('google/') && { google_search: google.tools.googleSearch({}) })
+  // Web search is a provider-defined tool, each provider has its own
   const webSearchTool = webSearch
     ? model.startsWith('anthropic/')
       ? anthropic.tools.webSearch_20250305()
       : model.startsWith('openai/')
         ? openai.tools.webSearch()
-        : undefined
+        : model.startsWith('google/')
+          ? google.tools.googleSearch({})
+          : undefined
     : undefined
 
   const webSearchInstructions = webSearchTool
@@ -92,13 +91,10 @@ export default defineEventHandler(async (event) => {
 `
     : ''
 
-  const abortController = new AbortController()
-  event.node.req.on('close', () => abortController.abort())
-
   const stream = createUIMessageStream({
     execute: async ({ writer }) => {
       const result = streamText({
-        abortSignal: abortController.signal,
+        abortSignal: event.req.signal,
         model,
         instructions: `You are a knowledgeable and helpful AI assistant. ${session.user?.username ? `The user's name is ${session.user.username}.` : ''} Your goal is to provide clear, accurate, and well-structured responses.
 
@@ -125,7 +121,7 @@ ${webSearchInstructions}**RESPONSE QUALITY:**
         providerOptions: {
           anthropic: {
             thinking: reasoning
-              ? { type: 'enabled', budgetTokens: 2048 }
+              ? { type: 'adaptive', display: 'summarized' }
               : { type: 'disabled' }
           } satisfies AnthropicLanguageModelOptions,
           google: {
@@ -136,8 +132,7 @@ ${webSearchInstructions}**RESPONSE QUALITY:**
             }
           } satisfies GoogleLanguageModelOptions,
           openai: {
-            // The web search tool is rejected at minimal effort
-            reasoningEffort: reasoning || webSearchTool ? 'low' : 'minimal',
+            reasoningEffort: reasoning ? 'low' : 'none',
             ...(reasoning && { reasoningSummary: 'detailed' })
           } satisfies OpenAILanguageModelResponsesOptions
         },
