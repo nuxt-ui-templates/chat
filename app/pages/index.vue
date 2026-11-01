@@ -17,13 +17,10 @@ const greeting = computed(() => {
 })
 
 const {
-  dropzoneRef,
-  dragging,
-  open,
   files,
+  promptFiles,
   uploading,
   uploadedFiles,
-  removeFile,
   clearFiles
 } = useFileUploadWithStatus(chatId)
 
@@ -33,7 +30,7 @@ async function createChat(prompt: string) {
   input.value = prompt
   loading.value = true
 
-  const parts: Array<{ type: string, text?: string, mediaType?: string, url?: string }> = [{ type: 'text', text: prompt }]
+  const parts: Array<{ type: string, text?: string, mediaType?: string, url?: string }> = prompt.trim() ? [{ type: 'text', text: prompt }] : []
 
   if (uploadedFiles.value.length > 0) {
     parts.push(...uploadedFiles.value)
@@ -56,6 +53,8 @@ async function createChat(prompt: string) {
 }
 
 async function onSubmit() {
+  if (uploading.value || (!input.value.trim() && !uploadedFiles.value.length)) return
+
   await createChat(input.value)
   clearFiles()
 }
@@ -103,9 +102,7 @@ const quickChats = [
     </template>
 
     <template #body>
-      <div ref="dropzoneRef" class="flex flex-1">
-        <DragDropOverlay :show="dragging" />
-
+      <div class="flex flex-1">
         <UContainer class="flex-1 flex flex-col justify-center gap-4 sm:gap-6 py-8">
           <h1 class="text-3xl sm:text-4xl text-highlighted font-bold">
             {{ greeting }}
@@ -113,13 +110,12 @@ const quickChats = [
 
           <ChatPrompt
             v-model="input"
+            v-model:files="promptFiles"
             :disabled="loading"
-            :files="files"
+            :uploads="files"
             :uploading="uploading"
-            :open="open"
             class="[view-transition-name:chat-prompt]"
             @submit="onSubmit"
-            @remove="removeFile"
           />
 
           <div class="flex flex-wrap gap-2">
