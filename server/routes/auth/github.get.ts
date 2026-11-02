@@ -1,4 +1,5 @@
 import { db, schema } from 'hub:db'
+import { sendRedirect } from 'nuxt/server'
 import { and, eq } from 'drizzle-orm'
 
 export default defineOAuthGitHubEventHandler({
