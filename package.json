@@ -13,31 +13,31 @@
     "db:migrate": "nuxt db migrate"
   },
   "dependencies": {
-    "@ai-sdk/anthropic": "^4.0.94",
-    "@ai-sdk/google": "^4.0.109",
-    "@ai-sdk/openai": "^4.0.106",
-    "@ai-sdk/vue": "^4.0.159",
-    "@comark/nuxt": "^0.8.1",
-    "@iconify-json/logos": "^1.2.18",
-    "@iconify-json/lucide": "^1.2.150",
+    "@ai-sdk/anthropic": "^4.0.99",
+    "@ai-sdk/google": "^4.0.114",
+    "@ai-sdk/openai": "^4.0.111",
+    "@ai-sdk/vue": "^4.0.165",
+    "@comark/nuxt": "^0.9.0",
+    "@iconify-json/logos": "^1.2.19",
+    "@iconify-json/lucide": "^1.2.152",
     "@iconify-json/simple-icons": "^1.2.101",
     "@libsql/client": "^0.18.0",
     "@nuxt/ui": "^4.12.0",
     "@nuxthub/core": "^0.10.12",
-    "@shikijs/langs": "^4.5.0",
-    "@tanstack/charts": "^1.1.0",
+    "@shikijs/langs": "^4.6.0",
+    "@tanstack/charts": "^1.5.0",
     "@vercel/blob": "^2.8.2",
     "@vueuse/core": "^14.4.0",
-    "ai": "^7.0.159",
+    "ai": "^7.0.165",
     "date-fns": "^4.4.0",
     "drizzle-orm": "^0.45.4",
-    "motion-v": "^2.10.0",
+    "motion-v": "^2.11.1",
     "nuxt": "^4.6.4",
-    "nuxt-auth-utils": "^0.6.0",
+    "nuxt-auth-utils": "^0.6.2",
     "nuxt-csurf": "^1.6.6",
-    "shiki": "^4.5.0",
+    "shiki": "^4.6.0",
     "striptags": "3.2.0",
-    "tailwindcss": "^4.3.3",
+    "tailwindcss": "^4.3.5",
     "zod": "^4.6.7"
   },
   "devDependencies": {
@@ -49,5 +49,5 @@
     "typescript": "^6.0.3",
     "vue-tsc": "^3.3.14"
   },
-  "packageManager": "pnpm@12.16.1"
+  "packageManager": "pnpm@12.18.0"
 }
