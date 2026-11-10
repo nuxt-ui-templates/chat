@@ -66,7 +66,7 @@ export default defineEventHandler(async (event) => {
       throw createError({ status: 400, statusText: 'Invalid message' })
     })
 
-    await db.insert(schema.messages).values({
+    const [saved] = await db.insert(schema.messages).values({
       id: messageId,
       chatId: id,
       role: 'user',
@@ -76,7 +76,11 @@ export default defineEventHandler(async (event) => {
       set: { parts },
       // Only edit a message of this chat
       setWhere: eq(schema.messages.chatId, id)
-    })
+    }).returning({ id: schema.messages.id })
+
+    if (!saved) {
+      throw createError({ status: 409, statusText: 'Message belongs to another chat' })
+    }
   }
 
   // Web search is a provider-defined tool, each provider has its own
