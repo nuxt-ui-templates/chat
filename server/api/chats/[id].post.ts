@@ -62,12 +62,21 @@ export default defineEventHandler(async (event) => {
 
   const lastMessage = messages[messages.length - 1]
   if (lastMessage?.role === 'user' && messages.length > 1) {
+    const { id: messageId, parts } = await userMessageSchema.parseAsync(lastMessage).catch(() => {
+      throw createError({ status: 400, statusText: 'Invalid message' })
+    })
+
     await db.insert(schema.messages).values({
-      id: lastMessage.id,
+      id: messageId,
       chatId: id,
       role: 'user',
-      parts: lastMessage.parts
-    }).onConflictDoUpdate({ target: schema.messages.id, set: { parts: lastMessage.parts } })
+      parts
+    }).onConflictDoUpdate({
+      target: schema.messages.id,
+      set: { parts },
+      // Only edit a message of this chat
+      setWhere: eq(schema.messages.chatId, id)
+    })
   }
 
   // Web search is a provider-defined tool, each provider has its own
