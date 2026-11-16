@@ -206,8 +206,8 @@ importers:
         specifier: ^0.18.0
         version: 0.18.0
       '@nuxt/ui':
-        specifier: ^4.12.1
-        version: 4.12.1(4a0ed92a54d7739f344723b9eba74851)
+        specifier: ^4.12.2
+        version: 4.12.2(4a0ed92a54d7739f344723b9eba74851)
       '@nuxthub/core':
         specifier: ^0.10.12
         version: 0.10.12(@emnapi/core@2.0.0-alpha.3)(@emnapi/runtime@2.0.0-alpha.3)(@nuxt/schema@4.6.4)(@vercel/blob@2.9.0)(confbox@0.3.1)(db0@0.3.4(@libsql/client@0.18.0)(drizzle-orm@0.45.4(@cloudflare/workers-types@4.20260519.1)(@libsql/client@0.18.0)(@opentelemetry/api@1.9.1)))(dotenv@17.4.2)(giget@3.3.1)(ioredis@5.11.1(supports-color@10.2.2))(jiti@2.7.0)(magic-string@1.4.5)(magicast@0.5.5)(mlly@1.8.2)(oxc-parser@0.140.0)(rolldown@1.2.15)(synckit@0.11.13)(typescript@6.0.3)(unplugin@3.7.0(esbuild@0.28.2)(rolldown@1.2.15)(rollup@4.67.4)(vite@8.3.5(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.22.3)(yaml@2.9.0)))(vue-tsc@3.3.14(typescript@6.0.3))
@@ -1582,8 +1582,8 @@ packages:
     peerDependencies:
       '@nuxt/kit': '>=3.0.0'
 
-  '@nuxt/ui@4.12.1':
-    resolution: {integrity: sha512-1kIyff5whq7gXo17Yp0vsPcjycnBCeekiJtMExC9TaaJftEhxjF1PQZRG0AbwVh0oPKUQUhfz0MhKHn/scW1ZA==}
+  '@nuxt/ui@4.12.2':
+    resolution: {integrity: sha512-C2ne57yUMM4+TmKOnXIZthcMgUkhPLm8Olt1T/HgBNSz5UlKhgyftGqZ8UJXKN6oEN1kfj7X7Y+w1jcySWmJ7A==}
     engines: {node: ^20.19.0 || >=22.12.0}
     peerDependencies:
       '@inertiajs/vue3': ^2.0.7 || ^3
@@ -8345,7 +8345,7 @@ snapshots:
       rc9: 3.1.0
       std-env: 4.3.0
 
-  '@nuxt/ui@4.12.1(4a0ed92a54d7739f344723b9eba74851)':
+  '@nuxt/ui@4.12.2(4a0ed92a54d7739f344723b9eba74851)':
     dependencies:
       '@floating-ui/dom': 1.8.0
       '@iconify/vue': 5.0.3(vue@3.5.44(typescript@6.0.3))
