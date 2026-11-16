@@ -8,6 +8,7 @@ allowBuilds:
 minimumReleaseAgeExclude:
   - '@comark/vue@0.9.1'
   - comark@0.9.1
+  - '@nuxt/ui@4.12.1'
 
 overrides:
   # Pin h3 to v1: nuxt-csurf still uses the v1 event API (event.req.headers.get), breaks on h3 v2 RC
