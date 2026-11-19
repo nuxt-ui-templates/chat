@@ -3,7 +3,7 @@ export default defineNuxtConfig({
   modules: [
     '@nuxt/eslint',
     '@nuxt/ui',
-    '@comark/nuxt',
+    '@comark/vue',
     '@nuxthub/core',
     'nuxt-auth-utils',
     'nuxt-csurf'
