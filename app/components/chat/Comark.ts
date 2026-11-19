@@ -1,4 +1,4 @@
-import shiki from '@comark/nuxt/plugins/shiki'
+import shiki from '@comark/vue/plugins/shiki'
 import html from '@shikijs/langs/html'
 import css from '@shikijs/langs/css'
 import python from '@shikijs/langs/python'
