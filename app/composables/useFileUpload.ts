@@ -160,10 +160,6 @@ export function useFileUploadWithStatus(chatId: string, queue?: Ref<ChatPromptQu
     }
   })
 
-  const queueUploading = computed(() =>
-    [...queuedFiles.values()].some(f => f.status === 'uploading')
-  )
-
   function isQueuedUploading(queued: File[] = []) {
     return queued.some(file => queuedFiles.get(file)?.status === 'uploading')
   }
@@ -197,7 +193,6 @@ export function useFileUploadWithStatus(chatId: string, queue?: Ref<ChatPromptQu
     promptFiles,
     uploading,
     uploadedFiles,
-    queueUploading,
     isQueuedUploading,
     takeQueuedFiles,
     addFiles: uploadFiles,

@@ -31,7 +31,6 @@ const {
   promptFiles,
   uploading,
   uploadedFiles,
-  queueUploading,
   isQueuedUploading,
   takeQueuedFiles,
   clearFiles
@@ -107,7 +106,8 @@ function sendNext() {
   sendMessage(next.text.trim() ? { text: next.text, files: parts.length ? parts : undefined } : { files: parts })
 }
 
-watch([status, queueUploading], () => {
+// Also runs when the files of the next queued message finish uploading
+watch([status, () => isQueuedUploading(queue.value[0]?.files)], () => {
   if (status.value === 'ready') {
     sendNext()
   }
