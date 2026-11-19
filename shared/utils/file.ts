@@ -1,7 +1,6 @@
 export interface FileWithStatus {
   file: File
   id: string
-  previewUrl: string
   status: 'uploading' | 'uploaded' | 'error'
   uploadedUrl?: string
   uploadedPathname?: string
