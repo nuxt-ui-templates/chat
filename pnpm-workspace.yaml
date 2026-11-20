@@ -11,5 +11,8 @@ minimumReleaseAgeExclude:
   - '@nuxt/ui@4.12.2 || 4.13.0'
 
 overrides:
-  # Pin h3 to v1: nuxt-csurf still uses the v1 event API (event.req.headers.get), breaks on h3 v2 RC
+  # Pin h3 to v1: nuxt-csurf imports the hoisted h3 and uses the v1 API (getHeader, getCookie)
   h3: 1.15.11
+  # devframe (loaded by @nuxt/fonts and @eslint/config-inspector) imports `H3` and needs h3 v2
+  devframe>h3: ^2.0.8
+  devframe>crossws: ^0.4.17
