@@ -56,11 +56,11 @@ const message = computed(() => {
 
         <div class="flex gap-3 text-xs">
           <div class="flex items-center gap-1">
-            <UIcon name="i-lucide-droplets" class="size-3 text-blue-200" />
+            <UIcon name="i-lucide-droplets" class="size-3 text-white/70" />
             <span>{{ invocation.output.humidity }}%</span>
           </div>
           <div class="flex items-center gap-1">
-            <UIcon name="i-lucide-wind" class="size-3 text-blue-200" />
+            <UIcon name="i-lucide-wind" class="size-3 text-white/70" />
             <span>{{ invocation.output.windSpeed }} km/h</span>
           </div>
         </div>
