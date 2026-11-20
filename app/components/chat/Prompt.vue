@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import type { ChatStatus } from 'ai'
-import type { ChatPromptQueueItem } from '@nuxt/ui'
+import type { ChatStatus, UIMessage } from 'ai'
 
 const props = withDefaults(defineProps<{
   status?: ChatStatus
@@ -9,23 +8,25 @@ const props = withDefaults(defineProps<{
   uploads?: FileWithStatus[]
   uploading?: boolean
   disabled?: boolean
+  /** The messages waiting for the response, kept by the chat. */
+  queue?: UIMessage[]
 }>(), {
   status: 'ready',
   error: undefined,
+  queue: undefined,
   uploads: () => []
 })
 
 const emit = defineEmits<{
   submit: [event: Event]
-  send: []
+  send: [message: UIMessage]
+  remove: [message: UIMessage]
   stop: []
   reload: []
 }>()
 
 const input = defineModel<string>({ default: '' })
 const files = defineModel<File[]>('files', { default: () => [] })
-// Messages sent during a response wait in a queue where the parent binds `v-model:queue`
-const queue = defineModel<ChatPromptQueueItem[]>('queue')
 
 const dictation = ref<'idle' | 'recording' | 'transcribing'>('idle')
 const dictationPreview = ref('')
@@ -33,7 +34,7 @@ const placeholder = computed(() => {
   if (dictation.value !== 'idle') {
     return dictationPreview.value || (dictation.value === 'recording' ? 'Listening...' : 'Transcribing...')
   }
-  if (queue.value && (props.status === 'submitted' || props.status === 'streaming')) {
+  if (props.queue && (props.status === 'submitted' || props.status === 'streaming')) {
     return 'Queue a follow-up...'
   }
   return undefined
@@ -50,7 +51,7 @@ function appendTranscript(text: string) {
   <UChatPrompt
     v-model="input"
     v-model:files="files"
-    v-model:queue="queue"
+    :queue="queue"
     :accept="FILE_UPLOAD_CONFIG.acceptPattern"
     :status="status"
     :error="error"
@@ -60,7 +61,8 @@ function appendTranscript(text: string) {
     variant="subtle"
     :ui="{ base: ['px-1.5', dictation !== 'idle' && 'placeholder:italic'] }"
     @submit="emit('submit', $event)"
-    @send="emit('send')"
+    @send="emit('send', $event)"
+    @remove="emit('remove', $event)"
   >
     <template #files="{ remove }">
       <UChatAttachment
