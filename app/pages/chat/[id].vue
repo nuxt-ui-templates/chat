@@ -103,7 +103,8 @@ function sendNext() {
   // Nothing left to send when its only file failed to upload
   if (!next.text.trim() && !parts.length) return sendNext()
 
-  sendMessage(next.text.trim() ? { text: next.text, files: parts.length ? parts : undefined } : { files: parts })
+  // An array, even empty, starts the request right away: `undefined` is read as a `FileList` first while `status` stays `ready`
+  sendMessage(next.text.trim() ? { text: next.text, files: parts } : { files: parts })
 }
 
 // Also runs when the files of the next queued message finish uploading
