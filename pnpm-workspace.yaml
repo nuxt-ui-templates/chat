@@ -6,9 +6,7 @@ allowBuilds:
   vue-demi: false
 
 minimumReleaseAgeExclude:
-  - '@comark/vue@0.9.1'
-  - comark@0.9.1
-  - '@nuxt/ui@4.12.2 || 4.13.0'
+  - '@nuxt/ui'
 
 overrides:
   # Pin h3 to v1: nuxt-csurf imports the hoisted h3 and uses the v1 API (getHeader, getCookie)
