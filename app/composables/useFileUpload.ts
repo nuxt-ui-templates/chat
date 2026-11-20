@@ -1,4 +1,5 @@
-import type { Ref } from 'vue'
+import type { MaybeRefOrGetter } from 'vue'
+import type { UIMessage } from 'ai'
 import type { ChatPromptQueueItem } from '@nuxt/ui'
 
 interface BlobResult {
@@ -19,10 +20,10 @@ function fileToInput(file: File): HTMLInputElement {
   return input
 }
 
-export function useFileUploadWithStatus(chatId: string, queue?: Ref<ChatPromptQueueItem[]>) {
+export function useFileUploadWithStatus(chatId: string, chat?: { queue: MaybeRefOrGetter<ChatPromptQueueItem[]>, messages: MaybeRefOrGetter<UIMessage[]> }) {
   const files = ref<FileWithStatus[]>([])
-  // Files of queued messages, they stay uploaded until their message is sent or removed from the queue
-  const queuedFiles = shallowReactive(new Map<File, FileWithStatus>())
+  // Files of submitted messages, they stay uploaded until their message is sent or removed from the queue
+  const heldFiles = shallowReactive(new Map<File, FileWithStatus>())
   const toast = useToast()
   const { loggedIn } = useUserSession()
 
@@ -33,7 +34,7 @@ export function useFileUploadWithStatus(chatId: string, queue?: Ref<ChatPromptQu
     headers: { [headerName]: csrf }
   })
 
-  // Looked up again after each upload: a file can be removed from the prompt or queued while it uploads
+  // Looked up again after each upload: a file can be removed from the prompt or submitted while it uploads
   function updateFile(id: string, patch: Partial<FileWithStatus>) {
     const index = files.value.findIndex(f => f.id === id)
     if (index !== -1) {
@@ -41,10 +42,10 @@ export function useFileUploadWithStatus(chatId: string, queue?: Ref<ChatPromptQu
       return true
     }
 
-    const queued = [...queuedFiles.values()].find(f => f.id === id)
-    if (!queued) return false
+    const held = [...heldFiles.values()].find(f => f.id === id)
+    if (!held) return false
 
-    queuedFiles.set(queued.file, { ...queued, ...patch })
+    heldFiles.set(held.file, { ...held, ...patch })
     return true
   }
 
@@ -132,21 +133,15 @@ export function useFileUploadWithStatus(chatId: string, queue?: Ref<ChatPromptQu
     get: () => files.value.map(f => f.file),
     set: (next) => {
       for (const fileWithStatus of files.value.filter(f => !next.includes(f.file))) {
-        // The prompt queues a message before it clears its files
-        if (queue?.value.some(item => item.files?.includes(fileWithStatus.file))) {
-          queuedFiles.set(fileWithStatus.file, fileWithStatus)
-          files.value = files.value.filter(f => f.id !== fileWithStatus.id)
-        } else {
-          removeFile(fileWithStatus.id)
-        }
+        removeFile(fileWithStatus.id)
       }
 
       // A queued message put back in the prompt keeps its uploads
       for (const file of next) {
-        const queued = queuedFiles.get(file)
-        if (queued) {
-          queuedFiles.delete(file)
-          files.value = [...files.value, queued]
+        const held = heldFiles.get(file)
+        if (held) {
+          heldFiles.delete(file)
+          files.value = [...files.value, held]
         }
       }
 
@@ -160,32 +155,39 @@ export function useFileUploadWithStatus(chatId: string, queue?: Ref<ChatPromptQu
     }
   })
 
-  function isQueuedUploading(queued: File[] = []) {
-    return queued.some(file => queuedFiles.get(file)?.status === 'uploading')
-  }
-
-  // The uploaded files of a queued message about to be sent, they now belong to the message
-  function takeQueuedFiles(queued: File[] = []) {
-    const taken = queued.map(file => queuedFiles.get(file)).filter(f => !!f)
-    for (const file of queued) {
-      queuedFiles.delete(file)
+  // A submitted message takes its files out of the prompt, uploaded or not, until it is sent
+  function holdFiles(held: File[] = []) {
+    for (const fileWithStatus of files.value.filter(f => held.includes(f.file))) {
+      heldFiles.set(fileWithStatus.file, fileWithStatus)
     }
-
-    return toFileParts(taken)
+    files.value = files.value.filter(f => !held.includes(f.file))
   }
 
-  // A message removed from the queue removes its files from the blob
-  if (queue) {
-    watch(queue, (items) => {
-      for (const [file, fileWithStatus] of queuedFiles) {
-        if (!items.some(item => item.files?.includes(file))) {
-          queuedFiles.delete(file)
-          if (fileWithStatus.uploadedPathname) {
-            deleteBlob(fileWithStatus.uploadedPathname)
-          }
+  function isUploading(held: File[] = []) {
+    return held.some(file => heldFiles.get(file)?.status === 'uploading')
+  }
+
+  // The uploaded files of a submitted message, with the file behind each part
+  function getFileParts(held: File[] = []) {
+    return held.flatMap((file) => {
+      const fileWithStatus = heldFiles.get(file)
+      return fileWithStatus ? toFileParts([fileWithStatus]).map(part => ({ file, part })) : []
+    })
+  }
+
+  // A file leaves once its message is gone from the queue: sent, it stays in the blob, removed, it is deleted
+  if (chat) {
+    watch([() => toValue(chat.queue), () => toValue(chat.messages)], ([items, messages]) => {
+      for (const [file, fileWithStatus] of heldFiles) {
+        if (items.some(item => item.files?.includes(file))) continue
+
+        heldFiles.delete(file)
+        const sent = messages.some(message => message.parts.some(part => part.type === 'file' && part.url === fileWithStatus.uploadedUrl))
+        if (!sent && fileWithStatus.uploadedPathname) {
+          deleteBlob(fileWithStatus.uploadedPathname)
         }
       }
-    }, { deep: true })
+    })
   }
 
   return {
@@ -193,8 +195,9 @@ export function useFileUploadWithStatus(chatId: string, queue?: Ref<ChatPromptQu
     promptFiles,
     uploading,
     uploadedFiles,
-    isQueuedUploading,
-    takeQueuedFiles,
+    holdFiles,
+    isUploading,
+    getFileParts,
     addFiles: uploadFiles,
     removeFile,
     clearFiles

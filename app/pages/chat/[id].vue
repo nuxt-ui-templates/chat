@@ -3,6 +3,7 @@ import { useChat } from '@ai-sdk/vue'
 import { DefaultChatTransport } from 'ai'
 import type { UIMessage } from 'ai'
 import type { ChatPromptQueueItem } from '@nuxt/ui'
+import { getTextFromMessage } from '@nuxt/ui/utils/ai'
 
 const route = useRoute()
 const toast = useToast()
@@ -23,27 +24,26 @@ watch(() => data.value?.title, (next) => {
   title.value = next ?? null
 })
 
-// Messages sent while a response streams wait here, `UChatPrompt` queues a submit while the chat is busy
-const queue = ref<ChatPromptQueueItem[]>([])
-
-const {
-  files,
-  promptFiles,
-  uploading,
-  uploadedFiles,
-  isQueuedUploading,
-  takeQueuedFiles,
-  clearFiles
-} = useFileUploadWithStatus(route.params.id as string, queue)
-
 const { data: votes } = await useLazyFetch(`/api/chats/${route.params.id}/votes`, {
   immediate: isOwner.value
 })
 
 const input = ref('')
 
-const { messages, status, error, sendMessage, regenerate, stop } = useChat({
+const {
+  messages,
+  status,
+  error,
+  sendMessage,
+  regenerate,
+  stop,
+  experimental_queuedMessages,
+  experimental_removeQueuedMessage,
+  experimental_sendQueuedMessageNow
+} = useChat({
   id: data.value?.id,
+  // Messages sent while a response is in progress wait in `experimental_queuedMessages` and go out one at a time
+  experimental_queue: true,
   messages: data.value?.messages,
   transport: new DefaultChatTransport({
     api: `/api/chats/${data.value?.id}`,
@@ -83,43 +83,101 @@ const { messages, status, error, sendMessage, regenerate, stop } = useChat({
   }
 })
 
-async function handleSubmit(e: Event) {
-  e.preventDefault()
-  if ((input.value.trim() || uploadedFiles.value.length) && !uploading.value) {
-    const files = uploadedFiles.value.length > 0 ? uploadedFiles.value : undefined
-    sendMessage(input.value.trim() ? { text: input.value, files } : { files: files! })
-    input.value = ''
-    clearFiles()
+// A submitted message waits here while its files upload, then goes to the chat in the order it was sent
+const pending = ref<ChatPromptQueueItem[]>([])
+// The file behind each file part, so a queued message can go back to the prompt with its files
+const filesByUrl = new Map<string, File>()
+
+function toQueueItem(message: UIMessage): ChatPromptQueueItem {
+  return {
+    id: message.id,
+    text: getTextFromMessage(message),
+    files: message.parts.flatMap(part => part.type === 'file' && filesByUrl.has(part.url) ? [filesByUrl.get(part.url)!] : [])
   }
 }
 
-function sendNext() {
-  // A queued message waits for its files to finish uploading
-  if (!queue.value[0] || isQueuedUploading(queue.value[0].files)) return
-
-  const next = queue.value.shift()!
-
-  const parts = takeQueuedFiles(next.files)
-  // Nothing left to send when its only file failed to upload
-  if (!next.text.trim() && !parts.length) return sendNext()
-
-  // An array, even empty, starts the request right away: `undefined` is read as a `FileList` first while `status` stays `ready`
-  sendMessage(next.text.trim() ? { text: next.text, files: parts } : { files: parts })
+function isSameItem(a: ChatPromptQueueItem, b: ChatPromptQueueItem) {
+  return a.id ? a.id === b.id : toRaw(a) === toRaw(b)
 }
 
-// Also runs when the files of the next queued message finish uploading
-watch([status, () => isQueuedUploading(queue.value[0]?.files)], () => {
-  if (status.value === 'ready') {
-    sendNext()
+// `UChatPrompt` edits the queue through `v-model:queue`: the chat holds the messages waiting for the response, `pending` the ones whose files still upload
+const queue = computed<ChatPromptQueueItem[]>({
+  get: () => [...experimental_queuedMessages.value.map(toQueueItem), ...pending.value],
+  set: (next) => {
+    for (const item of queue.value.filter(item => !next.some(n => isSameItem(n, item)))) {
+      if (item.id) {
+        experimental_removeQueuedMessage(item.id)
+      } else {
+        pending.value = pending.value.filter(p => !isSameItem(p, item))
+      }
+    }
+
+    // A message submitted while the chat is busy
+    const added = next.filter(item => !queue.value.some(q => isSameItem(q, item)))
+    if (added.length) {
+      for (const item of added) {
+        holdFiles(item.files)
+      }
+      pending.value.push(...added)
+      sendPending()
+    }
   }
 })
 
-// A queued message picked to be sent now is at the front of the queue, it goes out once the current response stops
-function onSend() {
-  if (status.value === 'submitted' || status.value === 'streaming') {
-    stop()
+const {
+  files,
+  promptFiles,
+  uploading,
+  holdFiles,
+  isUploading,
+  getFileParts
+} = useFileUploadWithStatus(route.params.id as string, { queue, messages })
+
+function sendPending() {
+  // A message waits for its files to finish uploading, the ones after it wait too
+  while (pending.value[0] && !isUploading(pending.value[0].files)) {
+    const item = pending.value.shift()!
+    const uploaded = getFileParts(item.files)
+    // Nothing left to send when its only file failed to upload
+    if (!item.text.trim() && !uploaded.length) continue
+
+    for (const { file, part } of uploaded) {
+      filesByUrl.set(part.url, file)
+    }
+    const parts = uploaded.map(({ part }) => part)
+    sendMessage(item.text.trim() ? { text: item.text, files: parts } : { files: parts })
+  }
+}
+
+// Also runs when the files of the next message finish uploading
+watch(() => isUploading(pending.value[0]?.files), sendPending)
+
+function handleSubmit(e: Event) {
+  e.preventDefault()
+
+  if (!input.value.trim() && !promptFiles.value.length) return
+
+  const item = { text: input.value, files: promptFiles.value }
+  holdFiles(item.files)
+  pending.value.push(item)
+  input.value = ''
+  sendPending()
+}
+
+// The file parts of the queued messages are the only ones that can go back to the prompt
+watch(experimental_queuedMessages, (queued: UIMessage[]) => {
+  const urls = new Set(queued.flatMap(message => message.parts.flatMap(part => part.type === 'file' ? [part.url] : [])))
+  for (const url of filesByUrl.keys()) {
+    if (!urls.has(url)) filesByUrl.delete(url)
+  }
+})
+
+// The chat stops the response and sends the message next, one whose files still upload can't skip ahead
+function onSend(item: ChatPromptQueueItem) {
+  if (item.id) {
+    experimental_sendQueuedMessageNow(item.id)
   } else {
-    sendNext()
+    sendPending()
   }
 }
 
