@@ -146,6 +146,8 @@ function sendPending() {
     }
     const parts = uploaded.map(({ part }) => part)
     sendMessage(item.text.trim() ? { text: item.text, files: parts } : { files: parts })
+    // Sent right away when the chat is idle, the queue doesn't change then
+    pruneFiles()
   }
 }
 
@@ -165,12 +167,14 @@ function handleSubmit(e: Event) {
 }
 
 // The file parts of the queued messages are the only ones that can go back to the prompt
-watch(experimental_queuedMessages, (queued: UIMessage[]) => {
-  const urls = new Set(queued.flatMap(message => message.parts.flatMap(part => part.type === 'file' ? [part.url] : [])))
+function pruneFiles() {
+  const urls = new Set(experimental_queuedMessages.value.flatMap((message: UIMessage) => message.parts.flatMap(part => part.type === 'file' ? [part.url] : [])))
   for (const url of filesByUrl.keys()) {
     if (!urls.has(url)) filesByUrl.delete(url)
   }
-})
+}
+
+watch(experimental_queuedMessages, pruneFiles)
 
 // The chat stops the response and sends the message next, one whose files still upload can't skip ahead
 function onSend(item: ChatPromptQueueItem) {
@@ -179,6 +183,11 @@ function onSend(item: ChatPromptQueueItem) {
   } else {
     sendPending()
   }
+}
+
+function reload() {
+  pending.value = []
+  regenerate()
 }
 
 const editingMessageId = ref<string | null>(null)
@@ -202,6 +211,8 @@ async function saveEdit(message: UIMessage, text: string) {
   }
 
   editingMessageId.value = null
+  // The chat clears its queue when the history changes, the messages still waiting for their files go too
+  pending.value = []
   sendMessage({ text, messageId: message.id })
 }
 
@@ -217,6 +228,7 @@ async function regenerateMessage(message: UIMessage) {
     return
   }
 
+  pending.value = []
   regenerate({ messageId: message.id })
 }
 
@@ -352,7 +364,7 @@ onMounted(() => {
                 @submit="handleSubmit"
                 @send="onSend"
                 @stop="stop()"
-                @reload="regenerate()"
+                @reload="reload"
               />
             </template>
           </UChatMessages>
