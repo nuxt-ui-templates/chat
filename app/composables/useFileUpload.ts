@@ -1,6 +1,3 @@
-import type { Ref } from 'vue'
-import type { ChatPromptQueueItem } from '@nuxt/ui'
-
 interface BlobResult {
   pathname: string
   url?: string
@@ -19,32 +16,26 @@ function fileToInput(file: File): HTMLInputElement {
   return input
 }
 
-export function useFileUploadWithStatus(chatId: string, queue?: Ref<ChatPromptQueueItem[]>) {
+export function useFileUploadWithStatus(chatId: string) {
   const files = ref<FileWithStatus[]>([])
-  // Files of queued messages, they stay uploaded until their message is sent or removed from the queue
-  const queuedFiles = shallowReactive(new Map<File, FileWithStatus>())
   const toast = useToast()
   const { loggedIn } = useUserSession()
 
   const { csrf, headerName } = useCsrf()
+  // The blob of each uploaded file, so a queued message removed before it is sent removes its files too
+  const pathnames = new Map<string, string>()
 
   const upload = useUpload(`/api/upload/${chatId}`, {
     method: 'PUT',
     headers: { [headerName]: csrf }
   })
 
-  // Looked up again after each upload: a file can be removed from the prompt or queued while it uploads
+  // Looked up again after each upload: a file can be removed from the prompt while it uploads
   function updateFile(id: string, patch: Partial<FileWithStatus>) {
     const index = files.value.findIndex(f => f.id === id)
-    if (index !== -1) {
-      files.value[index] = { ...files.value[index]!, ...patch }
-      return true
-    }
+    if (index === -1) return false
 
-    const queued = [...queuedFiles.values()].find(f => f.id === id)
-    if (!queued) return false
-
-    queuedFiles.set(queued.file, { ...queued, ...patch })
+    files.value[index] = { ...files.value[index]!, ...patch }
     return true
   }
 
@@ -87,6 +78,8 @@ export function useFileUploadWithStatus(chatId: string, queue?: Ref<ChatPromptQu
 
         if (!updateFile(fileWithStatus.id, { status: 'uploaded', uploadedUrl: result.url, uploadedPathname: result.pathname })) {
           deleteBlob(result.pathname)
+        } else if (result.url) {
+          pathnames.set(result.url, result.pathname)
         }
       } catch (error) {
         const errorMessage = (error as { data?: { message?: string } }).data?.message
@@ -109,7 +102,15 @@ export function useFileUploadWithStatus(chatId: string, queue?: Ref<ChatPromptQu
     files.value.some(f => f.status === 'uploading')
   )
 
-  const uploadedFiles = computed(() => toFileParts(files.value))
+  const uploadedFiles = computed(() =>
+    files.value
+      .filter(f => f.status === 'uploaded' && f.uploadedUrl)
+      .map(f => ({
+        type: 'file' as const,
+        mediaType: f.file.type,
+        url: f.uploadedUrl!
+      }))
+  )
 
   function removeFile(id: string) {
     const file = files.value.find(f => f.id === id)
@@ -119,6 +120,16 @@ export function useFileUploadWithStatus(chatId: string, queue?: Ref<ChatPromptQu
 
     if (file.status === 'uploaded' && file.uploadedPathname) {
       deleteBlob(file.uploadedPathname)
+    }
+  }
+
+  function deleteUploads(urls: string[]) {
+    for (const url of urls) {
+      const pathname = pathnames.get(url)
+      if (pathname) {
+        pathnames.delete(url)
+        deleteBlob(pathname)
+      }
     }
   }
 
@@ -132,81 +143,24 @@ export function useFileUploadWithStatus(chatId: string, queue?: Ref<ChatPromptQu
     get: () => files.value.map(f => f.file),
     set: (next) => {
       for (const fileWithStatus of files.value.filter(f => !next.includes(f.file))) {
-        // The prompt queues a message before it clears its files
-        if (queue?.value.some(item => item.files?.includes(fileWithStatus.file))) {
-          queuedFiles.set(fileWithStatus.file, fileWithStatus)
-          files.value = files.value.filter(f => f.id !== fileWithStatus.id)
-        } else {
-          removeFile(fileWithStatus.id)
-        }
-      }
-
-      // A queued message put back in the prompt keeps its uploads
-      for (const file of next) {
-        const queued = queuedFiles.get(file)
-        if (queued) {
-          queuedFiles.delete(file)
-          files.value = [...files.value, queued]
-        }
+        removeFile(fileWithStatus.id)
       }
 
       const added = next.filter(file => !files.value.some(f => f.file === file))
       if (added.length) {
         uploadFiles(added)
       }
-
-      // The prompt renders `files` by index, keep them in its order
-      files.value = next.map(file => files.value.find(f => f.file === file)).filter(f => !!f)
     }
   })
-
-  function isQueuedUploading(queued: File[] = []) {
-    return queued.some(file => queuedFiles.get(file)?.status === 'uploading')
-  }
-
-  // The uploaded files of a queued message about to be sent, they now belong to the message
-  function takeQueuedFiles(queued: File[] = []) {
-    const taken = queued.map(file => queuedFiles.get(file)).filter(f => !!f)
-    for (const file of queued) {
-      queuedFiles.delete(file)
-    }
-
-    return toFileParts(taken)
-  }
-
-  // A message removed from the queue removes its files from the blob
-  if (queue) {
-    watch(queue, (items) => {
-      for (const [file, fileWithStatus] of queuedFiles) {
-        if (!items.some(item => item.files?.includes(file))) {
-          queuedFiles.delete(file)
-          if (fileWithStatus.uploadedPathname) {
-            deleteBlob(fileWithStatus.uploadedPathname)
-          }
-        }
-      }
-    }, { deep: true })
-  }
 
   return {
     files,
     promptFiles,
     uploading,
     uploadedFiles,
-    isQueuedUploading,
-    takeQueuedFiles,
     addFiles: uploadFiles,
     removeFile,
+    deleteUploads,
     clearFiles
   }
-}
-
-function toFileParts(files: FileWithStatus[]) {
-  return files
-    .filter(f => f.status === 'uploaded' && f.uploadedUrl)
-    .map(f => ({
-      type: 'file' as const,
-      mediaType: f.file.type,
-      url: f.uploadedUrl!
-    }))
 }

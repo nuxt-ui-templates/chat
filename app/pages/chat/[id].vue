@@ -2,7 +2,6 @@
 import { useChat } from '@ai-sdk/vue'
 import { DefaultChatTransport } from 'ai'
 import type { UIMessage } from 'ai'
-import type { ChatPromptQueueItem } from '@nuxt/ui'
 
 const route = useRoute()
 const toast = useToast()
@@ -23,18 +22,14 @@ watch(() => data.value?.title, (next) => {
   title.value = next ?? null
 })
 
-// Messages sent while a response streams wait here, `UChatPrompt` queues a submit while the chat is busy
-const queue = ref<ChatPromptQueueItem[]>([])
-
 const {
   files,
   promptFiles,
   uploading,
   uploadedFiles,
-  isQueuedUploading,
-  takeQueuedFiles,
+  deleteUploads,
   clearFiles
-} = useFileUploadWithStatus(route.params.id as string, queue)
+} = useFileUploadWithStatus(route.params.id as string)
 
 const { data: votes } = await useLazyFetch(`/api/chats/${route.params.id}/votes`, {
   immediate: isOwner.value
@@ -42,8 +37,20 @@ const { data: votes } = await useLazyFetch(`/api/chats/${route.params.id}/votes`
 
 const input = ref('')
 
-const { messages, status, error, sendMessage, regenerate, stop } = useChat({
+const {
+  messages,
+  status,
+  error,
+  sendMessage,
+  regenerate,
+  stop,
+  experimental_queuedMessages,
+  experimental_removeQueuedMessage,
+  experimental_sendQueuedMessageNow
+} = useChat({
   id: data.value?.id,
+  // Messages sent while a response is in progress wait in `experimental_queuedMessages` and go out one at a time
+  experimental_queue: true,
   messages: data.value?.messages,
   transport: new DefaultChatTransport({
     api: `/api/chats/${data.value?.id}`,
@@ -83,44 +90,20 @@ const { messages, status, error, sendMessage, regenerate, stop } = useChat({
   }
 })
 
-async function handleSubmit(e: Event) {
+function handleSubmit(e: Event) {
   e.preventDefault()
   if ((input.value.trim() || uploadedFiles.value.length) && !uploading.value) {
-    const files = uploadedFiles.value.length > 0 ? uploadedFiles.value : undefined
-    sendMessage(input.value.trim() ? { text: input.value, files } : { files: files! })
+    const files = uploadedFiles.value
+    sendMessage(input.value.trim() ? { text: input.value, files } : { files })
     input.value = ''
     clearFiles()
   }
 }
 
-function sendNext() {
-  // A queued message waits for its files to finish uploading
-  if (!queue.value[0] || isQueuedUploading(queue.value[0].files)) return
-
-  const next = queue.value.shift()!
-
-  const parts = takeQueuedFiles(next.files)
-  // Nothing left to send when its only file failed to upload
-  if (!next.text.trim() && !parts.length) return sendNext()
-
-  // An array, even empty, starts the request right away: `undefined` is read as a `FileList` first while `status` stays `ready`
-  sendMessage(next.text.trim() ? { text: next.text, files: parts } : { files: parts })
-}
-
-// Also runs when the files of the next queued message finish uploading
-watch([status, () => isQueuedUploading(queue.value[0]?.files)], () => {
-  if (status.value === 'ready') {
-    sendNext()
-  }
-})
-
-// A queued message picked to be sent now is at the front of the queue, it goes out once the current response stops
-function onSend() {
-  if (status.value === 'submitted' || status.value === 'streaming') {
-    stop()
-  } else {
-    sendNext()
-  }
+// Its files were uploaded when attached, a queued message removed before it is sent removes them too
+function removeQueued(message: UIMessage) {
+  experimental_removeQueuedMessage(message.id)
+  deleteUploads(message.parts.flatMap(part => part.type === 'file' ? [part.url] : []))
 }
 
 const editingMessageId = ref<string | null>(null)
@@ -285,14 +268,15 @@ onMounted(() => {
               <ChatPrompt
                 v-model="input"
                 v-model:files="promptFiles"
-                v-model:queue="queue"
+                :queue="experimental_queuedMessages"
                 :status="status"
                 :error="error"
                 :uploads="files"
                 :uploading="uploading"
                 class="[view-transition-name:chat-prompt] rounded-b-none backdrop-blur-sm"
                 @submit="handleSubmit"
-                @send="onSend"
+                @send="message => experimental_sendQueuedMessageNow(message.id)"
+                @remove="removeQueued"
                 @stop="stop()"
                 @reload="regenerate()"
               />

@@ -208,8 +208,8 @@ importers:
         specifier: ^0.18.0
         version: 0.18.0
       '@nuxt/ui':
-        specifier: ^4.13.0
-        version: 4.13.0(9f2055a59662b295da9f0c86be007515)
+        specifier: https://pkg.pr.new/@nuxt/ui@da6b7d3
+        version: https://pkg.pr.new/@nuxt/ui@da6b7d3(9f2055a59662b295da9f0c86be007515)
       '@nuxthub/core':
         specifier: ^0.10.12
         version: 0.10.12(@emnapi/core@2.0.0-alpha.3)(@emnapi/runtime@2.0.0-alpha.3)(@nuxt/schema@4.6.4)(@vercel/blob@2.9.0)(confbox@0.3.2)(db0@0.3.4(@libsql/client@0.18.0)(drizzle-orm@0.45.4(@cloudflare/workers-types@4.20260519.1)(@libsql/client@0.18.0)(@opentelemetry/api@1.9.1)))(dotenv@17.4.2)(giget@3.3.1)(ioredis@5.11.1(supports-color@10.2.2))(jiti@2.7.0)(magic-string@1.4.5)(magicast@0.5.5)(mlly@1.8.2)(oxc-parser@0.140.0)(rolldown@1.2.15)(synckit@0.11.13)(typescript@6.0.3)(unplugin@3.7.0(esbuild@0.28.2)(rolldown@1.2.15)(rollup@4.67.4)(vite@8.3.5(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.22.3)(yaml@2.9.0)))(vue-tsc@3.3.14(typescript@6.0.3))
@@ -1443,8 +1443,9 @@ packages:
     peerDependencies:
       '@nuxt/kit': '>=3.0.0'
 
-  '@nuxt/ui@4.13.0':
-    resolution: {integrity: sha512-YCvG1LdI2QLAxCAf6PVtn/iIxXmJm0PvaCP7CGFQSF/y0rJgzplsWWkN7iNlcyTJsuIIQ3NcNHOd8JX5lEP78Q==}
+  '@nuxt/ui@https://pkg.pr.new/@nuxt/ui@da6b7d3':
+    resolution: {integrity: sha512-aE14LFzpmTlppY8QaVkxx6vZrPNW6w2QK/9dnuW18G+gWiE2C+V4gbQAs4evX5kfBfZGfn6uBOHupPxODJhgDw==, tarball: https://pkg.pr.new/@nuxt/ui@da6b7d3}
+    version: 4.13.0
     engines: {node: ^20.19.0 || >=22.12.0}
     peerDependencies:
       '@inertiajs/vue3': ^2.0.7 || ^3
@@ -8120,7 +8121,7 @@ snapshots:
       rc9: 3.1.0
       std-env: 4.3.0
 
-  '@nuxt/ui@4.13.0(9f2055a59662b295da9f0c86be007515)':
+  '@nuxt/ui@https://pkg.pr.new/@nuxt/ui@da6b7d3(9f2055a59662b295da9f0c86be007515)':
     dependencies:
       '@floating-ui/dom': 1.8.0
       '@iconify/vue': 5.0.5(vue@3.5.44(typescript@6.0.3))
