@@ -15,6 +15,17 @@ export default defineNuxtConfig({
 
   css: ['~/assets/css/main.css'],
 
+  ui: {
+    eslint: {
+      ignore: ['^dot-pattern$'],
+      rules: {
+        'no-unknown-classes': 'error',
+        'no-conflicting-classes': 'error',
+        'no-palette-colors': 'error'
+      }
+    }
+  },
+
   experimental: {
     viewTransition: true
   },
